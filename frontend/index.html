@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>aimlrahulcounselling | MHT-CET Admission Counselling & Predictor</title>
+    <meta name="description" content="Official MHT-CET engineering counselling services and AI college predictor for admissions in Maharashtra.">
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="Style.css">
+</head>
+<body>
+
+    <!-- 3D WebGL Background Canvas & Glow -->
+    <canvas id="webgl-canvas"></canvas>
+    <div id="cursor-glow" class="cursor-glow"></div>
+
+    <div class="main-wrapper">
+        <!-- Executive Professional Navbar -->
+        <header class="navbar">
+            <div class="navbar-container">
+                <div class="navbar-logo">
+                    <a href="index.html" class="brand-link">
+                        <span class="brand-badge">AIML</span>
+                        <span class="brand-text">rahulcounselling</span>
+                    </a>
+                </div>
+                
+                <nav class="navbar-menu">
+                    <a href="index.html" class="nav-link active">Home</a>
+                    <a href="predictor.html" class="nav-link">AI Predictor</a>
+                    <a href="Viewservices.html" class="nav-link">Services</a>
+                    <a href="consultationForm.html" class="nav-link">Consultation</a>
+                </nav>
+
+                <div class="navbar-buttons" id="authArea">
+                    <a href="predictor.html" class="nav-btn predictor-cta-btn">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor
+                    </a>
+                    <a href="admin.html" id="adminLink" class="nav-btn hidden"><i class="fa-solid fa-user-shield"></i> Admin</a>
+                    <a href="login.html" class="nav-btn login-btn">Login</a>
+                    <a href="register.html" class="nav-btn signup-btn">Sign Up</a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section (Jobtogether Style with Waving 3D Canvas Mesh) -->
+        <section class="hero-section">
+            <div class="container hero-grid">
+                <!-- Left Hero Content -->
+                <div class="hero-left">
+                    <div class="hero-pill-badge">
+                        <span class="pulse-dot"></span> Official MHT-CET 2026 Admissions Guide
+                    </div>
+                    <h1 class="hero-title">
+                        MHT-CET Admission is complex.
+                        <br>
+                        Go from <span class="title-highlight-green">confused</span> to <span class="title-highlight">admitted</span>.
+                    </h1>
+                    <p class="hero-description">
+                        We turn cut-off data into your unfair competitive advantage. Data-driven cutoff analytics, AI CAP option form generation, and personalized 1-on-1 expert guidance by senior admissions experts to secure your top choice engineering college across Maharashtra.
+                    </p>
+                    <div class="hero-action-row">
+                        <a href="predictor.html" class="btn-hero-primary">
+                            Get Matched Now <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                        <a href="consultationForm.html" class="btn-hero-secondary" id="bookConsultationBtn">
+                            <i class="fa-solid fa-calendar-check"></i> Book Consultation
+                        </a>
+                    </div>
+
+                    <!-- Social Proof Stats Stack -->
+                    <div class="hero-social-proof">
+                        <div class="avatar-stack">
+                            <div class="avatar-img" title="COEP Pune" style="background-image: url('real_coep.jpg');"></div>
+                            <div class="avatar-img" title="VJTI Mumbai" style="background-image: url('real_vjti.jpg');"></div>
+                            <div class="avatar-img" title="PICT Pune" style="background-image: url('real_pict.jpg');"></div>
+                        </div>
+                        <div class="social-stat-item">
+                            <span class="stat-bold">3,000+</span>
+                            <span class="stat-sub">Counselled</span>
+                        </div>
+                        <div class="social-stat-divider"></div>
+                        <div class="social-stat-item">
+                            <span class="stat-bold">106K+</span>
+                            <span class="stat-sub">Cutoffs Sync</span>
+                        </div>
+                        <div class="social-stat-divider"></div>
+                        <div class="social-stat-item">
+                            <span class="stat-bold">98.4%</span>
+                            <span class="stat-sub">Success Rate</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Hero Stage (Clean High-Visibility Real College Photos Stage) -->
+                <div class="hero-right">
+                    <div class="hero-college-stage">
+                        <!-- Main Featured College Photo Container -->
+                        <div class="featured-photo-card">
+                            <!-- Featured Large Real Photo -->
+                            <div class="photo-viewport">
+                                <img src="real_coep.jpg" id="featuredCollegeImg" alt="COEP Technological University" class="featured-img">
+                                <div class="photo-badge-match">
+                                    <i class="fa-solid fa-circle-check"></i> <span id="featuredMatchBadge">99.4%ile Cutoff • Heritage Campus</span>
+                                </div>
+                            </div>
+
+                            <!-- Caption Bar -->
+                            <div class="featured-caption-bar">
+                                <h3 id="featuredCollegeName" class="featured-title">COEP Technological University</h3>
+                                <p id="featuredCollegeSub" class="featured-sub">Pune, MS • Established 1854 • Autonomous Govt. Institute</p>
+                            </div>
+                        </div>
+
+                        <!-- 3-College Real Photo Gallery Row (All 3 Real Photos Visible Simultaneously!) -->
+                        <div class="college-gallery-row">
+                            <div class="gallery-card active" id="gal-coep" onclick="selectCollege('coep')">
+                                <img src="real_coep.jpg" alt="COEP Pune Photo" class="gallery-img">
+                                <div class="gallery-info">
+                                    <span class="gallery-name">COEP Pune</span>
+                                    <span class="gallery-tag">Heritage Building</span>
+                                </div>
+                            </div>
+
+                            <div class="gallery-card" id="gal-vjti" onclick="selectCollege('vjti')">
+                                <img src="real_vjti.jpg" alt="VJTI Mumbai Photo" class="gallery-img">
+                                <div class="gallery-info">
+                                    <span class="gallery-name">VJTI Mumbai</span>
+                                    <span class="gallery-tag">Campus Sunset</span>
+                                </div>
+                            </div>
+
+                            <div class="gallery-card" id="gal-pict" onclick="selectCollege('pict')">
+                                <img src="real_pict.jpg" alt="PICT Pune Photo" class="gallery-img">
+                                <div class="gallery-info">
+                                    <span class="gallery-name">PICT Pune</span>
+                                    <span class="gallery-tag">Main Gate Arch</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats-section">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">3,000+</div>
+                        <div class="stat-label">Students Counselled</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">98.4%</div>
+                        <div class="stat-label">Success Rate</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">106K+</div>
+                        <div class="stat-label">Cutoffs Analyzed</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">4+</div>
+                        <div class="stat-label">Years Experience</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section class="services-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        Comprehensive <span class="text-primary">Counselling Services</span>
+                    </h2>
+                    <p class="section-description">
+                        End-to-end admission guidance designed to maximize your admission chances across all CAP rounds.
+                    </p>
+                </div>
+                
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-header">
+                            <div class="service-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                            <h3 class="service-title">AI College Predictor</h3>
+                        </div>
+                        <p class="service-description">
+                            Instant college matching algorithm based on your exact percentile score, reservation category, home university, and preferred cities.
+                        </p>
+                        <ul class="service-features">
+                            <li><i class="fa-solid fa-check"></i> 106K Cutoff Data Sync</li>
+                            <li><i class="fa-solid fa-check"></i> Instant Choice Code Export</li>
+                            <li><i class="fa-solid fa-check"></i> Priority Order Recommendation</li>
+                        </ul>
+                        <a href="predictor.html" class="btn-secondary" style="width:100%; justify-content:center;">Try Predictor →</a>
+                    </div>
+
+                    <div class="service-card">
+                        <div class="service-header">
+                            <div class="service-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                            <h3 class="service-title">Branch Selection</h3>
+                        </div>
+                        <p class="service-description">
+                            In-depth insights into emerging branches (CSE, AI & DS, Cyber Security, ENTC, Mech) and placement trajectories.
+                        </p>
+                        <ul class="service-features">
+                            <li><i class="fa-solid fa-check"></i> Future Market Demand</li>
+                            <li><i class="fa-solid fa-check"></i> Branch-wise Salary Insights</li>
+                            <li><i class="fa-solid fa-check"></i> Academic Aptitude Alignment</li>
+                        </ul>
+                        <a href="Viewservices.html" class="btn-secondary" style="width:100%; justify-content:center;">Explore Branches →</a>
+                    </div>
+
+                    <div class="service-card">
+                        <div class="service-header">
+                            <div class="service-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                            <h3 class="service-title">CAP Round Strategy</h3>
+                        </div>
+                        <p class="service-description">
+                            Step-by-step assistance with FC center verification, option form ordering, freeze/float decisions, and seat upgradation.
+                        </p>
+                        <ul class="service-features">
+                            <li><i class="fa-solid fa-check"></i> Verification Checklist</li>
+                            <li><i class="fa-solid fa-check"></i> Round-wise Upgradation Strategy</li>
+                            <li><i class="fa-solid fa-check"></i> Reservation Optimization</li>
+                        </ul>
+                        <a href="consultationForm.html" class="btn-secondary" style="width:100%; justify-content:center;">Get Guided →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Student Success Stories Section ($1M Luxury Glassmorphic Design) -->
+        <section class="testimonials-section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="hero-pill-badge" style="margin-bottom: 12px; display: inline-flex;"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> Verified Admission Results</span>
+                    <h2 class="section-title">
+                        Student <span class="text-primary">Success Stories</span>
+                    </h2>
+                    <p class="section-description">
+                        Real experiences from students who secured top CAP allotment seats through our data-driven counselling.
+                    </p>
+                </div>
+                
+                <div class="testimonials-grid">
+                    <!-- Testimonial Card 1 -->
+                    <div class="testimonial-glass-card">
+                        <div class="testimonial-card-header">
+                            <div class="student-avatar-wrap">
+                                <div class="student-avatar-gradient">PJ</div>
+                                <span class="avatar-check-badge" title="CAP Seat Allotment Verified"><i class="fa-solid fa-check"></i></span>
+                            </div>
+                            <div class="student-meta">
+                                <h4 class="student-name">Priya Jadhav</h4>
+                                <span class="student-college-pill"><i class="fa-solid fa-building-columns"></i> COEP Pune</span>
+                            </div>
+                            <div class="star-rating">
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                            </div>
+                        </div>
+
+                        <div class="seat-badge-row">
+                            <span class="seat-badge-item"><i class="fa-solid fa-microchip"></i> Computer Engineering</span>
+                            <span class="seat-badge-item cutoff-tag">99.42 %ile</span>
+                        </div>
+
+                        <p class="testimonial-quote">
+                            "The round-wise option form strategy was 100% accurate! I was confused between COEP & VJTI options, but the data-driven cutoff analysis gave me total clarity. Secured COEP CSE in CAP Round 1!"
+                        </p>
+                    </div>
+
+                    <!-- Testimonial Card 2 -->
+                    <div class="testimonial-glass-card">
+                        <div class="testimonial-card-header">
+                            <div class="student-avatar-wrap">
+                                <div class="student-avatar-gradient alt-vjti">RP</div>
+                                <span class="avatar-check-badge" title="CAP Seat Allotment Verified"><i class="fa-solid fa-check"></i></span>
+                            </div>
+                            <div class="student-meta">
+                                <h4 class="student-name">Rohit Patil</h4>
+                                <span class="student-college-pill"><i class="fa-solid fa-graduation-cap"></i> VJTI Mumbai</span>
+                            </div>
+                            <div class="star-rating">
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                            </div>
+                        </div>
+
+                        <div class="seat-badge-row">
+                            <span class="seat-badge-item"><i class="fa-solid fa-laptop-code"></i> Information Technology</span>
+                            <span class="seat-badge-item cutoff-tag">99.18 %ile</span>
+                        </div>
+
+                        <p class="testimonial-quote">
+                            "The AI predictor and personal guidance were flawless. I got precise category quota insights that saved me from making costly mistakes in the option form. Highly recommended for every CET aspirant!"
+                        </p>
+                    </div>
+
+                    <!-- Testimonial Card 3 -->
+                    <div class="testimonial-glass-card">
+                        <div class="testimonial-card-header">
+                            <div class="student-avatar-wrap">
+                                <div class="student-avatar-gradient alt-pict">HR</div>
+                                <span class="avatar-check-badge" title="CAP Seat Allotment Verified"><i class="fa-solid fa-check"></i></span>
+                            </div>
+                            <div class="student-meta">
+                                <h4 class="student-name">Hemangi Rajput</h4>
+                                <span class="student-college-pill"><i class="fa-solid fa-brain"></i> PICT Pune</span>
+                            </div>
+                            <div class="star-rating">
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                            </div>
+                        </div>
+
+                        <div class="seat-badge-row">
+                            <span class="seat-badge-item"><i class="fa-solid fa-robot"></i> AI & Data Science</span>
+                            <span class="seat-badge-item cutoff-tag">98.85 %ile</span>
+                        </div>
+
+                        <p class="testimonial-quote">
+                            "Best counselling guidance in Maharashtra. The team explained how home university quotas work and helped me prioritize PICT AI&DS correctly. I secured my top choice effortlessly."
+                        </p>
+                    </div>
+
+                    <!-- Testimonial Card 4 -->
+                    <div class="testimonial-glass-card">
+                        <div class="testimonial-card-header">
+                            <div class="student-avatar-wrap">
+                                <div class="student-avatar-gradient alt-wce">AK</div>
+                                <span class="avatar-check-badge" title="CAP Seat Allotment Verified"><i class="fa-solid fa-check"></i></span>
+                            </div>
+                            <div class="student-meta">
+                                <h4 class="student-name">Amit Kulkarni</h4>
+                                <span class="student-college-pill"><i class="fa-solid fa-satellite-dish"></i> WCE Sangli</span>
+                            </div>
+                            <div class="star-rating">
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                            </div>
+                        </div>
+
+                        <div class="seat-badge-row">
+                            <span class="seat-badge-item"><i class="fa-solid fa-bolt"></i> Electronics & Telecomm</span>
+                            <span class="seat-badge-item cutoff-tag">97.90 %ile</span>
+                        </div>
+
+                        <p class="testimonial-quote">
+                            "Extremely structured and transparent guidance. From FC document verification to final CAP round allotment, the counselling experts supported us at every single step!"
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section ($1M Luxury Accordion System) -->
+        <section class="faq-section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="hero-pill-badge" style="margin-bottom: 12px; display: inline-flex;"><i class="fa-solid fa-circle-question" style="color: #2563eb;"></i> Admissions Knowledge Hub</span>
+                    <h2 class="section-title">Everything You Need to Know About <span class="text-primary">MHT-CET CAP</span></h2>
+                    <p class="section-description">Clear, transparent answers to help you navigate your engineering seat allocation with 100% confidence.</p>
+                </div>
+
+                <div class="faq-accordion-container">
+                    <!-- FAQ Item 1 (Default Active) -->
+                    <div class="faq-accordion-item active" onclick="toggleFaq(this)">
+                        <div class="faq-accordion-header">
+                            <div class="faq-header-content">
+                                <span class="faq-tag-pill">Predictor Accuracy</span>
+                                <h3 class="faq-question-title">How accurate is the AI College Predictor algorithm?</h3>
+                            </div>
+                            <div class="faq-toggle-icon"><i class="fa-solid fa-chevron-down"></i></div>
+                        </div>
+                        <div class="faq-accordion-body">
+                            <p class="faq-answer-text">
+                                Our predictor analyzes <strong>106,086 official MHT-CET seat allotment records</strong> across historical CAP rounds (2024–2026). It factors in your exact MHT-CET percentile, Home University quota (HU/OHU), reservation category (OPEN, OBC, SC, ST, EWS, TFWS), and branch preferences for over 98% prediction confidence.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 2 -->
+                    <div class="faq-accordion-item" onclick="toggleFaq(this)">
+                        <div class="faq-accordion-header">
+                            <div class="faq-header-content">
+                                <span class="faq-tag-pill">1-on-1 Session</span>
+                                <h3 class="faq-question-title">What is included in the Personal Counselling Session?</h3>
+                            </div>
+                            <div class="faq-toggle-icon"><i class="fa-solid fa-chevron-down"></i></div>
+                        </div>
+                        <div class="faq-accordion-body">
+                            <p class="faq-answer-text">
+                                Our Senior Admission Experts personally evaluate your scorecard, category certificates, and branch aspirations. You receive a customized, 300-college preference list optimized for CAP Round 1, 2, and 3, ensuring zero risk of option form disqualification or misallocation.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 3 -->
+                    <div class="faq-accordion-item" onclick="toggleFaq(this)">
+                        <div class="faq-accordion-header">
+                            <div class="faq-header-content">
+                                <span class="faq-tag-pill">Quota Breakdown</span>
+                                <h3 class="faq-question-title">How do Home University (HU) vs Other Home University (OHU) quotas work?</h3>
+                            </div>
+                            <div class="faq-toggle-icon"><i class="fa-solid fa-chevron-down"></i></div>
+                        </div>
+                        <div class="faq-accordion-body">
+                            <p class="faq-answer-text">
+                                In Maharashtra state colleges, 70% of seats are reserved for candidates belonging to the college's Home University region (e.g., SPPU for Pune, MU for Mumbai). Our algorithm calculates both HU and OHU cutoff variations automatically to maximize your allotment probability.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 4 -->
+                    <div class="faq-accordion-item" onclick="toggleFaq(this)">
+                        <div class="faq-accordion-header">
+                            <div class="faq-header-content">
+                                <span class="faq-tag-pill">Timeline Strategy</span>
+                                <h3 class="faq-question-title">When should I start preparing my CAP Option Form?</h3>
+                            </div>
+                            <div class="faq-toggle-icon"><i class="fa-solid fa-chevron-down"></i></div>
+                        </div>
+                        <div class="faq-accordion-body">
+                            <p class="faq-answer-text">
+                                Ideal preparation begins immediately after MHT-CET percentile declaration. Preparing early allows you to verify document eligibility (EWS, NCL, Caste Validity), inspect previous round cutoffs, and lock in your top choices before the DTE portal opens.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 5 -->
+                    <div class="faq-accordion-item" onclick="toggleFaq(this)">
+                        <div class="faq-accordion-header">
+                            <div class="faq-header-content">
+                                <span class="faq-tag-pill">Betterment Rules</span>
+                                <h3 class="faq-question-title">Can I upgrade my college seat in CAP Round 2 & 3 if I choose 'Betterment'?</h3>
+                            </div>
+                            <div class="faq-toggle-icon"><i class="fa-solid fa-chevron-down"></i></div>
+                        </div>
+                        <div class="faq-accordion-body">
+                            <p class="faq-answer-text">
+                                Yes! By selecting the "Betterment / Float" option after Round 1 allotment, your secured seat remains 100% safe while you compete for higher-preference colleges in subsequent rounds without losing your original seat.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="contact-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        Get In Touch With <span class="text-primary">Our Experts</span>
+                    </h2>
+                    <p class="section-description">
+                        Ready to secure your engineering seat? Contact us today to begin your admission journey.
+                    </p>
+                </div>
+                
+                <div class="services-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+                    <div class="contact-card">
+                        <div class="service-icon"><i class="fa-solid fa-phone"></i></div>
+                        <h3 class="service-title" style="margin-bottom:0.5rem;">Direct Helpline</h3>
+                        <p class="service-description" style="margin-bottom:0;">
+                            +91 82619 75508<br>+91 84211 95503
+                        </p>
+                    </div>
+                    
+                    <div class="contact-card">
+                        <div class="service-icon"><i class="fa-solid fa-envelope"></i></div>
+                        <h3 class="service-title" style="margin-bottom:0.5rem;">Email Inquiry</h3>
+                        <p class="service-description" style="margin-bottom:0;">
+                            aimlrahul.com<br>rgirase312@gmail.com
+                        </p>
+                    </div>
+                    
+                    <div class="contact-card">
+                        <div class="service-icon"><i class="fa-solid fa-location-dot"></i></div>
+                        <h3 class="service-title" style="margin-bottom:0.5rem;">Counselling Hubs</h3>
+                        <p class="service-description" style="margin-bottom:0;">
+                            Pune, Maharashtra<br>Dhule, Maharashtra
+                        </p>
+                    </div>
+                </div>
+                
+                <div style="text-align:center; margin-top:3rem;">
+                    <a href="consultationForm.html" class="btn-primary" id="scheduleConsultationBtn">
+                        <i class="fa-solid fa-calendar-check"></i> Book Free Consultation
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <div class="brand-link">
+                            <span class="brand-badge">AIML</span>
+                            <span class="brand-text">rahulcounselling</span>
+                        </div>
+                        <p class="footer-desc">
+                            Maharashtra's trusted MHT-CET engineering admission guide. Empowering thousands of students with accurate cutoff data and personalized CAP strategy.
+                        </p>
+                    </div>
+                    <div>
+                        <h4 class="footer-title">Quick Links</h4>
+                        <ul class="footer-links">
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="predictor.html">AI Predictor</a></li>
+                            <li><a href="Viewservices.html">Services</a></li>
+                            <li><a href="consultationForm.html">Consultation</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="footer-title">Services</h4>
+                        <ul class="footer-links">
+                            <li><a href="predictor.html">College Matcher</a></li>
+                            <li><a href="Viewservices.html">Branch Analytics</a></li>
+                            <li><a href="consultationForm.html">Option Form Review</a></li>
+                            <li><a href="consultationForm.html">Spot Round Guidance</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="footer-title">Contact Us</h4>
+                        <ul class="footer-links">
+                            <li><a href="tel:+918261975508">+91 82619 75508</a></li>
+                            <li><a href="mailto:rgirase312@gmail.com">rgirase312@gmail.com</a></li>
+                            <li>Pune & Dhule, MS</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>© 2026 aimlrahulcounselling. All rights reserved.</p>
+                    <p>Designed for MHT-CET 2026 Engineering Aspirants</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Authentication & Interactive Logic -->
+    <script>
+async function handleConsultationClick() {
+    try {
+        const res = await fetch("https://mhtcet-backend-ran6.onrender.com/api/check-auth", {
+            credentials: "include"
+        });
+
+        const data = await res.json();
+
+        if (data.loggedIn) {
+            window.location.href = "consultation.html";
+        } else {
+            window.location.href = "login.html";
+        }
+    } catch (error) {
+        console.error("Auth check failed:", error);
+        window.location.href = "login.html";
+    }
+}
+
+document.getElementById("bookConsultationBtn")
+    ?.addEventListener("click", function (e) {
+        e.preventDefault();
+        handleConsultationClick();
+    });
+
+document.getElementById("scheduleConsultationBtn")
+    ?.addEventListener("click", function (e) {
+        e.preventDefault();
+        handleConsultationClick();
+    });
+
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const res = await fetch("https://mhtcet-backend-ran6.onrender.com/api/current-user", {
+      credentials: "include"
+    });
+
+    const data = await res.json();
+    const authArea = document.getElementById("authArea");
+
+    if (!authArea) return;
+
+    if (data.loggedIn) {
+      authArea.innerHTML = `
+        <a href="predictor.html" class="nav-btn signup-btn"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor</a>
+        <span class="nav-user">Hi, ${data.user.fullname}</span>
+        <button class="nav-btn logout-btn" id="logoutBtn">Logout</button>
+      `;
+
+      document.getElementById("logoutBtn").addEventListener("click", async () => {
+        await fetch("https://mhtcet-backend-ran6.onrender.com/api/logout", {
+          method: "POST",
+          credentials: "include"
+        });
+        window.location.href = "index.html";
+      });
+    }
+  } catch (err) {
+    console.error("Navbar auth error:", err);
+  }
+});
+
+fetch("https://mhtcet-backend-ran6.onrender.com/api/current-user", {
+  credentials: "include"
+})
+.then(res => res.json())
+.then(data => {
+  if (data.loggedIn && data.user.role === "admin") {
+    document.getElementById("adminLink")?.classList.remove("hidden");
+  }
+});
+
+// High-Visibility Real College Photos Switcher & Gallery Controls
+const collegeData = {
+    coep: {
+        img: 'real_coep.jpg',
+        title: 'COEP Technological University',
+        sub: 'Pune, MS • Established 1854 • Autonomous Govt. Institute',
+        badge: '99.4%ile Cutoff • Heritage Campus'
+    },
+    vjti: {
+        img: 'real_vjti.jpg',
+        title: 'Veermata Jijabai Technological Institute (VJTI)',
+        sub: 'Mumbai, MS • Established 1887 • Autonomous Govt. Institute',
+        badge: '99.2%ile Cutoff • Campus Sunset'
+    },
+    pict: {
+        img: 'real_pict.jpg',
+        title: 'Pune Institute of Computer Technology (PICT)',
+        sub: 'Pune, MS • Established 1983 • SCTR Campus',
+        badge: '98.8%ile Cutoff • Main Gate Arch'
+    }
+};
+
+let activeCollegeKey = 'coep';
+const collegeKeys = ['coep', 'vjti', 'pict'];
+
+function selectCollege(key) {
+    if (!collegeData[key]) return;
+    activeCollegeKey = key;
+    const data = collegeData[key];
+
+    const imgEl = document.getElementById("featuredCollegeImg");
+    const titleEl = document.getElementById("featuredCollegeName");
+    const subEl = document.getElementById("featuredCollegeSub");
+    const badgeEl = document.getElementById("featuredMatchBadge");
+
+    if (imgEl) {
+        imgEl.style.opacity = '0.35';
+        setTimeout(() => {
+            imgEl.src = data.img;
+            imgEl.style.opacity = '1';
+        }, 120);
+    }
+
+    if (titleEl) titleEl.innerText = data.title;
+    if (subEl) subEl.innerText = data.sub;
+    if (badgeEl) badgeEl.innerText = data.badge;
+
+    // Update Top Selector Buttons
+    document.querySelectorAll(".selector-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-key") === key);
+    });
+
+    // Update Gallery Cards
+    document.querySelectorAll(".gallery-card").forEach(card => {
+        card.classList.toggle("active", card.id === `gal-${key}`);
+    });
+}
+
+// Interactive FAQ Accordion Function
+function toggleFaq(element) {
+    const isActive = element.classList.contains("active");
+    
+    // Collapse all items
+    document.querySelectorAll(".faq-accordion-item").forEach(item => {
+        item.classList.remove("active");
+    });
+    
+    // Toggle clicked item
+    if (!isActive) {
+        element.classList.add("active");
+    }
+}
+
+// Smooth Auto Cycle Every 5 Seconds
+setInterval(() => {
+    const nextIndex = (collegeKeys.indexOf(activeCollegeKey) + 1) % collegeKeys.length;
+    selectCollege(collegeKeys[nextIndex]);
+}, 5000);
+</script>
+    <!-- Three.js 3D WebGL Library & Custom Engine -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="3d-scene.js"></script>
+</body>
+</html>

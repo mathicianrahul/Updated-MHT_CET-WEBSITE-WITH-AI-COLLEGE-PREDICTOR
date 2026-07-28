@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>aimlrahulcounselling - Create Account</title>
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="Style.css">
+    <link rel="stylesheet" href="register.css">
+</head>
+<body>
+    <canvas id="webgl-canvas"></canvas>
+    <div id="cursor-glow" class="cursor-glow"></div>
+
+    <div class="main-wrapper">
+        <!-- Executive Professional Navbar -->
+        <header class="navbar">
+            <div class="navbar-container">
+                <div class="navbar-logo">
+                    <a href="index.html" class="brand-link">
+                        <span class="brand-badge">AIML</span>
+                        <span class="brand-text">rahulcounselling</span>
+                    </a>
+                </div>
+                
+                <nav class="navbar-menu">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="predictor.html" class="nav-link">AI Predictor</a>
+                    <a href="Viewservices.html" class="nav-link">Services</a>
+                    <a href="consultationForm.html" class="nav-link">Consultation</a>
+                </nav>
+
+                <div class="navbar-buttons">
+                    <a href="predictor.html" class="nav-btn predictor-cta-btn">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor
+                    </a>
+                    <a href="login.html" class="nav-btn login-btn">Login</a>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <!-- Register Card -->
+            <div class="register-card">
+                <div class="card-header">
+                    <div class="icon-wrapper">
+                        <a href="index.html" class="brand-link">
+                            <span class="brand-badge">AIML</span>
+                            <span class="brand-text">rahulcounselling</span>
+                        </a>
+                    </div>
+                    <h1 class="title">Create Account</h1>
+                    <p class="description">Register to begin your personalized admission counselling</p>
+                </div>
+
+                <form class="register-form" id="registerForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fullName">Full Name</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-user input-icon"></i>
+                                <input type="text" id="fullName" name="fullName" placeholder="Enter full name" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-envelope input-icon"></i>
+                                <input type="email" id="email" name="email" placeholder="Enter email address" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-phone input-icon"></i>
+                                <input type="tel" id="phone" name="phone" placeholder="Enter phone number" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cetRollNumber">CET Application / Roll No.</label>
+                            <input type="text" id="cetRollNumber" name="cetRollNumber" placeholder="Ex: EN26129907" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="percentile">MHT-CET Percentile</label>
+                            <input type="number" step="0.0001" id="percentile" name="percentile" placeholder="Ex: 98.45" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select id="category" name="category" required>
+                                <option value="OPEN">OPEN (General)</option>
+                                <option value="OBC">OBC</option>
+                                <option value="SC">SC</option>
+                                <option value="ST">ST</option>
+                                <option value="NT">NT / VJ</option>
+                                <option value="EWS">EWS</option>
+                                <option value="TFWS">TFWS</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-user-plus"></i>
+                        Register Account
+                    </button>
+
+                    <div class="form-footer">
+                        <span>Already have an account? 
+                            <a href="login.html" class="login-link">Sign In</a>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("registerForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const fullName = document.getElementById("fullName").value;
+            const email = document.getElementById("email").value;
+            const phone = document.getElementById("phone").value;
+            const cetRollNumber = document.getElementById("cetRollNumber").value;
+            const percentile = parseFloat(document.getElementById("percentile").value);
+            const category = document.getElementById("category").value;
+            const password = document.getElementById("password").value;
+
+            try {
+                const res = await fetch("https://mhtcet-backend-ran6.onrender.com/api/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ fullName, email, phone, cetRollNumber, percentile, category, password }),
+                    credentials: "include"
+                });
+                const data = await res.json();
+                if (data.message === "User registered successfully" || data.user) {
+                    alert("Registration Successful! Please Sign In.");
+                    window.location.href = "login.html";
+                } else {
+                    alert(data.error || "Registration Failed");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Server error. Please try again.");
+            }
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="3d-scene.js"></script>
+</body>
+</html>

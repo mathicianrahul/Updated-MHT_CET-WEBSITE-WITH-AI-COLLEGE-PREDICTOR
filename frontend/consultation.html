@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MHT-CET Counselling - Schedule Free Consultation</title>
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="Style.css">
+  <link rel="stylesheet" href="consultation.css" />
+</head>
+<body>
+
+  <div class="main-wrapper">
+    <!-- Executive Professional Navbar -->
+    <header class="navbar">
+      <div class="navbar-container">
+        <div class="navbar-logo">
+          <a href="index.html" class="brand-link">
+            <span class="brand-badge">AIML</span>
+            <span class="brand-text">rahulcounselling</span>
+          </a>
+        </div>
+
+        <nav class="navbar-menu">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="predictor.html" class="nav-link">AI Predictor</a>
+          <a href="Viewservices.html" class="nav-link">Services</a>
+          <a href="consultationForm.html" class="nav-link active">Consultation</a>
+        </nav>
+
+        <div class="navbar-buttons">
+          <a href="admin.html" id="adminLink" class="nav-btn hidden"><i class="fa-solid fa-user-shield"></i> Admin</a>
+          <a href="consultationForm.html" class="nav-btn signup-btn">Book Form</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero-section">
+        <div class="container hero-content">
+          <div class="badge">
+            <i class="fa-solid fa-circle-check"></i> Verified Student Session
+          </div>
+          <h1 class="hero-title">
+            Your Gateway to 
+            <span class="title-highlight">Top Engineering</span> 
+            Colleges
+          </h1>
+          <p class="hero-description">
+            Welcome to your official counselling portal. Secure your 1-on-1 session with our Senior Admission Experts and get a personalized CAP round strategy.
+          </p>
+          <div class="hero-buttons">
+            <a href="consultationForm.html" class="btn-primary">
+              Proceed to Booking Form <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="services-section">
+        <div class="container">
+          <div class="services-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+            <div class="service-card">
+              <div class="service-header">
+                <div class="service-icon"><i class="fa-solid fa-user-tie"></i></div>
+                <h3 class="service-title">Expert Mentor</h3>
+              </div>
+              <p class="service-description">1-on-1 strategy call directly with our Senior Admission Experts to analyze your MHT-CET options.</p>
+            </div>
+            
+            <div class="service-card">
+              <div class="service-header">
+                <div class="service-icon"><i class="fa-solid fa-list-check"></i></div>
+                <h3 class="service-title">Option Form List</h3>
+              </div>
+              <p class="service-description">Tailored priority option list based on your percentile, category, and preferred location.</p>
+            </div>
+            
+            <div class="service-card">
+              <div class="service-header">
+                <div class="service-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                <h3 class="service-title">End-to-End Support</h3>
+              </div>
+              <p class="service-description">Complete assistance throughout FC document verification and all CAP admission rounds.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-bottom" style="border:none; padding:0;">
+          <p>© 2026 aimlrahulcounselling. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+document.addEventListener("DOMContentLoaded", async function () {
+    try {
+        const res = await fetch("https://mhtcet-backend-ran6.onrender.com/api/check-auth", {
+            credentials: "include"
+        });
+
+        const data = await res.json();
+
+        if (!data.loggedIn) {
+            // Not logged in → go to login page
+            window.location.href = "login.html";
+        }
+    } catch (error) {
+        console.error("Auth check failed:", error);
+        window.location.href = "login.html";
+    }
+});
+
+fetch("https://mhtcet-backend-ran6.onrender.com/api/current-user", {
+  credentials: "include"
+})
+.then(res => res.json())
+.then(data => {
+  if (data.loggedIn && data.user.role === "admin") {
+    document.getElementById("adminLink")?.classList.remove("hidden");
+  }
+});
+</script>
+</body>
+</html>

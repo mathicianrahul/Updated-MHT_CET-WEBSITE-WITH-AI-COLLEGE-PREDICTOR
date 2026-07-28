@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>aimlrahulcounselling - Services</title>
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="Style.css">
+    <link rel="stylesheet" href="view.css">
+</head>
+<body>
+    <canvas id="webgl-canvas"></canvas>
+    <div id="cursor-glow" class="cursor-glow"></div>
+
+    <div class="main-wrapper">
+        <!-- Executive Professional Navbar -->
+        <header class="navbar">
+            <div class="navbar-container">
+                <div class="navbar-logo">
+                    <a href="index.html" class="brand-link">
+                        <span class="brand-badge">AIML</span>
+                        <span class="brand-text">rahulcounselling</span>
+                    </a>
+                </div>
+                
+                <nav class="navbar-menu">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="predictor.html" class="nav-link">AI Predictor</a>
+                    <a href="Viewservices.html" class="nav-link active">Services</a>
+                    <a href="consultationForm.html" class="nav-link">Consultation</a>
+                </nav>
+
+                <div class="navbar-buttons">
+                    <a href="predictor.html" class="nav-btn predictor-cta-btn">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor
+                    </a>
+                    <a href="login.html" class="nav-btn login-btn">Login</a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h1 class="hero-title">
+                        aimlrahulcounselling
+                        <span class="hero-title-accent">Services</span>
+                    </h1>
+                    <p class="hero-description">
+                        Comprehensive guidance and support services to help students navigate their academic journey and make informed decisions after MHT-CET.
+                    </p>
+                    <div class="hero-features">
+                        <div class="hero-feature">
+                            <i class="fas fa-users"></i>
+                            <span>Expert Counsellors</span>
+                        </div>
+                        <div class="hero-feature">
+                            <i class="fas fa-bullseye"></i>
+                            <span>Personalized Strategy</span>
+                        </div>
+                        <div class="hero-feature">
+                            <i class="fas fa-chart-line"></i>
+                            <span>106K Cutoffs Sync</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section class="services-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Our Counselling <span class="text-primary">Services</span></h2>
+                    <p class="section-description">
+                        We provide end-to-end support to guide students through every step of their MHT-CET admission journey.
+                    </p>
+                </div>
+                
+                <div class="services-grid">
+                    <!-- AI College Predictor -->
+                    <div class="service-card">
+                        <div>
+                            <div class="service-header">
+                                <div class="service-icon">
+                                    <i class="fas fa-wand-magic-sparkles"></i>
+                                </div>
+                                <h3 class="service-title">AI College Predictor</h3>
+                            </div>
+                            <p class="service-description">Instantly predict top Maharashtra engineering colleges matching your exact percentile, category, and preferred branches.</p>
+                            <ul class="service-features">
+                                <li><i class="fas fa-check"></i> Real-time 106K Cutoff Data Sync</li>
+                                <li><i class="fas fa-check"></i> Automated CAP Option Form Generator</li>
+                                <li><i class="fas fa-check"></i> Category & Reservation Cutoffs</li>
+                                <li><i class="fas fa-check"></i> Export Choice Codes to Excel</li>
+                            </ul>
+                        </div>
+                        <a href="predictor.html" class="btn-primary">
+                            Launch AI Predictor →
+                        </a>
+                    </div>
+
+                    <!-- Course & Branch Selection -->
+                    <div class="service-card">
+                        <div>
+                            <div class="service-header">
+                                <div class="service-icon">
+                                    <i class="fas fa-book-open"></i>
+                                </div>
+                                <h3 class="service-title">Course & Branch Selection</h3>
+                            </div>
+                            <p class="service-description">Expert advice on choosing the right engineering branch based on career goals, market demand, and your personal interest.</p>
+                            <ul class="service-features">
+                                <li><i class="fas fa-check"></i> Emerging Tech & Core branch trends</li>
+                                <li><i class="fas fa-check"></i> Industry salary insights</li>
+                                <li><i class="fas fa-check"></i> Aptitude-based course matching</li>
+                                <li><i class="fas fa-check"></i> Future growth opportunities</li>
+                            </ul>
+                        </div>
+                        <a href="consultationForm.html" class="btn-secondary">
+                            Book Guidance →
+                        </a>
+                    </div>
+
+                    <!-- College Selection Assistance -->
+                    <div class="service-card">
+                        <div>
+                            <div class="service-header">
+                                <div class="service-icon">
+                                    <i class="fas fa-building-columns"></i>
+                                </div>
+                                <h3 class="service-title">College Selection & Ranking</h3>
+                            </div>
+                            <p class="service-description">Comprehensive evaluation of engineering colleges based on placements, infrastructure, autonomy, and fees.</p>
+                            <ul class="service-features">
+                                <li><i class="fas fa-check"></i> College reputation analysis</li>
+                                <li><i class="fas fa-check"></i> Placement statistics & recruiters</li>
+                                <li><i class="fas fa-check"></i> Fee structure & autonomy status</li>
+                                <li><i class="fas fa-check"></i> Location & hostel facilities</li>
+                            </ul>
+                        </div>
+                        <a href="consultationForm.html" class="btn-secondary">
+                            Get Details →
+                        </a>
+                    </div>
+
+                    <!-- Document Verification -->
+                    <div class="service-card">
+                        <div>
+                            <div class="service-header">
+                                <div class="service-icon">
+                                    <i class="fas fa-file-signature"></i>
+                                </div>
+                                <h3 class="service-title">Document Verification</h3>
+                                </div>
+                            <p class="service-description">Step-by-step assistance with document preparation and FC center verification to ensure zero admission errors.</p>
+                            <ul class="service-features">
+                                <li><i class="fas fa-check"></i> Category document checklist</li>
+                                <li><i class="fas fa-check"></i> EWS / NCL / TFWS certificate review</li>
+                                <li><i class="fas fa-check"></i> FC center verification guidance</li>
+                                <li><i class="fas fa-check"></i> Timelines & deadline alerts</li>
+                            </ul>
+                        </div>
+                        <a href="consultationForm.html" class="btn-secondary">
+                            Check Documents →
+                        </a>
+                    </div>
+
+                    <!-- Cutoff Analysis -->
+                    <div class="service-card">
+                        <div>
+                            <div class="service-header">
+                                <div class="service-icon">
+                                    <i class="fas fa-chart-pie"></i>
+                                </div>
+                                <h3 class="service-title">Cut-off Analysis</h3>
+                            </div>
+                            <p class="service-description">Detailed historical cut-off trend analysis predicting your seat allotment probability across CAP Rounds 1 to 4.</p>
+                            <ul class="service-features">
+                                <li><i class="fas fa-check"></i> Round-wise cutoff shift analysis</li>
+                                <li><i class="fas fa-check"></i> Category cutoff breakdowns</li>
+                                <li><i class="fas fa-check"></i> Safe vs Dream college lists</li>
+                                <li><i class="fas fa-check"></i> Rank-based seat allocation strategy</li>
+                            </ul>
+                        </div>
+                        <a href="predictor.html" class="btn-secondary">
+                            Analyze Cutoffs →
+                        </a>
+                    </div>
+
+                    <!-- CAP Round Strategy -->
+                    <div class="service-card">
+                        <div>
+                            <div class="service-header">
+                                <div class="service-icon">
+                                    <i class="fas fa-layer-group"></i>
+                                </div>
+                                <h3 class="service-title">CAP Round Strategy</h3>
+                            </div>
+                            <p class="service-description">Strategic guidance on Freeze, Float, and Auto-Freeze choices to maximize your seat upgrade chances.</p>
+                            <ul class="service-features">
+                                <li><i class="fas fa-check"></i> Freeze vs Float decision matrix</li>
+                                <li><i class="fas fa-check"></i> CAP Round 1 to 3 seat progression</li>
+                                <li><i class="fas fa-check"></i> Option list revision strategy</li>
+                                <li><i class="fas fa-check"></i> Institutional & Spot round support</li>
+                            </ul>
+                        </div>
+                        <a href="consultationForm.html" class="btn-secondary">
+                            Plan Strategy →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section style="background:#ffffff; border-top:1px solid var(--border-color); padding:4rem 0;">
+            <div class="container" style="text-align:center; max-width:700px;">
+                <h2 style="font-family:var(--font-heading); font-size:2rem; font-weight:800; color:#0f172a; margin-bottom:1rem;">
+                    Ready to Secure Your Engineering Seat?
+                </h2>
+                <p style="color:#64748b; font-size:1.1rem; margin-bottom:2rem;">
+                    Book a free 1-on-1 consultation session with our Senior Admission Experts and get a personalized admission roadmap.
+                </p>
+                <a href="consultationForm.html" class="btn-primary">
+                    <i class="fa-solid fa-calendar-check"></i> Book Free Consultation Now
+                </a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <div class="brand-link">
+                            <span class="brand-badge">AIML</span>
+                            <span class="brand-text">rahulcounselling</span>
+                        </div>
+                        <p class="footer-desc">
+                            Maharashtra's trusted MHT-CET engineering admission guide. Empowering thousands of students with accurate cutoff data.
+                        </p>
+                    </div>
+                    <div>
+                        <h4 class="footer-title">Quick Links</h4>
+                        <ul class="footer-links">
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="predictor.html">AI Predictor</a></li>
+                            <li><a href="Viewservices.html">Services</a></li>
+                            <li><a href="consultationForm.html">Consultation</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="footer-title">Services</h4>
+                        <ul class="footer-links">
+                            <li><a href="predictor.html">College Matcher</a></li>
+                            <li><a href="Viewservices.html">Branch Analytics</a></li>
+                            <li><a href="consultationForm.html">Option Form Review</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="footer-title">Contact Us</h4>
+                        <ul class="footer-links">
+                            <li><a href="tel:+918261975508">+91 82619 75508</a></li>
+                            <li><a href="mailto:rgirase312@gmail.com">rgirase312@gmail.com</a></li>
+                            <li>Pune & Dhule, MS</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>© 2026 aimlrahulcounselling. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <!-- Three.js 3D WebGL Library & Custom Engine -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="3d-scene.js"></script>
+</body>
+</html>

@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MHT-CET CAP Option Form Assistant | 2026 Official Counselling Engine</title>
+    <!-- Google Fonts: Plus Jakarta Sans, Inter, Outfit & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap"
+        rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SortableJS for drag and drop -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <!-- SheetJS for Export XLSX -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Background Ambient Mesh Orbs, Particle Canvas & Grid -->
+    <div class="ambient-bg">
+        <canvas id="antigravity-canvas"></canvas>
+        <div class="cursor-glow" id="cursor-glow"></div>
+        <div class="ambient-orb orb-1"></div>
+        <div class="ambient-orb orb-2"></div>
+        <div class="ambient-orb orb-3"></div>
+        <div class="grid-pattern"></div>
+    </div>
+
+    <div class="app-layout">
+
+        <!-- Header -->
+        <header class="main-header">
+            <div class="header-left">
+                <div class="brand-logo">
+                    <div class="logo-icon-wrap">
+                        <i class="fa-solid fa-graduation-cap logo-icon"></i>
+                    </div>
+                    <div>
+                        <h1>MHT-CET CAP <span class="accent-text">Counselling</span></h1>
+                        <p class="header-subtitle">Official AI Choice Code Generator & CAP Option Form Engine</p>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="status-badge">
+                    <span class="pulse-dot"></span>
+                    <span>106K Cutoffs Sync</span>
+                </div>
+                <button class="theme-toggle-btn" id="theme-toggle" title="Toggle Theme">
+                    <i class="fa-solid fa-sun"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Body Grid -->
+        <div class="main-body">
+
+            <!-- Mobile Sidebar Backdrop Overlay -->
+            <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+            <!-- Left Sidebar: Student Inputs -->
+            <aside class="sidebar-panel" id="sidebar-panel">
+                <div class="panel-header">
+                    <div class="panel-title-wrap">
+                        <i class="fa-solid fa-sliders"></i>
+                        <h2>Student Inputs</h2>
+                    </div>
+                    <button type="button" class="mobile-close-btn" id="mobile-sidebar-close" title="Close Panel">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <form id="predictor-form">
+
+                    <!-- Student Full Name -->
+                    <div class="form-group">
+                        <label for="student-name">Student Full Name</label>
+                        <div class="text-input-box">
+                            <input type="text" id="student-name" placeholder="Enter Full Name" required>
+                        </div>
+                    </div>
+
+                    <!-- Entrance Exam & Percentile Score -->
+                    <div class="form-group">
+                        <label class="field-label" id="percentile-label">Entrance Exam & Percentile Score</label>
+                        
+                        <!-- Segmented Exam Toggle -->
+                        <div class="exam-toggle-group" id="exam-toggle-group">
+                            <button type="button" class="exam-toggle-btn active" data-exam="MHT-CET">
+                                <i class="fa-solid fa-graduation-cap"></i> MHT-CET (PCM)
+                            </button>
+                            <button type="button" class="exam-toggle-btn" data-exam="JEE-Main">
+                                <i class="fa-solid fa-star"></i> JEE Main
+                            </button>
+                        </div>
+
+                        <!-- Hidden select for form compatibility -->
+                        <select id="percentile-type" style="display: none;">
+                            <option value="MHT-CET" selected>MHT-CET (PCM)</option>
+                            <option value="JEE-Main">JEE Main</option>
+                        </select>
+
+                        <div class="percentile-box">
+                            <input type="number" id="percentile-num" min="0" max="100" step="0.0001"
+                                placeholder="Enter MHT-CET Percentile (e.g. 95.50)" required>
+                            <span class="unit-tag">%</span>
+                        </div>
+                        <input type="range" id="percentile-range" min="0" max="100" step="0.01" value="0"
+                            class="purple-slider">
+                    </div>
+
+                    <!-- Category & Gender -->
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select id="category" required>
+                                <option value="" disabled selected>-- Select Your Category --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="gender">Gender</label>
+                            <select id="gender" required>
+                                <option value="" disabled selected>-- Select Gender --</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Home University & CAP Round -->
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label for="home-university">Home University</label>
+                            <select id="home-university" required>
+                                <option value="" disabled selected>-- Select Home University --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="cap-round">CAP Round</label>
+                            <select id="cap-round">
+                                <option value="CAP Round 1">CAP Round 1</option>
+                                <option value="CAP Round 2">CAP Round 2</option>
+                                <option value="CAP Round 3">CAP Round 3</option>
+                                <option value="CAP Round 4">CAP Round 4</option>
+                                <option value="All Rounds">All Rounds</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Checkboxes -->
+                    <div class="checkbox-flex">
+                        <label class="custom-chk">
+                            <input type="checkbox" id="is-pwd">
+                            <span class="chk-box"></span>
+                            <span>PWD Candidate</span>
+                        </label>
+                        <label class="custom-chk">
+                            <input type="checkbox" id="is-defense">
+                            <span class="chk-box"></span>
+                            <span>Defense Ward</span>
+                        </label>
+                    </div>
+
+                    <!-- Preferred Cities (Priority Order) -->
+                    <div class="section-group">
+                        <label class="section-title">Preferred Cities (Priority Order)</label>
+                        <p class="section-desc">Drag items to change preference sequence.</p>
+
+                        <div class="search-input-wrap">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="city-search" placeholder="Search cities...">
+                        </div>
+
+                        <div class="action-links">
+                            <button type="button" id="city-select-all" class="link-btn">Select All</button>
+                            <button type="button" id="city-clear-all" class="link-btn">Clear Selection</button>
+                        </div>
+
+                        <!-- Scrollable Checkboxes for Cities -->
+                        <div id="city-checkbox-list" class="scroll-check-list">
+                            <!-- Populated dynamically -->
+                        </div>
+
+                        <!-- Active Priority Chips List (Draggable) -->
+                        <div id="city-priority-list" class="priority-chips-list">
+                            <!-- Selected city chips populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Preferred Branches (Priority Order) -->
+                    <div class="section-group">
+                        <label class="section-title">Preferred Branches (Priority Order)</label>
+                        <!-- Branch Category Filter Pills -->
+                        <div class="branch-filter-pills" id="branch-category-pills">
+                            <button type="button" class="branch-pill active" data-filter="all">All</button>
+                            <button type="button" class="branch-pill" data-filter="computer">CS / IT / AI / DS</button>
+                            <button type="button" class="branch-pill" data-filter="entc">Electrical & ENTC</button>
+                            <button type="button" class="branch-pill" data-filter="mechanical">Mech & Civil</button>
+                            <button type="button" class="branch-pill" data-filter="other">Chemical & Allied</button>
+                        </div>
+
+                        <div class="search-input-wrap">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="branch-search"
+                                placeholder="Search branches (e.g. Computer, AIML...)">
+                        </div>
+
+                        <div class="action-links">
+                            <button type="button" id="branch-select-all" class="link-btn">Select All</button>
+                            <button type="button" id="branch-clear-all" class="link-btn">Clear Selection</button>
+                        </div>
+
+                        <!-- Scrollable Checkboxes for Branches -->
+                        <div id="branch-checkbox-list" class="scroll-check-list branch-list-height">
+                            <!-- Populated dynamically -->
+                        </div>
+
+                        <!-- Active Branch Priority Chips (Draggable) -->
+                        <div id="branch-priority-list" class="priority-chips-list">
+                            <!-- Selected branch chips populated here -->
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btn-submit" class="submit-btn">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Option Form List
+                    </button>
+                </form>
+            </aside>
+
+            <!-- Right Main Area: Generated Preference Option List -->
+            <main class="content-panel">
+
+                <div class="content-header">
+                    <div class="header-title-wrap">
+                        <i class="fa-solid fa-list-ol icon-purple"></i>
+                        <h2>Generated Preference Option List</h2>
+                    </div>
+                </div>
+
+                <!-- Export & CAP Option Form Action Buttons -->
+                <div class="export-actions">
+                    <button id="btn-export-csv" class="export-btn" disabled>
+                        <i class="fa-solid fa-file-csv"></i> Export CSV
+                    </button>
+                    <button id="btn-export-xlsx" class="export-btn" disabled>
+                        <i class="fa-solid fa-file-excel"></i> Export Excel (XLSX)
+                    </button>
+                    <button id="btn-copy-all-codes" class="export-btn accent-btn" disabled>
+                        <i class="fa-regular fa-copy"></i> Copy Choice Codes List
+                    </button>
+                    <button id="btn-print-form" class="export-btn print-btn" disabled>
+                        <i class="fa-solid fa-print"></i> Print CAP Option Form
+                    </button>
+                </div>
+
+                <!-- Metrics Analytics Grid -->
+                <div class="metrics-grid" id="metrics-grid">
+                    <div class="metric-card"><span class="m-label">COLLEGES FOUND</span><span class="m-value purple"
+                            id="m-found">0</span></div>
+                    <div class="metric-card"><span class="m-label">GOVERNMENT</span><span class="m-value purple"
+                            id="m-govt">0</span></div>
+                    <div class="metric-card"><span class="m-label">PRIVATE</span><span class="m-value purple"
+                            id="m-private">0</span></div>
+                    <div class="metric-card"><span class="m-label">AUTONOMOUS</span><span class="m-value purple"
+                            id="m-auto">0</span></div>
+                    <div class="metric-card"><span class="m-label">UNIVERSITY DEPTS</span><span class="m-value purple"
+                            id="m-univ">0</span></div>
+                    <div class="metric-card"><span class="m-label">SAFE OPTION</span><span class="m-value green"
+                            id="m-safe">0</span></div>
+                    <div class="metric-card"><span class="m-label">MODERATE</span><span class="m-value amber"
+                            id="m-mod">0</span></div>
+                    <div class="metric-card"><span class="m-label">DREAM</span><span class="m-value pink"
+                            id="m-dream">0</span></div>
+                    <div class="metric-card"><span class="m-label">AVG CUTOFF</span><span class="m-value purple"
+                            id="m-avg">0.00%</span></div>
+                    <div class="metric-card"><span class="m-label">HIGHEST CUTOFF</span><span class="m-value purple"
+                            id="m-high">0.00%</span></div>
+                    <div class="metric-card"><span class="m-label">LOWEST CUTOFF</span><span class="m-value purple"
+                            id="m-low">0.00%</span></div>
+                </div>
+
+                <!-- Filter Controls Bar -->
+                <div class="controls-bar">
+                    <div class="result-search-wrap">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="result-search" placeholder="Search by college name, choice code, branch, or city...">
+                    </div>
+
+                    <div class="controls-right-group">
+                        <div class="view-toggle-group">
+                            <button type="button" class="view-btn active" id="view-btn-cards" title="Cards Grid View">
+                                <i class="fa-solid fa-grip"></i> Cards
+                            </button>
+                            <button type="button" class="view-btn" id="view-btn-table" title="Table List View">
+                                <i class="fa-solid fa-table-list"></i> Table List
+                            </button>
+                        </div>
+
+                        <div class="page-size-wrap">
+                            <label>Per Page:</label>
+                            <select id="per-page-select">
+                                <option value="25">25 per page</option>
+                                <option value="50" selected>50 per page</option>
+                                <option value="100">100 per page</option>
+                                <option value="200">200 per page</option>
+                                <option value="500">All options</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Priority Sort Options Bar -->
+                <div class="arrange-bar">
+                    <span class="arrange-label"><i class="fa-solid fa-sliders"></i> Rearrange Preference (Type preference # in any card/row to move):</span>
+                    <div class="arrange-buttons">
+                        <div id="sort-priority-list" class="sort-priority-list">
+                            <button type="button" class="sort-tab active" data-sort="cutoff"><i
+                                    class="fa-solid fa-grip-vertical chip-drag-handle"></i> % Cutoff %</button>
+                            <button type="button" class="sort-tab" data-sort="city"><i
+                                    class="fa-solid fa-grip-vertical chip-drag-handle"></i> <i
+                                    class="fa-solid fa-location-dot"></i> City Priority</button>
+                            <button type="button" class="sort-tab" data-sort="branch"><i
+                                    class="fa-solid fa-grip-vertical chip-drag-handle"></i> <i
+                                    class="fa-solid fa-diagram-project"></i> Branch Priority</button>
+                        </div>
+                        <button type="button" id="btn-reset-sort" class="reset-tab"><i
+                                class="fa-solid fa-rotate-left"></i> Reset</button>
+                    </div>
+                </div>
+
+                <!-- Loading Spinner -->
+                <div id="results-loader" class="loader-box" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Generating optimal CAP option form sequence...</p>
+                </div>
+
+                <!-- Placeholder State -->
+                <div id="results-placeholder" class="placeholder-box">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <h3>Ready to Generate Option Form</h3>
+                    <p>Please enter your MHT-CET PCM Percentile, select your Category, Gender & Home University to
+                        generate your official CAP option form sequence.</p>
+                </div>
+
+                <!-- Results Table & Cards Container -->
+                <div id="results-container" class="results-wrapper" style="display: none;">
+                    
+                    <!-- Table View (Primary Format matching exact user screenshot design) -->
+                    <div id="table-view-wrap" class="table-view-container">
+                        <div class="table-responsive-box">
+                            <table class="college-data-table">
+                                <thead>
+                                    <tr>
+                                        <th class="col-rank">Rank</th>
+                                        <th class="col-college">College Name</th>
+                                        <th class="col-branch">Branch</th>
+                                        <th class="col-code">Choice Code</th>
+                                        <th class="col-cutoff">Cutoff %</th>
+                                        <th class="col-location">Location</th>
+                                        <th class="col-type">Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-body">
+                                    <!-- Table Rows generated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Cards Feed (Secondary Toggle View) -->
+                    <div id="results-list" class="results-cards-feed" style="display: none;">
+                        <!-- Preference Cards generated here -->
+                    </div>
+
+                    <!-- Bottom Pagination Bar -->
+                    <div class="pagination-bar" id="pagination-bar">
+                        <div class="pagination-info" id="pagination-info">Showing 1-50 of 0 colleges</div>
+                        <div class="pagination-controls">
+                            <span class="paginate-label">Paginate</span>
+                            <button type="button" class="page-nav-btn" id="page-prev" title="Previous Page"><i class="fa-solid fa-chevron-left"></i></button>
+                            <div class="page-numbers" id="page-numbers-container">
+                                <!-- Page numbers generated dynamically -->
+                            </div>
+                            <button type="button" class="page-nav-btn" id="page-next" title="Next Page"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Interactive College Details Modal Popup -->
+    <div id="college-modal-overlay" class="modal-overlay" style="display: none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-header-title">
+                    <div class="modal-badge-rank" id="modal-rank-badge">Rank #1</div>
+                    <div>
+                        <h2 id="modal-college-name">COEP Technological University</h2>
+                        <div class="modal-sub-location" id="modal-sub-location">
+                            <span><i class="fa-solid fa-building-columns"></i> Code: <strong id="modal-college-code">1001</strong></span>
+                            <span><i class="fa-solid fa-location-dot"></i> <strong id="modal-city">Pune</strong></span>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="modal-close-btn" id="modal-close-btn" title="Close Details">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Status & Choice Code Banner -->
+                <div class="modal-hero-banner">
+                    <div class="modal-branch-info">
+                        <span class="modal-label-sm">SELECTED BRANCH & CHOICE CODE</span>
+                        <h3 id="modal-branch-name">Computer Engineering</h3>
+                        <div class="modal-code-chip">
+                            <i class="fa-solid fa-barcode"></i> Choice Code: <strong id="modal-choice-code">100124510</strong>
+                            <button type="button" class="btn-copy-code modal-copy-btn" id="modal-btn-copy-code">
+                                <i class="fa-regular fa-copy"></i> Copy Code
+                            </button>
+                        </div>
+                    </div>
+                    <div class="modal-status-box">
+                        <span class="modal-label-sm">ADMISSION CHANCE</span>
+                        <div class="chance-tag" id="modal-chance-tag">SAFE</div>
+                    </div>
+                </div>
+
+                <!-- Comprehensive Details Grid -->
+                <div class="modal-details-grid">
+                    <div class="detail-item">
+                        <div class="detail-icon"><i class="fa-solid fa-university"></i></div>
+                        <div>
+                            <span class="detail-label">INSTITUTE TYPE</span>
+                            <span class="detail-value" id="modal-inst-type">Government</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-icon"><i class="fa-solid fa-award"></i></div>
+                        <div>
+                            <span class="detail-label">AUTONOMY STATUS</span>
+                            <span class="detail-value" id="modal-autonomy">Autonomous</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                        <div>
+                            <span class="detail-label">UNIVERSITY AFFILIATION</span>
+                            <span class="detail-value" id="modal-university">Savitribai Phule Pune University</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-icon"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                        <div>
+                            <span class="detail-label">RANK CUT-OFF (CLOSING RANK)</span>
+                            <span class="detail-value" id="modal-rank-cutoff">1,245</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-icon"><i class="fa-solid fa-percent"></i></div>
+                        <div>
+                            <span class="detail-label">CLOSING CUTOFF %</span>
+                            <span class="detail-value" id="modal-closing-cutoff">99.8500%</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-icon"><i class="fa-solid fa-chart-line"></i></div>
+                        <div>
+                            <span class="detail-label">OPENING CUTOFF %</span>
+                            <span class="detail-value" id="modal-opening-cutoff">99.9800%</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-icon"><i class="fa-solid fa-users"></i></div>
+                        <div>
+                            <span class="detail-label">SEAT CATEGORY</span>
+                            <span class="detail-value" id="modal-seat-category">GOPENH</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-icon"><i class="fa-solid fa-file-pdf"></i></div>
+                        <div>
+                            <span class="detail-label">OFFICIAL PDF PAGE NUMBER</span>
+                            <span class="detail-value" id="modal-pdf-page">Page 142</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Cutoff Progress Comparison Gauge -->
+                <div class="modal-gauge-section">
+                    <span class="detail-label">SCORE VS CUTOFF PERCENTILE GAUGE</span>
+                    <div class="cutoff-values-row">
+                        <span class="cutoff-val-pill">Closing Cutoff: <strong id="modal-gauge-closing">99.85%</strong></span>
+                        <span class="cutoff-val-pill student-score-pill">Your Percentile: <strong id="modal-gauge-student">99.90%</strong></span>
+                    </div>
+                    <div class="progress-track-wrapper">
+                        <div class="progress-track">
+                            <div class="progress-fill safe" id="modal-progress-fill" style="width: 99.85%"></div>
+                            <div class="progress-pin pin-your-score" id="modal-progress-pin" style="left: 99.90%">
+                                <span class="pin-head"></span>
+                                <span class="pin-tooltip" id="modal-pin-tooltip">You (99.90%)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="modal-action-btn secondary" id="modal-btn-close">Close</button>
+                <button type="button" class="modal-action-btn primary" id="modal-btn-copy-alt">
+                    <i class="fa-regular fa-copy"></i> Copy Choice Code
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast-notification">Choice Code copied to clipboard!</div>
+
+    <!-- Mobile Sticky Floating Navigation Bar (Android & iOS) -->
+    <div class="mobile-nav-bar" id="mobile-nav-bar">
+        <button type="button" class="mobile-nav-btn active" id="mobile-btn-inputs">
+            <i class="fa-solid fa-sliders"></i>
+            <span>Inputs</span>
+        </button>
+        <button type="button" class="mobile-nav-btn" id="mobile-btn-results">
+            <i class="fa-solid fa-list-ol"></i>
+            <span>Option List</span>
+            <span class="mobile-badge" id="mobile-results-badge">0</span>
+        </button>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
