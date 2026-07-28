@@ -1,5 +1,5 @@
 const LOCAL_API = "http://127.0.0.1:8000/api";
-const REMOTE_API = "https://mhtcet-backend-ran6.onrender.com/api";
+const REMOTE_API = "https://updated-mht-cet-website-with-ai-college.onrender.com/api";
 const API_BASE = window.PREDICTOR_API_URL || (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:" ? LOCAL_API : REMOTE_API);
 
 let metadata = {
