@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - aimlrahulcounselling</title>
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="Style.css">
+  <style>
+    .admin-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem 1.5rem;
+    }
+    .admin-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .admin-title-wrap h1 {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .admin-title-wrap p {
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+    .stats-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 2rem;
+    }
+    .summary-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .summary-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: #eff6ff;
+      color: #2563eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+    .summary-val {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1;
+    }
+    .summary-lbl {
+      font-size: 0.85rem;
+      color: #64748b;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+    }
+    .table-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+      overflow-x: auto;
+    }
+    .table-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .search-input-box {
+      position: relative;
+      width: 100%;
+      max-width: 320px;
+    }
+    .search-input-box i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+    }
+    .search-input-box input {
+      width: 100%;
+      padding: 0.65rem 0.8rem 0.65rem 2.5rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      outline: none;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .search-input-box input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    th {
+      background: #f8fafc;
+      color: #475569;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 1rem 0.85rem;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    td {
+      padding: 1rem 0.85rem;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 0.92rem;
+      color: #1e293b;
+    }
+    tr:hover td {
+      background: #f8fafc;
+    }
+    .role-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .role-badge.admin {
+      background: #fef3c7;
+      color: #b45309;
+      border: 1px solid #fde68a;
+    }
+    .role-badge.user {
+      background: #dbeafe;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+    }
+    .category-tag {
+      background: #f1f5f9;
+      color: #475569;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="main-wrapper">
+    <!-- Executive Navbar -->
+    <header class="navbar">
+      <div class="navbar-container">
+        <div class="navbar-logo">
+          <a href="index.html" class="brand-link">
+            <span class="brand-badge">AIML</span>
+            <span class="brand-text">rahulcounselling</span>
+          </a>
+        </div>
+
+        <nav class="navbar-menu">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="predictor.html" class="nav-link">AI Predictor</a>
+          <a href="Viewservices.html" class="nav-link">Services</a>
+          <a href="admin.html" class="nav-link active">Admin Dashboard</a>
+        </nav>
+
+        <div class="navbar-buttons">
+          <button class="logout-btn" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="admin-container">
+      <div class="admin-header">
+        <div class="admin-title-wrap">
+          <h1>Admin Control Panel</h1>
+          <p>Overview of all registered students and counselling users</p>
+        </div>
+      </div>
+
+      <!-- Stats Summary -->
+      <div class="stats-summary">
+        <div class="summary-card">
+          <div class="summary-icon"><i class="fa-solid fa-users"></i></div>
+          <div>
+            <div class="summary-val" id="totalUsersCount">0</div>
+            <div class="summary-lbl">Total Registered Users</div>
+          </div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-icon" style="background:#ecfdf5; color:#059669;"><i class="fa-solid fa-user-check"></i></div>
+          <div>
+            <div class="summary-val" id="studentUsersCount" style="color:#059669;">0</div>
+            <div class="summary-lbl">Active Students</div>
+          </div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-icon" style="background:#fef3c7; color:#d97706;"><i class="fa-solid fa-user-shield"></i></div>
+          <div>
+            <div class="summary-val" id="adminUsersCount" style="color:#d97706;">0</div>
+            <div class="summary-lbl">Admin Roles</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table Card -->
+      <div class="table-card">
+        <div class="table-top-bar">
+          <h3 style="font-family:var(--font-heading); font-size:1.15rem; font-weight:700;">Registered Accounts</h3>
+          <div class="search-input-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="adminSearch" placeholder="Search by name, email, roll no...">
+          </div>
+        </div>
+
+        <table id="usersTable">
+          <thead>
+            <tr>
+              <th>Full Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>CET Roll No</th>
+              <th>Category</th>
+              <th>Role</th>
+              <th>Registered Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Populated dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let allUsersData = [];
+
+    // Protect admin page
+    async function checkAdmin() {
+      try {
+        const res = await fetch("https://mhtcet-backend-ran6.onrender.com/api/admin-check", {
+          credentials: "include"
+        });
+        const data = await res.json();
+        if (!data.admin) {
+          window.location.href = "login.html";
+        }
+      } catch (e) {
+        window.location.href = "login.html";
+      }
+    }
+
+    function renderTable(users) {
+      const tbody = document.querySelector("#usersTable tbody");
+      tbody.innerHTML = "";
+
+      if (users.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#94a3b8; padding:2rem;">No matching registered users found.</td></tr>`;
+        return;
+      }
+
+      users.forEach(user => {
+        const row = document.createElement("tr");
+        const roleClass = user.role === 'admin' ? 'admin' : 'user';
+        row.innerHTML = `
+          <td style="font-weight:700;">${user.fullname || '-'}</td>
+          <td>${user.email || '-'}</td>
+          <td>${user.phone || '-'}</td>
+          <td style="font-family:monospace; font-weight:600;">${user.cetRollNumber || '-'}</td>
+          <td><span class="category-tag">${user.category || 'OPEN'}</span></td>
+          <td><span class="role-badge ${roleClass}">${user.role || 'user'}</span></td>
+          <td style="color:#64748b; font-size:0.85rem;">${new Date(user.createdAt).toLocaleDateString()}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    // Load users
+    async function loadUsers() {
+      try {
+        const res = await fetch("https://mhtcet-backend-ran6.onrender.com/api/admin/users", {
+          credentials: "include"
+        });
+        const data = await res.json();
+
+        if (!data.success) {
+          alert("Failed to load users");
+          return;
+        }
+
+        allUsersData = data.users || [];
+        document.getElementById("totalUsersCount").innerText = allUsersData.length;
+        document.getElementById("adminUsersCount").innerText = allUsersData.filter(u => u.role === 'admin').length;
+        document.getElementById("studentUsersCount").innerText = allUsersData.filter(u => u.role !== 'admin').length;
+
+        renderTable(allUsersData);
+      } catch (err) {
+        console.error("Failed loading users:", err);
+      }
+    }
+
+    // Search filter
+    document.getElementById("adminSearch")?.addEventListener("input", function(e) {
+      const query = e.target.value.toLowerCase().trim();
+      const filtered = allUsersData.filter(u => 
+        (u.fullname && u.fullname.toLowerCase().includes(query)) ||
+        (u.email && u.email.toLowerCase().includes(query)) ||
+        (u.phone && u.phone.includes(query)) ||
+        (u.cetRollNumber && u.cetRollNumber.toLowerCase().includes(query)) ||
+        (u.category && u.category.toLowerCase().includes(query))
+      );
+      renderTable(filtered);
+    });
+
+    // Logout
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      await fetch("https://mhtcet-backend-ran6.onrender.com/api/logout", {
+        method: "POST",
+        credentials: "include"
+      });
+      window.location.href = "login.html";
+    });
+
+    // Run on load
+    document.addEventListener("DOMContentLoaded", async () => {
+      await checkAdmin();
+      await loadUsers();
+    });
+  </script>
+
+</body>
+</html>

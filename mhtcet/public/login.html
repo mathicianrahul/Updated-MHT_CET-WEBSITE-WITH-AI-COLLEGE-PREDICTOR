@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>aimlrahulcounselling - Sign In</title>
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="Style.css">
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <canvas id="webgl-canvas"></canvas>
+    <div id="cursor-glow" class="cursor-glow"></div>
+
+    <div class="main-wrapper">
+        <!-- Executive Professional Navbar -->
+        <header class="navbar">
+            <div class="navbar-container">
+                <div class="navbar-logo">
+                    <a href="index.html" class="brand-link">
+                        <span class="brand-badge">AIML</span>
+                        <span class="brand-text">rahulcounselling</span>
+                    </a>
+                </div>
+                
+                <nav class="navbar-menu">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="predictor.html" class="nav-link">AI Predictor</a>
+                    <a href="Viewservices.html" class="nav-link">Services</a>
+                    <a href="consultationForm.html" class="nav-link">Consultation</a>
+                </nav>
+
+                <div class="navbar-buttons">
+                    <a href="predictor.html" class="nav-btn predictor-cta-btn">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor
+                    </a>
+                    <a href="register.html" class="nav-btn signup-btn">Sign Up</a>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <!-- Login Card -->
+            <div class="login-card">
+                <div class="card-header">
+                    <div class="icon-wrapper">
+                        <a href="index.html" class="brand-link">
+                            <span class="brand-badge">AIML</span>
+                            <span class="brand-text">rahulcounselling</span>
+                        </a>
+                    </div>
+                    <h1 class="title">Sign In</h1>
+                    <p class="description">Access your admission counselling dashboard</p>
+                </div>
+
+                <form class="login-form" id="loginForm">
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="Enter your registered email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword()">
+                                <i class="fas fa-eye" id="eye-icon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-options">
+                        <a href="register.html" class="forgot-link">New user or forgot password? Sign Up</a>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Sign In
+                    </button>
+
+                    <div class="form-footer">
+                        <span>Don't have an account? 
+                            <a href="register.html" class="register-link">Create Account</a>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const pwdInput = document.getElementById("password");
+            const eyeIcon = document.getElementById("eye-icon");
+            if (pwdInput.type === "password") {
+                pwdInput.type = "text";
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            } else {
+                pwdInput.type = "password";
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            }
+        }
+
+        document.getElementById("loginForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            try {
+                const res = await fetch("https://mhtcet-backend-ran6.onrender.com/api/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password }),
+                    credentials: "include"
+                });
+                const data = await res.json();
+                if (data.message === "Login successful" || data.user) {
+                    alert("Login Successful!");
+                    window.location.href = "index.html";
+                } else {
+                    alert(data.error || "Login Failed");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Server error. Please try again.");
+            }
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="3d-scene.js"></script>
+</body>
+</html>

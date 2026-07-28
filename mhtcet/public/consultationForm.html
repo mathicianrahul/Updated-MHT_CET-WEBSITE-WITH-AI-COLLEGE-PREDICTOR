@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Your Free Consultation - aimlrahulcounselling</title>
+    <link rel="stylesheet" href="consultationForm.css">
+</head>
+<body>
+    <canvas id="webgl-canvas"></canvas>
+    <div id="cursor-glow" class="cursor-glow"></div>
+    <header>
+    <div class="container">
+        <div class="logo">
+            <span class="logo-icon">📘</span>
+            <span class="logo-text">aimlrahulcounselling</span>
+        </div>
+        <nav class="navigation">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="viewservices.html">Services</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+    <main>
+        
+        <div class="form-container">
+            <div class="hero-section">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        Schedule Your
+                        <span class="free-consultation">Free Consultation</span>
+                    </h1>
+                    <p class="hero-description">
+                        Get expert guidance for MHT-CET admissions and secure your seat in top engineering colleges across Maharashtra.
+                    </p>
+
+                    <div class="benefits-list">
+                        <div class="benefit-item">
+                            <span class="check-icon">✓</span>
+                            <span>Personalized college recommendations</span>
+                        </div>
+                        <div class="benefit-item">
+                            <span class="check-icon">✓</span>
+                            <span>Cut-off predictions based on your percentile</span>
+                        </div>
+                        <div class="benefit-item">
+                            <span class="check-icon">✓</span>
+                            <span>Branch selection guidance</span>
+                        </div>
+                        <div class="benefit-item">
+                            <span class="check-icon">✓</span>
+                            <span>Complete admission process support</span>
+                        </div>
+                        <div class="benefit-item">
+                            <span class="check-icon">✓</span>
+                            <span>Scholarship opportunities</span>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <h3>What You'll Get:</h3>
+                        <ul>
+                            <li>• 30-minute one-on-one consultation</li>
+                            <li>• Detailed college preference list</li>
+                            <li>• Admission strategy roadmap</li>
+                            <li>• Priority support during CAP rounds</li>
+                        </ul>
+                    </div>
+
+                    <div class="limited-offer">
+                        <strong>Limited Time:</strong> Free consultations available for the first 100 students only!
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-card">
+                    <div class="form-header">
+                        <div class="calendar-icon">📅</div>
+                        <h2>Book Your Free Session</h2>
+                        <p>Fill out the form below and we'll get back to you within 24 hours</p>
+                    </div>
+                    
+                    <form class="consultation-form" id="counsellingForm">
+
+
+                        <!-- Personal Information -->
+                        <div class="form-group">
+                            <label for="fullName">
+                                <span class="icon">👤</span>
+                                Full Name *
+                            </label>
+                            <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email">
+                                    <span class="icon">✉️</span>
+                                    Email Address *
+                                </label>
+                                <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">
+                                    <span class="icon">📞</span>
+                                    Phone Number *
+                                </label>
+                                <input type="tel" id="phone" name="phone" placeholder="+91 9876543210" required>
+                            </div>
+                        </div>
+
+                        <!-- Academic Information -->
+                        <div class="section-divider">
+                            <h3>
+                                <span class="section-icon">📚</span>
+                                Academic Details
+                            </h3>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="percentile">
+                                    <span class="icon">🎯</span>
+                                    MHT-CET Percentile *
+                                </label>
+                                <input type="number" id="percentile" name="percentile" placeholder="Enter your percentile (0-100)" min="0" max="100" step="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="subject">Subject Group *</label>
+                                <select id="subjectGroup" name="subjectGroup" required>
+                                    <option value="">Select your subject group</option>
+                                    <option value="PCM">PCM (Physics, Chemistry, Mathematics)</option>
+                                    <option value="PCB">PCB (Physics, Chemistry, Biology)</option>
+                                    <option value="PCM + BIOLOGY">PCMB (Physics, Chemistry, Mathematics, Biology)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="city">
+                                <span class="icon">📍</span>
+                                City *
+                            </label>
+                            <select id="city" name="city" required>
+                                <option value="" disabled selected>Select Your City</option>
+                                <option value="ahmednagar">Ahmednagar</option>
+                                <option value="akola">Akola</option>
+                                <option value="amravati">Amravati</option>
+                                <option value="chhatrapati-sambhajinagar">Chhatrapati Sambhajinagar</option>
+                                <option value="beed">Beed</option>
+                                <option value="bhandara">Bhandara</option>
+                                <option value="buldhana">Buldhana</option>
+                                <option value="chandrapur">Chandrapur</option>
+                                <option value="dhule">Dhule</option>
+                                <option value="gadchiroli">Gadchiroli</option>
+                                <option value="gondia">Gondia</option>
+                                <option value="hingoli">Hingoli</option>
+                                <option value="jalgaon">Jalgaon</option>
+                                <option value="jalna">Jalna</option>
+                                <option value="kolhapur">Kolhapur</option>
+                                <option value="latur">Latur</option>
+                                <option value="mumbai-city">Mumbai City</option>
+                                <option value="mumbai-suburban">Mumbai Suburban</option>
+                                <option value="nagpur">Nagpur</option>
+                                <option value="nanded">Nanded</option>
+                                <option value="nandurbar">Nandurbar</option>
+                                <option value="nashik">Nashik</option>
+                                <option value="Dharashiv"> Dharashiv</option>
+                                <option value="palghar">Palghar</option>
+                                <option value="parbhani">Parbhani</option>
+                                <option value="pune">Pune</option>
+                                <option value="raigad">Raigad</option>
+                                <option value="ratnagiri">Ratnagiri</option>
+                                <option value="sangli">Sangli</option>
+                                <option value="satara">Satara</option>
+                                <option value="sindhudurg">Sindhudurg</option>
+                                <option value="solapur">Solapur</option>
+                                <option value="thane">Thane</option>
+                                <option value="wardha">Wardha</option>
+                                <option value="washim">Washim</option>
+                                <option value="yavatmal">Yavatmal</option>
+                            </select>
+                        </div>
+
+                        <!-- Preferred Schedule -->
+                        <div class="section-divider">
+                            <h3>
+                                <span class="section-icon">🕐</span>
+                                Preferred Schedule
+                            </h3>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="preferredDate">Preferred Date</label>
+                                <input type="date" id="preferredDate" name="preferredDate">
+                            </div>
+                            <div class="form-group">
+                                <label for="preferredTime">Preferred Time</label>
+                                <select id="preferredTime" name="preferredTime">
+                                    <option value="">Select time slot</option>
+                                    <option value="morning">Morning (9:00 AM - 12:00 PM)</option>
+                                    <option value="afternoon">Afternoon (12:00 PM - 5:00 PM)</option>
+                                    <option value="evening">Evening (5:00 PM - 8:00 PM)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">Additional Information (Optional)</label>
+                            <textarea id="additionalInfo" name="additionalInfo" rows="4" placeholder="Tell us about your goals, preferred colleges, or any specific questions..."></textarea>
+                        </div>
+
+                        <button type="submit" class="submit-btn" id="sub">
+                            <span class="btn-text">Schedule Free Consultation</span>
+                            <div class="loading-spinner" style="display: none;">
+                                <div class="spinner"></div>
+                                Scheduling Your Consultation...
+                            </div>
+                        </button>
+
+                        <p class="privacy-notice">
+                            By submitting this form, you agree to receive communication from our counselling team.
+                            We respect your privacy and will never share your information.
+                        </p>
+                        <p id="msg" style="display:none; margin-top:20px; text-align:center;"></p>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+<script>
+const form = document.getElementById("counsellingForm");
+const submitBtn = document.getElementById("sub");
+const btnText = submitBtn.querySelector(".btn-text");
+const loader = submitBtn.querySelector(".loading-spinner");
+const msg = document.getElementById("msg");
+
+form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    // UI changes
+    btnText.style.display = "none";
+    loader.style.display = "block";
+    submitBtn.disabled = true;
+    msg.style.display = "none";
+
+    const data = new FormData(form);
+
+    fetch("https://script.google.com/macros/s/AKfycbx6kPvVWwVlYjST6uF2UFRTKVauBdBoaG4HeRItL4OEKZ-uoxY6udDr9wmB2KAiGb7mNA/exec", {
+        method: "POST",
+        body: data
+    })
+    .then(res => res.text())
+    .then(response => {
+    
+        msg.style.display = "block";
+        msg.style.color = "green";
+        msg.innerText = "✅😊Consultation booked successfully! Our team will contact you within 24 hours.";
+
+        form.reset();
+    })
+    .catch(() => {
+        msg.style.display = "block";
+        msg.style.color = "red";
+        msg.innerText = "❌ Something went wrong. Please try again later.";
+    })
+    .finally(() => {
+        btnText.style.display = "inline";
+        loader.style.display = "none";
+        submitBtn.disabled = false;
+    });
+});
+</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="3d-scene.js"></script>
+</body>
+</html>
