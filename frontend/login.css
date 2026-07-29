@@ -399,3 +399,29 @@ body.auth-body {
         padding: 2.5rem 2rem;
     }
 }
+
+@media (max-width: 480px) {
+    .auth-container {
+        padding: 1.25rem 0.85rem;
+    }
+
+    .auth-card {
+        border-radius: 18px;
+    }
+
+    .auth-hero-panel {
+        padding: 2rem 1.25rem;
+    }
+
+    .auth-hero-panel h2 {
+        font-size: 1.45rem;
+    }
+
+    .auth-form-panel {
+        padding: 2rem 1.25rem;
+    }
+
+    .auth-header h2 {
+        font-size: 1.45rem;
+    }
+}

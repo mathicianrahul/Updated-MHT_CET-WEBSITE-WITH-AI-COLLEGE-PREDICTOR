@@ -166,6 +166,36 @@
       font-size: 0.82rem;
       font-weight: 700;
     }
+    @media (max-width: 768px) {
+      .admin-container {
+        padding: 1.25rem 0.85rem 3rem 0.85rem;
+      }
+      .admin-title-wrap h1 {
+        font-size: 1.5rem;
+      }
+      .stats-summary {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      .summary-card {
+        padding: 1rem;
+        gap: 10px;
+      }
+      .summary-val {
+        font-size: 1.35rem;
+      }
+      .search-input-box {
+        max-width: 100%;
+      }
+      .table-card {
+        padding: 1rem;
+      }
+    }
+    @media (max-width: 480px) {
+      .stats-summary {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
