@@ -170,6 +170,31 @@
 </head>
 <body>
 
+    <!-- Mobile Navigation Drawer & Backdrop -->
+    <div class="mobile-nav-backdrop" id="mobileNavBackdrop"></div>
+    <aside class="mobile-nav-drawer" id="mobileNavDrawer">
+        <div class="mobile-drawer-header">
+            <a href="index.html" class="brand-link">
+                <span class="brand-badge">AIML</span>
+                <span class="brand-text">rahulcounselling</span>
+            </a>
+            <button type="button" class="mobile-drawer-close" id="mobileDrawerClose" aria-label="Close Menu">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <nav class="mobile-drawer-menu">
+            <a href="index.html" class="mobile-nav-link"><i class="fa-solid fa-house"></i> Home</a>
+            <a href="predictor.html" class="mobile-nav-link"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor</a>
+            <a href="Viewservices.html" class="mobile-nav-link"><i class="fa-solid fa-graduation-cap"></i> Services</a>
+            <a href="consultationForm.html" class="mobile-nav-link"><i class="fa-solid fa-calendar-check"></i> Consultation</a>
+            <a href="admin.html" class="mobile-nav-link active"><i class="fa-solid fa-user-shield"></i> Admin Dashboard</a>
+        </nav>
+        <div class="mobile-drawer-actions">
+            <a href="predictor.html" class="mobile-action-btn primary"><i class="fa-solid fa-wand-magic-sparkles"></i> Try AI Predictor</a>
+            <a href="login.html" class="mobile-action-btn secondary"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+        </div>
+    </aside>
+
   <div class="main-wrapper">
     <!-- Executive Navbar -->
     <header class="navbar">
@@ -191,6 +216,10 @@
         <div class="navbar-buttons">
           <button class="logout-btn" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
         </div>
+
+        <button type="button" class="mobile-hamburger-btn" id="mobileHamburgerBtn" aria-label="Open Mobile Menu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
       </div>
     </header>
 
@@ -352,6 +381,6 @@
       await loadUsers();
     });
   </script>
-
+  <script src="auth-ui-sync.js"></script>
 </body>
 </html>

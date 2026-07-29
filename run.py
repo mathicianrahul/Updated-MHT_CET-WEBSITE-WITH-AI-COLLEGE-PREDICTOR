@@ -3,6 +3,15 @@ import sys
 import time
 import subprocess
 import webbrowser
+import urllib.request
+
+def is_port_active(url):
+    try:
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req, timeout=2) as response:
+            return True
+    except Exception:
+        return False
 
 def main():
     print("=" * 60)
@@ -10,67 +19,93 @@ def main():
     print("=" * 60)
 
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    backend_dir = os.path.join(base_dir, "backend") if os.path.exists(os.path.join(base_dir, "backend")) else os.path.join(base_dir, "CET_College_Predictor")
+    fastapi_backend_dir = os.path.join(base_dir, "backend") if os.path.exists(os.path.join(base_dir, "backend")) else os.path.join(base_dir, "CET_College_Predictor")
+    node_backend_dir = os.path.join(base_dir, "mhtcet", "backend")
+
     frontend_index = os.path.join(base_dir, "frontend", "index.html") if os.path.exists(os.path.join(base_dir, "frontend", "index.html")) else os.path.join(base_dir, "mhtcet", "public", "index.html")
     frontend_predictor = os.path.join(base_dir, "frontend", "predictor.html") if os.path.exists(os.path.join(base_dir, "frontend", "predictor.html")) else os.path.join(base_dir, "mhtcet", "public", "predictor.html")
 
-    print("\n[+] Starting FastAPI backend on http://127.0.0.1:8000 ...")
+    processes = []
 
-    # Check if port 8000 is already active
-    import urllib.request
-    try:
-        urllib.request.urlopen("http://127.0.0.1:8000/api/metadata", timeout=2)
-        print("[+] FastAPI backend server is ALREADY running on http://127.0.0.1:8000 !")
-        server_process = None
-    except Exception:
+    # 1. Start Node.js Auth Backend (Port 5000)
+    if os.path.exists(node_backend_dir):
+        if is_port_active("http://127.0.0.1:5000/api/check-auth"):
+            print("[+] Node.js Auth server is ALREADY running on http://localhost:5000")
+        else:
+            print("\n[+] Starting Node.js Auth backend on http://localhost:5000 ...")
+            try:
+                node_proc = subprocess.Popen(
+                    ["node", "server.js"],
+                    cwd=node_backend_dir,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    text=True,
+                    bufsize=1
+                )
+                time.sleep(1.5)
+                if node_proc.poll() is None:
+                    print("[+] Node.js Auth backend started successfully on http://localhost:5000 !")
+                    processes.append(node_proc)
+                else:
+                    print("[-] Node.js Auth backend failed to start. Running in cloud/offline fallback mode.")
+            except Exception as e:
+                print(f"[-] Node.js launch skipped: {e}")
+
+    # 2. Start FastAPI Predictor Backend (Port 8000)
+    print("\n[+] Starting FastAPI Predictor backend on http://127.0.0.1:8000 ...")
+    if is_port_active("http://127.0.0.1:8000/api/metadata"):
+        print("[+] FastAPI predictor server is ALREADY running on http://127.0.0.1:8000 !")
+    else:
         try:
-            server_process = subprocess.Popen(
+            fastapi_proc = subprocess.Popen(
                 [sys.executable, "-m", "uvicorn", "main:app", "--host", "127.0.0.1", "--port", "8000", "--reload"],
-                cwd=backend_dir,
+                cwd=fastapi_backend_dir,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 text=True,
                 bufsize=1
             )
             time.sleep(2)
-            if server_process.poll() is not None:
-                print("[-] FastAPI backend failed to start. Logs:")
-                print(server_process.stdout.read())
-                return
-            print("[+] Backend started successfully!")
+            if fastapi_proc.poll() is None:
+                print("[+] FastAPI Predictor backend started successfully on http://127.0.0.1:8000 !")
+                processes.append(fastapi_proc)
+            else:
+                print("[-] FastAPI backend output:")
+                if fastapi_proc.stdout:
+                    print(fastapi_proc.stdout.read())
         except Exception as e:
-            print(f"[-] Error launching backend server: {e}")
-            return
+            print(f"[-] Error launching FastAPI server: {e}")
 
     target_html = frontend_index if os.path.exists(frontend_index) else frontend_predictor
-    print(f"[+] Opening website: file:///{target_html} ...")
+    print(f"\n[+] Opening website: file:///{target_html} ...")
     webbrowser.open(f"file:///{target_html}")
 
     print("\n" + "=" * 60)
-    print("MHT-CET Predictor Portal is now LIVE!")
-    print("Backend URL: http://127.0.0.1:8000")
-    print("Frontend URL: file:///" + target_html.replace("\\", "/"))
-    print("To stop the server, press Ctrl+C in this terminal window.")
+    print("MHT-CET Predictor & Auth Portal is now LIVE!")
+    print("Auth Backend:      http://localhost:5000")
+    print("Predictor Backend: http://127.0.0.1:8000")
+    print("Frontend URL:      file:///" + target_html.replace("\\", "/"))
+    print("To stop servers, press Ctrl+C in this terminal window.")
     print("=" * 60 + "\n")
 
-    if server_process:
+    if processes:
         try:
             while True:
-                line = server_process.stdout.readline()
-                if line:
-                    print(line.strip())
-                if server_process.poll() is not None:
-                    print("[-] Server process ended unexpectedly.")
-                    break
+                time.sleep(1)
+                for proc in processes:
+                    if proc.poll() is not None:
+                        print("[-] One of the backend processes ended.")
+                        break
         except KeyboardInterrupt:
-            print("\n[-] Shutting down predictor server...")
+            print("\n[-] Shutting down servers...")
         finally:
-            server_process.terminate()
-            try:
-                server_process.wait(timeout=3)
-            except subprocess.TimeoutExpired:
-                server_process.kill()
-            print("[+] Server stopped.")
+            for proc in processes:
+                try:
+                    proc.terminate()
+                    proc.wait(timeout=2)
+                except Exception:
+                    proc.kill()
+            print("[+] All backend servers stopped.")
 
 if __name__ == "__main__":
     main()

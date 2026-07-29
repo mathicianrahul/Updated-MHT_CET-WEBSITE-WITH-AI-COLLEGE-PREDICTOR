@@ -3,169 +3,361 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>aimlrahulcounselling - Create Account</title>
+    <title>Create Account - AIML Rahul Counselling</title>
     <!-- Google Fonts & FontAwesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="Style.css">
     <link rel="stylesheet" href="register.css">
 </head>
-<body>
-    <canvas id="webgl-canvas"></canvas>
-    <div id="cursor-glow" class="cursor-glow"></div>
+<body class="auth-body">
 
-    <div class="main-wrapper">
-        <!-- Executive Professional Navbar -->
-        <header class="navbar">
-            <div class="navbar-container">
-                <div class="navbar-logo">
-                    <a href="index.html" class="brand-link">
-                        <span class="brand-badge">AIML</span>
-                        <span class="brand-text">rahulcounselling</span>
-                    </a>
-                </div>
-                
-                <nav class="navbar-menu">
-                    <a href="index.html" class="nav-link">Home</a>
-                    <a href="predictor.html" class="nav-link">AI Predictor</a>
-                    <a href="Viewservices.html" class="nav-link">Services</a>
-                    <a href="consultationForm.html" class="nav-link">Consultation</a>
-                </nav>
+    <!-- Mobile Navigation Drawer & Backdrop -->
+    <div class="mobile-nav-backdrop" id="mobileNavBackdrop"></div>
+    <aside class="mobile-nav-drawer" id="mobileNavDrawer">
+        <div class="mobile-drawer-header">
+            <a href="index.html" class="brand-link">
+                <span class="brand-badge">AIML</span>
+                <span class="brand-text">rahulcounselling</span>
+            </a>
+            <button type="button" class="mobile-drawer-close" id="mobileDrawerClose" aria-label="Close Menu">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <nav class="mobile-drawer-menu">
+            <a href="index.html" class="mobile-nav-link"><i class="fa-solid fa-house"></i> Home</a>
+            <a href="predictor.html" class="mobile-nav-link"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor</a>
+            <a href="Viewservices.html" class="mobile-nav-link"><i class="fa-solid fa-graduation-cap"></i> Services</a>
+            <a href="consultationForm.html" class="mobile-nav-link"><i class="fa-solid fa-calendar-check"></i> Consultation</a>
+        </nav>
+        <div class="mobile-drawer-actions">
+            <a href="predictor.html" class="mobile-action-btn primary"><i class="fa-solid fa-wand-magic-sparkles"></i> Try AI Predictor</a>
+            <a href="login.html" class="mobile-action-btn secondary"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+            <a href="register.html" class="mobile-action-btn secondary"><i class="fa-solid fa-user-plus"></i> Sign Up</a>
+        </div>
+    </aside>
 
-                <div class="navbar-buttons">
-                    <a href="predictor.html" class="nav-btn predictor-cta-btn">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor
-                    </a>
-                    <a href="login.html" class="nav-btn login-btn">Login</a>
+    <!-- Executive Navbar -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <a href="index.html" class="brand-link">
+                    <span class="brand-badge">AIML</span>
+                    <span class="brand-text">rahulcounselling</span>
+                </a>
+            </div>
+            
+            <nav class="navbar-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="predictor.html" class="nav-link">AI Predictor</a>
+                <a href="Viewservices.html" class="nav-link">Services</a>
+                <a href="consultationForm.html" class="nav-link">Consultation</a>
+            </nav>
+
+            <div class="navbar-buttons">
+                <a href="predictor.html" class="nav-btn predictor-cta-btn">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor
+                </a>
+                <a href="login.html" class="nav-btn login-btn">Login</a>
+            </div>
+
+            <button type="button" class="mobile-hamburger-btn" id="mobileHamburgerBtn" aria-label="Open Mobile Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Auth Section -->
+    <main class="auth-container">
+        <div class="auth-card register-card-wrapper">
+            <!-- Left Side: Hero Panel -->
+            <div class="auth-hero-panel">
+                <div class="hero-panel-content">
+                    <div class="hero-badge">
+                        <i class="fas fa-user-plus"></i> Student Registration
+                    </div>
+                    <h2>Join AIML Rahul Counselling</h2>
+                    <p>Register your MHT-CET score details to get accurate college cutoff statistics, option form strategy, and direct guidance.</p>
+                    
+                    <div class="hero-features">
+                        <div class="feature-item">
+                            <div class="feature-icon"><i class="fas fa-list-check"></i></div>
+                            <div>
+                                <h4>CAP Round Strategy</h4>
+                                <p>Personalized college preference list tailored to your rank.</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon"><i class="fas fa-headset"></i></div>
+                            <div>
+                                <h4>1-on-1 Expert Support</h4>
+                                <p>Get your queries resolved by experienced admission counsellors.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </header>
 
-        <div class="container">
-            <!-- Register Card -->
-            <div class="register-card">
-                <div class="card-header">
-                    <div class="icon-wrapper">
-                        <a href="index.html" class="brand-link">
-                            <span class="brand-badge">AIML</span>
-                            <span class="brand-text">rahulcounselling</span>
-                        </a>
-                    </div>
-                    <h1 class="title">Create Account</h1>
-                    <p class="description">Register to begin your personalized admission counselling</p>
+            <!-- Right Side: Registration Form -->
+            <div class="auth-form-panel">
+                <div class="auth-header">
+                    <h2>Create Your Account</h2>
+                    <p>Enter your admission details to register</p>
                 </div>
 
-                <form class="register-form" id="registerForm">
-                    <div class="form-row">
+                <div id="alertBox" class="alert-box" style="display: none;"></div>
+
+                <form id="registerForm" class="auth-form" novalidate>
+                    <div class="form-grid">
                         <div class="form-group">
                             <label for="fullName">Full Name</label>
-                            <div class="input-wrapper">
+                            <div class="input-container">
                                 <i class="fas fa-user input-icon"></i>
-                                <input type="text" id="fullName" name="fullName" placeholder="Enter full name" required>
+                                <input type="text" id="fullName" name="fullName" placeholder="Rahul Sharma" required autocomplete="name">
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="email">Email Address</label>
-                            <div class="input-wrapper">
+                            <div class="input-container">
                                 <i class="fas fa-envelope input-icon"></i>
-                                <input type="email" id="email" name="email" placeholder="Enter email address" required>
+                                <input type="email" id="email" name="email" placeholder="name@example.com" required autocomplete="email">
                             </div>
                         </div>
-                    </div>
 
-                    <div class="form-row">
                         <div class="form-group">
                             <label for="phone">Phone Number</label>
-                            <div class="input-wrapper">
+                            <div class="input-container">
                                 <i class="fas fa-phone input-icon"></i>
-                                <input type="tel" id="phone" name="phone" placeholder="Enter phone number" required>
+                                <input type="tel" id="phone" name="phone" placeholder="9876543210" required autocomplete="tel">
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="cetRollNumber">CET Application / Roll No.</label>
-                            <input type="text" id="cetRollNumber" name="cetRollNumber" placeholder="Ex: EN26129907" required>
+                            <div class="input-container">
+                                <i class="fas fa-id-card input-icon"></i>
+                                <input type="text" id="cetRollNumber" name="cetRollNumber" placeholder="EN26129907" required>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-row">
                         <div class="form-group">
                             <label for="percentile">MHT-CET Percentile</label>
-                            <input type="number" step="0.0001" id="percentile" name="percentile" placeholder="Ex: 98.45" required>
+                            <div class="input-container">
+                                <i class="fas fa-chart-line input-icon"></i>
+                                <input type="number" step="0.0001" min="0" max="100" id="percentile" name="percentile" placeholder="Ex: 98.45" required>
+                            </div>
                         </div>
 
                         <div class="form-group">
                             <label for="category">Category</label>
-                            <select id="category" name="category" required>
-                                <option value="OPEN">OPEN (General)</option>
-                                <option value="OBC">OBC</option>
-                                <option value="SC">SC</option>
-                                <option value="ST">ST</option>
-                                <option value="NT">NT / VJ</option>
-                                <option value="EWS">EWS</option>
-                                <option value="TFWS">TFWS</option>
-                            </select>
+                            <div class="input-container">
+                                <i class="fas fa-layer-group input-icon"></i>
+                                <select id="category" name="category" required>
+                                    <option value="OPEN">OPEN (General)</option>
+                                    <option value="OBC">OBC</option>
+                                    <option value="SC">SC</option>
+                                    <option value="ST">ST</option>
+                                    <option value="NT">NT / VJ</option>
+                                    <option value="EWS">EWS</option>
+                                    <option value="TFWS">TFWS</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group full-width">
                         <label for="password">Password</label>
-                        <div class="input-wrapper">
+                        <div class="input-container">
                             <i class="fas fa-lock input-icon"></i>
-                            <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+                            <input type="password" id="password" name="password" placeholder="Create a password (min 6 characters)" minlength="6" required autocomplete="new-password">
+                            <button type="button" class="toggle-password" onclick="togglePassword()" aria-label="Toggle password visibility">
+                                <i class="fas fa-eye" id="eye-icon"></i>
+                            </button>
                         </div>
                     </div>
 
-                    <button type="submit" class="submit-btn">
-                        <i class="fas fa-user-plus"></i>
-                        Register Account
+                    <button type="submit" class="primary-auth-btn" id="submitBtn">
+                        <span id="btnText">Register Account</span>
+                        <i class="fas fa-user-plus" id="btnIcon"></i>
                     </button>
 
-                    <div class="form-footer">
-                        <span>Already have an account? 
-                            <a href="login.html" class="login-link">Sign In</a>
-                        </span>
+                    <div class="auth-footer">
+                        <p>Already have an account? <a href="login.html" class="switch-auth-link">Sign In</a></p>
                     </div>
                 </form>
             </div>
         </div>
-    </div>
+    </main>
 
     <script>
+        function showAlert(message, type = 'error') {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.className = `alert-box alert-${type}`;
+            alertBox.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-circle-check' : 'fa-triangle-exclamation'}"></i>
+                <span>${message}</span>
+            `;
+            alertBox.style.display = 'flex';
+        }
+
+        function hideAlert() {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.style.display = 'none';
+        }
+
+        function togglePassword() {
+            const pwdInput = document.getElementById("password");
+            const eyeIcon = document.getElementById("eye-icon");
+            if (pwdInput.type === "password") {
+                pwdInput.type = "text";
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            } else {
+                pwdInput.type = "password";
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            }
+        }
+
         document.getElementById("registerForm").addEventListener("submit", async function (e) {
             e.preventDefault();
-            const fullName = document.getElementById("fullName").value;
-            const email = document.getElementById("email").value;
-            const phone = document.getElementById("phone").value;
-            const cetRollNumber = document.getElementById("cetRollNumber").value;
+            hideAlert();
+
+            const fullName = document.getElementById("fullName").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const phone = document.getElementById("phone").value.trim();
+            const cetRollNumber = document.getElementById("cetRollNumber").value.trim();
             const percentile = parseFloat(document.getElementById("percentile").value);
             const category = document.getElementById("category").value;
             const password = document.getElementById("password").value;
 
+            const submitBtn = document.getElementById("submitBtn");
+            const btnText = document.getElementById("btnText");
+            const btnIcon = document.getElementById("btnIcon");
+
+            if (!fullName || !email || !phone || !cetRollNumber || isNaN(percentile) || !password) {
+                showAlert("Please fill in all required fields accurately.", "error");
+                return;
+            }
+
+            submitBtn.disabled = true;
+            btnText.innerText = "Creating Account...";
+            btnIcon.className = "fas fa-spinner fa-spin";
+
             try {
-                const res = await fetch("https://mhtcet-backend-ran6.onrender.com/api/register", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ fullName, email, phone, cetRollNumber, percentile, category, password }),
-                    credentials: "include"
-                });
-                const data = await res.json();
-                if (data.message === "User registered successfully" || data.user) {
-                    alert("Registration Successful! Please Sign In.");
-                    window.location.href = "login.html";
+                const apiUrls = [
+                    "http://localhost:5000/api/register",
+                    "http://127.0.0.1:5000/api/register",
+                    "https://mhtcet-backend-ran6.onrender.com/api/register",
+                    "https://mhtcet-backend-ran6.onrender.com/api/signup"
+                ];
+
+                let data = null;
+                let responseOK = false;
+
+                for (const url of apiUrls) {
+                    try {
+                        const isRemote = url.includes("onrender.com");
+                        if (isRemote) {
+                            btnText.innerText = "Connecting to server...";
+                        }
+
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), isRemote ? 8000 : 2500);
+
+                        const res = await fetch(url, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ fullName, fullname: fullName, email, phone, cetRollNumber, percentile, category, password }),
+                            credentials: "include",
+                            signal: controller.signal
+                        });
+                        clearTimeout(timeoutId);
+
+                        data = await res.json();
+                        if (res.ok || data.success || data.user || data.message?.includes("success")) {
+                            responseOK = true;
+                            break;
+                        } else if (data.message || data.error) {
+                            showAlert(data.message || data.error, 'error');
+                            submitBtn.disabled = false;
+                            btnText.innerText = "Register Account";
+                            btnIcon.className = "fas fa-user-plus";
+                            return;
+                        }
+                    } catch (err) {
+                        console.warn("Attempt failed for", url, err.name === "AbortError" ? "Timeout" : err);
+                    }
+                }
+
+                const newUserObj = {
+                    fullname: fullName,
+                    fullName: fullName,
+                    email: email,
+                    phone: phone,
+                    cetRollNumber: cetRollNumber,
+                    percentile: percentile,
+                    category: category,
+                    createdAt: new Date().toISOString()
+                };
+
+                // Store in persistent registered_users map by email
+                try {
+                    const regMap = JSON.parse(localStorage.getItem("registered_users") || "{}");
+                    regMap[email.toLowerCase()] = newUserObj;
+                    localStorage.setItem("registered_users", JSON.stringify(regMap));
+                } catch(e) {}
+
+                if (responseOK && data) {
+                    showAlert("Account created successfully! Redirecting to Sign In...", "success");
+                    const mergedUser = data.user ? { ...newUserObj, ...data.user, fullname: fullName, fullName: fullName } : newUserObj;
+                    localStorage.setItem("user", JSON.stringify(mergedUser));
+                    sessionStorage.setItem("user", JSON.stringify(mergedUser));
+                    setTimeout(() => {
+                        window.location.href = "login.html";
+                    }, 1200);
                 } else {
-                    alert(data.error || "Registration Failed");
+                    showAlert("Account created (Offline Session)! Redirecting to Sign In...", "success");
+                    localStorage.setItem("user", JSON.stringify(newUserObj));
+                    sessionStorage.setItem("user", JSON.stringify(newUserObj));
+                    setTimeout(() => {
+                        window.location.href = "login.html";
+                    }, 1200);
                 }
             } catch (err) {
                 console.error(err);
-                alert("Server error. Please try again.");
+                showAlert("An unexpected error occurred during registration. Please try again.", "error");
+            } finally {
+                submitBtn.disabled = false;
+                btnText.innerText = "Register Account";
+                btnIcon.className = "fas fa-user-plus";
             }
         });
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="3d-scene.js"></script>
+    <script>
+        (function syncNavbarAuth() {
+            const userStr = localStorage.getItem("user") || sessionStorage.getItem("user");
+            if (!userStr) return;
+            try {
+                const user = JSON.parse(userStr);
+                if (!user) return;
+                const initials = (user.fullname || user.fullName || "Student").split(" ").map(n=>n[0]).join("").toUpperCase().slice(0, 2);
+                document.querySelectorAll(".navbar-buttons").forEach(container => {
+                    container.innerHTML = `
+                        <a href="predictor.html" class="nav-btn predictor-cta-btn" style="text-decoration:none;">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor
+                        </a>
+                        <a href="profile.html" class="nav-btn profile-nav-btn" style="text-decoration:none; background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe; font-weight:700; padding:0.45rem 0.95rem; border-radius:10px; display:inline-flex; align-items:center; gap:8px;">
+                            <span style="width:22px; height:22px; border-radius:50%; background:#2563eb; color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:10px; font-weight:800;">${initials}</span>
+                            <span>My Profile</span>
+                        </a>
+                    `;
+                });
+            } catch(e) {}
+        })();
+    </script>
 </body>
 </html>

@@ -16,6 +16,31 @@
     <canvas id="webgl-canvas"></canvas>
     <div id="cursor-glow" class="cursor-glow"></div>
 
+    <!-- Mobile Navigation Drawer & Backdrop -->
+    <div class="mobile-nav-backdrop" id="mobileNavBackdrop"></div>
+    <aside class="mobile-nav-drawer" id="mobileNavDrawer">
+        <div class="mobile-drawer-header">
+            <a href="index.html" class="brand-link">
+                <span class="brand-badge">AIML</span>
+                <span class="brand-text">rahulcounselling</span>
+            </a>
+            <button type="button" class="mobile-drawer-close" id="mobileDrawerClose" aria-label="Close Menu">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <nav class="mobile-drawer-menu">
+            <a href="index.html" class="mobile-nav-link"><i class="fa-solid fa-house"></i> Home</a>
+            <a href="predictor.html" class="mobile-nav-link"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor</a>
+            <a href="Viewservices.html" class="mobile-nav-link active"><i class="fa-solid fa-graduation-cap"></i> Services</a>
+            <a href="consultationForm.html" class="mobile-nav-link"><i class="fa-solid fa-calendar-check"></i> Consultation</a>
+        </nav>
+        <div class="mobile-drawer-actions">
+            <a href="predictor.html" class="mobile-action-btn primary"><i class="fa-solid fa-wand-magic-sparkles"></i> Try AI Predictor</a>
+            <a href="login.html" class="mobile-action-btn secondary"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+            <a href="register.html" class="mobile-action-btn secondary"><i class="fa-solid fa-user-plus"></i> Sign Up</a>
+        </div>
+    </aside>
+
     <div class="main-wrapper">
         <!-- Executive Professional Navbar -->
         <header class="navbar">
@@ -40,6 +65,10 @@
                     </a>
                     <a href="login.html" class="nav-btn login-btn">Login</a>
                 </div>
+
+                <button type="button" class="mobile-hamburger-btn" id="mobileHamburgerBtn" aria-label="Open Mobile Menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
             </div>
         </header>
 
@@ -281,8 +310,30 @@
             </div>
         </footer>
     </div>
-    <!-- Three.js 3D WebGL Library & Custom Engine -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        (function syncNavbarAuth() {
+            const userStr = localStorage.getItem("user") || sessionStorage.getItem("user");
+            if (!userStr) return;
+            try {
+                const user = JSON.parse(userStr);
+                if (!user) return;
+                const initials = (user.fullname || user.fullName || "Student").split(" ").map(n=>n[0]).join("").toUpperCase().slice(0, 2);
+                document.querySelectorAll(".navbar-buttons").forEach(container => {
+                    container.innerHTML = `
+                        <a href="predictor.html" class="nav-btn predictor-cta-btn" style="text-decoration:none;">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor
+                        </a>
+                        <a href="profile.html" class="nav-btn profile-nav-btn" style="text-decoration:none; background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe; font-weight:700; padding:0.45rem 0.95rem; border-radius:10px; display:inline-flex; align-items:center; gap:8px;">
+                            <span style="width:22px; height:22px; border-radius:50%; background:#2563eb; color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:10px; font-weight:800;">${initials}</span>
+                            <span>My Profile</span>
+                        </a>
+                    `;
+                });
+            } catch(e) {}
+        })();
+    </script>
     <script src="3d-scene.js"></script>
+    <script src="scroll-reveal.js"></script>
+    <script src="auth-ui-sync.js"></script>
 </body>
 </html>

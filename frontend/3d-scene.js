@@ -1,29 +1,38 @@
 /* ==========================================================================
-   EXPANDED $1M LUXURY 3D WEBGL ENGINE - AIMLRAHULCOUNSELLING
-   Full-Page Expanded Organic Wave Matrix, Dynamic Scroll Flow & Ambient Stardust
+   SOFT ABSTRACT FROSTED-GLASS 3D BACKDROP - STRIPE / LINEAR EDITORIAL STYLE
+   Morning Light Gradient, Translucent Frosted Glass Panels, Navy Blue Strokes
    ========================================================================== */
 
-(function initExpandedLuxury3DEngine() {
+(function initEditorialFrosted3DEngine() {
     const canvas = document.getElementById("webgl-canvas");
     if (!canvas) return;
 
-    // Detect Current Page
-    const path = window.location.pathname.toLowerCase();
-    const isServicesPage = path.includes("viewservices.html");
-    const isConsultationPage = path.includes("consultationform.html") || path.includes("consultation.html");
-    const isAuthPage = path.includes("login.html") || path.includes("register.html");
+    if (typeof THREE === "undefined") {
+        console.warn("Three.js not loaded. Skipping 3D scene initialization.");
+        return;
+    }
+
+    // Ensure canvas is visible and properly positioned behind content
+    canvas.style.display = "block";
+    canvas.style.position = "fixed";
+    canvas.style.top = "0";
+    canvas.style.left = "0";
+    canvas.style.width = "100vw";
+    canvas.style.height = "100vh";
+    canvas.style.zIndex = "-1";
+    canvas.style.pointerEvents = "none";
 
     // 1. Scene, Camera & Renderer Setup
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0xf8fafc, 0.008); // Ultra-light fog to expand 3D depth view
+    scene.fog = new THREE.FogExp2(0xf8fafc, 0.008); // Frosted morning fog
 
     const camera = new THREE.PerspectiveCamera(
-        50,
+        40,
         window.innerWidth / window.innerHeight,
         0.1,
         1000
     );
-    camera.position.set(0, -4, 22);
+    camera.position.set(0, 0, 24);
 
     const renderer = new THREE.WebGLRenderer({
         canvas: canvas,
@@ -35,106 +44,135 @@
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x000000, 0);
 
-    // 2. $1M Luxury Expanded Lighting System
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
+    // 2. Diffused Lighting (Morning light through frosted glass)
+    const ambientLight = new THREE.AmbientLight(0xfffdfa, 0.95); // Warm white ambient
     scene.add(ambientLight);
 
-    const cursorLight = new THREE.PointLight(0x2563eb, 3.5, 50);
-    cursorLight.position.set(0, 0, 10);
-    scene.add(cursorLight);
+    const skyDirectional = new THREE.DirectionalLight(0xe0f2fe, 0.8); // Pale sky-blue directional
+    skyDirectional.position.set(10, 15, 12);
+    scene.add(skyDirectional);
 
-    const emeraldLight = new THREE.PointLight(0x10b981, 3.0, 45);
-    emeraldLight.position.set(16, -10, 6);
+    // Soft Emerald-Green Accent Glow (Diffused in bottom-right corner)
+    const emeraldLight = new THREE.PointLight(0x10b981, 1.2, 35);
+    emeraldLight.position.set(14, -10, 4);
     scene.add(emeraldLight);
 
-    const skyLight = new THREE.PointLight(0x0284c7, 2.5, 45);
-    skyLight.position.set(-16, 10, 4);
-    scene.add(skyLight);
+    // Soft Sky-Blue Accent Glow
+    const blueAccentLight = new THREE.PointLight(0x38bdf8, 1.0, 30);
+    blueAccentLight.position.set(-12, 10, 6);
+    scene.add(blueAccentLight);
 
-    // 3. Expanded Full-Page Organic 3D Wave Matrix
-    const planeWidth = 115;
-    const planeHeight = 75;
-    const segmentsX = 120;
-    const segmentsY = 85;
+    // 3. Floating Rounded Frosted Glass Panels
+    const glassGroup = new THREE.Group();
+    scene.add(glassGroup);
 
-    const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight, segmentsX, segmentsY);
-    const posAttr = geometry.attributes.position;
-    const originalZ = new Float32Array(posAttr.count);
-
-    for (let i = 0; i < posAttr.count; i++) {
-        originalZ[i] = posAttr.getZ(i);
-    }
-
-    const wireframeMat = new THREE.MeshStandardMaterial({
-        color: 0x2563eb,
-        wireframe: true,
+    // Frosted glass material: high roughness (no harsh glossy highlights), translucent opacity
+    const frostedMaterial = new THREE.MeshStandardMaterial({
+        color: 0xe0f2fe,
+        roughness: 0.65,      // Matte frosted finish
+        metalness: 0.05,
         transparent: true,
-        opacity: 0.20,
-        roughness: 0.15,
-        metalness: 0.75
+        opacity: 0.24,
+        side: THREE.DoubleSide
     });
 
-    const meshPlane = new THREE.Mesh(geometry, wireframeMat);
-    meshPlane.rotation.x = -1.15;
-    meshPlane.position.set(0, -6, -2);
-    scene.add(meshPlane);
+    const glassPanelData = [
+        { width: 5.2, height: 7.2, depth: 0.1, x: 5.5, y: 1.2, z: -2, rotX: -0.18, rotY: 0.22, rotZ: 0.05, floatSpeed: 0.3, phase: 0 },
+        { width: 6.0, height: 8.5, depth: 0.1, x: -6.0, y: -2.0, z: -5, rotX: 0.15, rotY: -0.25, rotZ: -0.08, floatSpeed: 0.25, phase: 1.5 },
+        { width: 4.0, height: 5.5, depth: 0.1, x: 7.0, y: -4.5, z: -7, rotX: 0.2, rotY: 0.12, rotZ: 0.1, floatSpeed: 0.35, phase: 3.0 },
+        { width: 3.5, height: 4.8, depth: 0.1, x: -4.2, y: 4.0, z: -3, rotX: -0.12, rotY: 0.18, rotZ: -0.04, floatSpeed: 0.28, phase: 4.5 }
+    ];
 
-    // Glowing Vertex Points Layer
-    const pointsMat = new THREE.PointsMaterial({
-        color: 0x10b981,
-        size: 0.055,
-        transparent: true,
-        opacity: 0.5,
-        blending: THREE.AdditiveBlending
+    const glassPanels = [];
+
+    glassPanelData.forEach(d => {
+        const geom = new THREE.BoxGeometry(d.width, d.height, d.depth);
+        const panel = new THREE.Mesh(geom, frostedMaterial);
+        
+        panel.position.set(d.x, d.y, d.z);
+        panel.rotation.set(d.rotX, d.rotY, d.rotZ);
+
+        panel.userData = {
+            baseX: d.x,
+            baseY: d.y,
+            baseZ: d.z,
+            rotX: d.rotX,
+            rotY: d.rotY,
+            rotZ: d.rotZ,
+            floatSpeed: d.floatSpeed,
+            phase: d.phase
+        };
+
+        glassGroup.add(panel);
+        glassPanels.push(panel);
     });
-    const pointsMesh = new THREE.Points(geometry, pointsMat);
-    pointsMesh.rotation.x = meshPlane.rotation.x;
-    pointsMesh.position.copy(meshPlane.position);
-    scene.add(pointsMesh);
 
-    // 4. Expanded Zero-G Stardust Field (1,200 Particles)
-    const starCount = 1200;
-    const starGeom = new THREE.BufferGeometry();
-    const starPositions = new Float32Array(starCount * 3);
+    // 4. Thin Navy-Blue Blueprint Architectural Lines (Far Background)
+    const blueprintGroup = new THREE.Group();
+    blueprintGroup.position.set(0, 0, -12);
+    scene.add(blueprintGroup);
 
-    for (let i = 0; i < starCount; i++) {
-        starPositions[i * 3] = (Math.random() - 0.5) * 70;
-        starPositions[i * 3 + 1] = (Math.random() - 0.5) * 60;
-        starPositions[i * 3 + 2] = (Math.random() - 0.5) * 24 - 3;
+    const navyLineMat = new THREE.LineBasicMaterial({
+        color: 0x1e3a8a,      // Deep navy blue
+        transparent: true,
+        opacity: 0.09        // Barely visible architectural stroke
+    });
+
+    // Blueprint Shape 1: Large subtle polygon grid stroke
+    const geom1 = new THREE.BufferGeometry();
+    const pts1 = new Float32Array([
+        -18, 10, 0,   12, 14, 0,
+         12, 14, 0,   18, -8, 0,
+         18, -8, 0,  -10, -12, 0,
+        -10, -12, 0, -18, 10, 0
+    ]);
+    geom1.setAttribute('position', new THREE.BufferAttribute(pts1, 3));
+    const bpLine1 = new THREE.LineSegments(geom1, navyLineMat);
+    blueprintGroup.add(bpLine1);
+
+    // Blueprint Shape 2: Tilted inner architectural crosshair
+    const geom2 = new THREE.BufferGeometry();
+    const pts2 = new Float32Array([
+        -8, -14, 0,   16, 8, 0,
+        -14, 6, 0,    10, -10, 0
+    ]);
+    geom2.setAttribute('position', new THREE.BufferAttribute(pts2, 3));
+    const bpLine2 = new THREE.LineSegments(geom2, navyLineMat);
+    blueprintGroup.add(bpLine2);
+
+    // 5. Fine Soft Ambient Speckles
+    const dustCount = 250;
+    const dustGeom = new THREE.BufferGeometry();
+    const dustPos = new Float32Array(dustCount * 3);
+
+    for (let i = 0; i < dustCount; i++) {
+        dustPos[i * 3] = (Math.random() - 0.5) * 50;
+        dustPos[i * 3 + 1] = (Math.random() - 0.5) * 40;
+        dustPos[i * 3 + 2] = (Math.random() - 0.5) * 16 - 2;
     }
 
-    starGeom.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+    dustGeom.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+    const dustMat = new THREE.PointsMaterial({
+        color: 0x94a3b8,
+        size: 0.035,
+        transparent: true,
+        opacity: 0.25
+    });
 
-    const starField = new THREE.Points(
-        starGeom,
-        new THREE.PointsMaterial({
-            color: 0x38bdf8,
-            size: 0.05,
-            transparent: true,
-            opacity: 0.4,
-            blending: THREE.AdditiveBlending
-        })
-    );
-    scene.add(starField);
+    const dustSystem = new THREE.Points(dustGeom, dustMat);
+    scene.add(dustSystem);
 
-    // 5. Mouse Interaction & Scroll Tracking
+    // 6. Smooth Mouse & Scroll Mechanics (Low-contrast, gentle inertia)
     let mouseX = 0;
     let mouseY = 0;
-    let targetX = 0;
-    let targetY = 0;
-    let targetScrollY = 0;
+    let targetMouseX = 0;
+    let targetMouseY = 0;
     let scrollY = 0;
-
-    const cursorGlow = document.getElementById("cursor-glow");
+    let targetScrollY = 0;
 
     window.addEventListener("mousemove", (e) => {
-        mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-        mouseY = -(e.clientY / window.innerHeight - 0.5) * 2;
-
-        if (cursorGlow) {
-            cursorGlow.style.left = e.clientX + "px";
-            cursorGlow.style.top = e.clientY + "px";
-        }
+        targetMouseX = (e.clientX / window.innerWidth - 0.5) * 1.5;
+        targetMouseY = -(e.clientY / window.innerHeight - 0.5) * 1.5;
     });
 
     window.addEventListener("scroll", () => {
@@ -147,54 +185,39 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
-    // 6. Animation Loop
+    // 7. Animation Loop (Slow, calm, spacious editorial floating)
     const clock = new THREE.Clock();
 
     function animate() {
         requestAnimationFrame(animate);
         const elapsedTime = clock.getElapsedTime();
 
-        targetX += (mouseX - targetX) * 0.04;
-        targetY += (mouseY - targetY) * 0.04;
+        // Very slow lerp for editorial feel
+        mouseX += (targetMouseX - mouseX) * 0.015;
+        mouseY += (targetMouseY - mouseY) * 0.015;
 
-        scrollY += (targetScrollY - scrollY) * 0.06;
+        scrollY += (targetScrollY - scrollY) * 0.04;
         const maxScroll = Math.max(1, document.body.scrollHeight - window.innerHeight);
         const scrollPercent = Math.min(1, Math.max(0, scrollY / maxScroll));
 
-        // Light follow mouse & scroll
-        cursorLight.position.x = targetX * 16;
-        cursorLight.position.y = targetY * 10 - (scrollPercent * 14);
+        // Floating Frosted Glass Panels Motion
+        glassPanels.forEach(p => {
+            const ud = p.userData;
+            // Gentle multi-axis floating
+            p.position.y = ud.baseY + Math.sin(elapsedTime * ud.floatSpeed + ud.phase) * 0.35;
+            p.position.x = ud.baseX + Math.cos(elapsedTime * ud.floatSpeed * 0.7 + ud.phase) * 0.15;
+            
+            p.rotation.x = ud.rotX + Math.sin(elapsedTime * 0.2 + ud.phase) * 0.03;
+            p.rotation.y = ud.rotY + Math.cos(elapsedTime * 0.25 + ud.phase) * 0.04;
+        });
 
-        // Expanded Wave Synthesis Math
-        for (let i = 0; i < posAttr.count; i++) {
-            const vx = posAttr.getX(i);
-            const vy = posAttr.getY(i);
+        // Blueprint background slow drift
+        blueprintGroup.rotation.z = Math.sin(elapsedTime * 0.05) * 0.02;
 
-            const wave1 = Math.sin(vx * 0.15 + elapsedTime * 1.3) * Math.cos(vy * 0.15 + elapsedTime * 1.0) * 0.85;
-            const wave2 = Math.sin(vx * 0.06 - elapsedTime * 0.7) * Math.sin(vy * 0.08 + elapsedTime * 0.5) * 0.55;
-
-            const dx = vx - targetX * 12;
-            const dy = vy - targetY * 9;
-            const dist = Math.hypot(dx, dy);
-            const ripple = dist < 9 ? Math.cos(dist * 0.5 - elapsedTime * 3.2) * (9 - dist) * 0.15 : 0;
-
-            posAttr.setZ(i, originalZ[i] + wave1 + wave2 + ripple);
-        }
-        posAttr.needsUpdate = true;
-        meshPlane.geometry.computeVertexNormals();
-
-        // Stardust upward drift
-        const starPos = starField.geometry.attributes.position.array;
-        for (let i = 0; i < starCount; i++) {
-            starPos[i * 3 + 1] += 0.006;
-            if (starPos[i * 3 + 1] > 30) starPos[i * 3 + 1] = -30;
-        }
-        starField.geometry.attributes.position.needsUpdate = true;
-
-        // Expanded Camera Scroll Dynamics (Flowing across all sections down the page)
-        camera.position.x = targetX * 1.6;
-        camera.position.y = -4 - targetY * 1.2 - (scrollPercent * 16);
-        camera.lookAt(new THREE.Vector3(0, camera.position.y + 3, 0));
+        // Camera Soft Movement
+        camera.position.x = mouseX * 0.8;
+        camera.position.y = -scrollPercent * 3 - mouseY * 0.6;
+        camera.lookAt(0, camera.position.y, 0);
 
         renderer.render(scene, camera);
     }

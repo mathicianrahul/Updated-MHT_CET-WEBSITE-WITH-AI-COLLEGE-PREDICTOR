@@ -1874,22 +1874,29 @@ select option {
 
 .mobile-close-btn {
     display: none;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
-    width: 36px;
-    height: 36px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #2563eb;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
     border-radius: 50%;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     transition: all 0.2s ease;
+    position: relative;
+    z-index: 1050;
+    pointer-events: auto;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.mobile-close-btn:hover {
-    background: var(--purple-primary);
+.mobile-close-btn:hover, .mobile-close-btn:active {
+    background: #2563eb;
     color: #ffffff;
+    border-color: #2563eb;
 }
 
 /* Mobile Floating Navigation Bar */

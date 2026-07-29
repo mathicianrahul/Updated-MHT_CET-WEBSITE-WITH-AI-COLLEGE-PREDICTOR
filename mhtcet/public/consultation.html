@@ -14,6 +14,31 @@
 </head>
 <body>
 
+    <!-- Mobile Navigation Drawer & Backdrop -->
+    <div class="mobile-nav-backdrop" id="mobileNavBackdrop"></div>
+    <aside class="mobile-nav-drawer" id="mobileNavDrawer">
+        <div class="mobile-drawer-header">
+            <a href="index.html" class="brand-link">
+                <span class="brand-badge">AIML</span>
+                <span class="brand-text">rahulcounselling</span>
+            </a>
+            <button type="button" class="mobile-drawer-close" id="mobileDrawerClose" aria-label="Close Menu">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <nav class="mobile-drawer-menu">
+            <a href="index.html" class="mobile-nav-link"><i class="fa-solid fa-house"></i> Home</a>
+            <a href="predictor.html" class="mobile-nav-link"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor</a>
+            <a href="Viewservices.html" class="mobile-nav-link"><i class="fa-solid fa-graduation-cap"></i> Services</a>
+            <a href="consultationForm.html" class="mobile-nav-link active"><i class="fa-solid fa-calendar-check"></i> Consultation</a>
+        </nav>
+        <div class="mobile-drawer-actions">
+            <a href="predictor.html" class="mobile-action-btn primary"><i class="fa-solid fa-wand-magic-sparkles"></i> Try AI Predictor</a>
+            <a href="login.html" class="mobile-action-btn secondary"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+            <a href="register.html" class="mobile-action-btn secondary"><i class="fa-solid fa-user-plus"></i> Sign Up</a>
+        </div>
+    </aside>
+
   <div class="main-wrapper">
     <!-- Executive Professional Navbar -->
     <header class="navbar">
@@ -36,6 +61,10 @@
           <a href="admin.html" id="adminLink" class="nav-btn hidden"><i class="fa-solid fa-user-shield"></i> Admin</a>
           <a href="consultationForm.html" class="nav-btn signup-btn">Book Form</a>
         </div>
+
+        <button type="button" class="mobile-hamburger-btn" id="mobileHamburgerBtn" aria-label="Open Mobile Menu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
       </div>
     </header>
 
@@ -54,8 +83,8 @@
             Welcome to your official counselling portal. Secure your 1-on-1 session with our Senior Admission Experts and get a personalized CAP round strategy.
           </p>
           <div class="hero-buttons">
-            <a href="consultationForm.html" class="btn-primary">
-              Proceed to Booking Form <i class="fa-solid fa-arrow-right"></i>
+            <a href="consultationForm.html" class="btn-primary btn-pill-blue">
+              <i class="fa-solid fa-calendar-check"></i> Book Free Consultation Now
             </a>
           </div>
         </div>

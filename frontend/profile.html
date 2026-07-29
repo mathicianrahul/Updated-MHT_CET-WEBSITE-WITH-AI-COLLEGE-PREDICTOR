@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - AIML Rahul Counselling</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="Style.css">
+    <link rel="stylesheet" href="profile.css">
+</head>
+<body class="auth-body">
+
+    <!-- Mobile Navigation Drawer & Backdrop -->
+    <div class="mobile-nav-backdrop" id="mobileNavBackdrop"></div>
+    <aside class="mobile-nav-drawer" id="mobileNavDrawer">
+        <div class="mobile-drawer-header">
+            <a href="index.html" class="brand-link">
+                <span class="brand-badge">AIML</span>
+                <span class="brand-text">rahulcounselling</span>
+            </a>
+            <button type="button" class="mobile-drawer-close" id="mobileDrawerClose" aria-label="Close Menu">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <nav class="mobile-drawer-menu">
+            <a href="index.html" class="mobile-nav-link"><i class="fa-solid fa-house"></i> Home</a>
+            <a href="predictor.html" class="mobile-nav-link"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor</a>
+            <a href="Viewservices.html" class="mobile-nav-link"><i class="fa-solid fa-graduation-cap"></i> Services</a>
+            <a href="consultationForm.html" class="mobile-nav-link"><i class="fa-solid fa-calendar-check"></i> Consultation</a>
+            <a href="profile.html" class="mobile-nav-link active"><i class="fa-solid fa-user-circle"></i> My Profile</a>
+        </nav>
+        <div class="mobile-drawer-actions">
+            <a href="predictor.html" class="mobile-action-btn primary"><i class="fa-solid fa-wand-magic-sparkles"></i> Try AI Predictor</a>
+            <a href="profile.html" class="mobile-action-btn secondary" style="background:#eff6ff; color:#2563eb; font-weight:700;"><i class="fa-solid fa-user-circle"></i> My Profile</a>
+        </div>
+    </aside>
+
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <a href="index.html" class="brand-link">
+                    <span class="brand-badge">AIML</span>
+                    <span class="brand-text">rahulcounselling</span>
+                </a>
+            </div>
+            <nav class="navbar-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="predictor.html" class="nav-link">AI Predictor</a>
+                <a href="Viewservices.html" class="nav-link">Services</a>
+                <a href="consultationForm.html" class="nav-link">Consultation</a>
+            </nav>
+            <div class="navbar-buttons">
+                <a href="predictor.html" class="nav-btn predictor-cta-btn">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor
+                </a>
+                <button class="nav-btn logout-btn" id="logoutBtn" onclick="handleLogout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+
+            <button type="button" class="mobile-hamburger-btn" id="mobileHamburgerBtn" aria-label="Open Mobile Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Profile Section -->
+    <main class="profile-container">
+        <div class="profile-card">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <div class="avatar-circle" id="avatarCircle">
+                    <span id="avatarInitials">ST</span>
+                </div>
+                <div class="profile-header-info">
+                    <h1 id="profileName">Student Name</h1>
+                    <p class="profile-email" id="profileEmail">-</p>
+                    <span class="member-badge">
+                        <i class="fas fa-check-circle"></i> Registered Student
+                    </span>
+                </div>
+            </div>
+
+            <!-- Profile Details Grid -->
+            <div class="profile-details">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; flex-wrap:wrap; gap:10px;">
+                    <h3 class="section-title" style="margin-bottom:0;"><i class="fas fa-id-card"></i> Student Details</h3>
+                    <button id="editBtn" onclick="toggleEditModal()" style="background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe; border-radius:10px; padding:0.45rem 0.95rem; font-weight:700; font-size:0.85rem; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+                        <i class="fas fa-pen-to-square"></i> Edit Details
+                    </button>
+                </div>
+
+                <div class="details-grid" id="detailsViewGrid">
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-user"></i> Full Name</span>
+                        <span class="detail-value" id="detailName">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-envelope"></i> Email Address</span>
+                        <span class="detail-value" id="detailEmail">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-phone"></i> Phone Number</span>
+                        <span class="detail-value" id="detailPhone">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-hashtag"></i> CET Roll Number</span>
+                        <span class="detail-value" id="detailRoll">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-layer-group"></i> Category</span>
+                        <span class="detail-value" id="detailCategory">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label"><i class="fas fa-calendar"></i> Member Since</span>
+                        <span class="detail-value" id="detailDate">-</span>
+                    </div>
+                </div>
+
+                <!-- Edit Profile Form Box -->
+                <div id="editProfileBox" style="display:none; background:#f8fafc; border:1px solid #e2e8f0; border-radius:16px; padding:1.5rem; margin-top:1rem;">
+                    <h4 style="font-size:1rem; font-weight:700; margin-bottom:1rem; color:#0f172a;"><i class="fas fa-user-pen" style="color:#2563eb;"></i> Update Student Profile</h4>
+                    <form id="editProfileForm" onsubmit="saveProfileChanges(event)">
+                        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:1rem; margin-bottom:1rem;">
+                            <div>
+                                <label style="font-size:0.82rem; font-weight:700; color:#475569; display:block; margin-bottom:4px;">Full Name *</label>
+                                <input type="text" id="editFullName" required style="width:100%; padding:0.65rem 0.9rem; border:1px solid #cbd5e1; border-radius:10px; font-size:0.95rem;">
+                            </div>
+                            <div>
+                                <label style="font-size:0.82rem; font-weight:700; color:#475569; display:block; margin-bottom:4px;">Phone Number</label>
+                                <input type="tel" id="editPhone" style="width:100%; padding:0.65rem 0.9rem; border:1px solid #cbd5e1; border-radius:10px; font-size:0.95rem;">
+                            </div>
+                            <div>
+                                <label style="font-size:0.82rem; font-weight:700; color:#475569; display:block; margin-bottom:4px;">CET Roll No.</label>
+                                <input type="text" id="editRoll" style="width:100%; padding:0.65rem 0.9rem; border:1px solid #cbd5e1; border-radius:10px; font-size:0.95rem;">
+                            </div>
+                            <div>
+                                <label style="font-size:0.82rem; font-weight:700; color:#475569; display:block; margin-bottom:4px;">Category</label>
+                                <select id="editCategory" style="width:100%; padding:0.65rem 0.9rem; border:1px solid #cbd5e1; border-radius:10px; font-size:0.95rem; background:#fff;">
+                                    <option value="OPEN">OPEN (General)</option>
+                                    <option value="OBC">OBC</option>
+                                    <option value="SC">SC</option>
+                                    <option value="ST">ST</option>
+                                    <option value="NT">NT / VJ</option>
+                                    <option value="EWS">EWS</option>
+                                    <option value="TFWS">TFWS</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="display:flex; justify-content:flex-end; gap:10px;">
+                            <button type="button" onclick="toggleEditModal()" style="background:#e2e8f0; color:#334155; border:none; border-radius:8px; padding:0.5rem 1.1rem; font-weight:600; cursor:pointer;">Cancel</button>
+                            <button type="submit" style="background:#2563eb; color:#fff; border:none; border-radius:8px; padding:0.5rem 1.25rem; font-weight:700; cursor:pointer;">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="profile-actions">
+                <h3 class="section-title"><i class="fas fa-bolt"></i> Quick Actions</h3>
+                <div class="actions-grid">
+                    <a href="predictor.html" class="action-card">
+                        <div class="action-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
+                        <div>
+                            <h4>AI College Predictor</h4>
+                            <p>Predict colleges based on your percentile</p>
+                        </div>
+                        <i class="fas fa-arrow-right action-arrow"></i>
+                    </a>
+                    <a href="consultationForm.html" class="action-card">
+                        <div class="action-icon consultation"><i class="fas fa-headset"></i></div>
+                        <div>
+                            <h4>Book Consultation</h4>
+                            <p>Get 1-on-1 expert admission guidance</p>
+                        </div>
+                        <i class="fas fa-arrow-right action-arrow"></i>
+                    </a>
+                    <a href="Viewservices.html" class="action-card">
+                        <div class="action-icon services"><i class="fas fa-list-check"></i></div>
+                        <div>
+                            <h4>View Services</h4>
+                            <p>Explore our counselling packages</p>
+                        </div>
+                        <i class="fas fa-arrow-right action-arrow"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Logout Section -->
+            <div class="profile-logout-section">
+                <button class="logout-action-btn" onclick="handleLogout()">
+                    <i class="fas fa-sign-out-alt"></i> Sign Out
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        async function loadProfile() {
+            let userData = null;
+            const localStr = localStorage.getItem("user") || sessionStorage.getItem("user");
+            if (localStr) {
+                try { userData = JSON.parse(localStr); } catch (e) {}
+            }
+
+            if (userData && userData.email) {
+                try {
+                    const regMap = JSON.parse(localStorage.getItem("registered_users") || "{}");
+                    const regUser = regMap[userData.email.toLowerCase()];
+                    if (regUser) {
+                        userData = { ...regUser, ...userData };
+                    }
+                } catch(e) {}
+            }
+
+            // Sync with backend API if available
+            try {
+                const res = await fetch("http://localhost:5000/api/current-user", { credentials: "include" });
+                const data = await res.json();
+                if (data && data.loggedIn && data.user) {
+                    userData = { ...userData, ...data.user };
+                    localStorage.setItem("user", JSON.stringify(userData));
+                }
+            } catch(e) {}
+
+            if (!userData) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            const name = userData.fullname || userData.fullName || (userData.email ? userData.email.split('@')[0] : "Student");
+            const email = userData.email || "-";
+            const phone = userData.phone || "-";
+            const roll = userData.cetRollNumber || userData.rollNumber || "-";
+            const category = userData.category || "-";
+            const createdAt = userData.createdAt
+                ? new Date(userData.createdAt).toLocaleDateString("en-IN", { year: "numeric", month: "long", day: "numeric" })
+                : "Active Session";
+
+            // Extract initials cleanly
+            const words = name.trim().split(/\s+/).filter(Boolean);
+            let initials = "ST";
+            if (words.length >= 2) {
+                initials = (words[0][0] + words[words.length - 1][0]).toUpperCase();
+            } else if (words.length === 1 && words[0].length > 0) {
+                initials = words[0].slice(0, 2).toUpperCase();
+            }
+
+            document.getElementById("avatarInitials").innerText = initials;
+            document.getElementById("profileName").innerText = name;
+            document.getElementById("profileEmail").innerText = email;
+
+            document.getElementById("detailName").innerText = name;
+            document.getElementById("detailEmail").innerText = email;
+            document.getElementById("detailPhone").innerText = phone;
+            document.getElementById("detailRoll").innerText = roll;
+            document.getElementById("detailCategory").innerText = category;
+            document.getElementById("detailDate").innerText = createdAt;
+
+            // Pre-fill edit inputs
+            document.getElementById("editFullName").value = name;
+            document.getElementById("editPhone").value = phone !== "-" ? phone : "";
+            document.getElementById("editRoll").value = roll !== "-" ? roll : "";
+            document.getElementById("editCategory").value = category !== "-" ? category : "OPEN";
+        }
+
+        function toggleEditModal() {
+            const editBox = document.getElementById("editProfileBox");
+            if (editBox.style.display === "none") {
+                editBox.style.display = "block";
+            } else {
+                editBox.style.display = "none";
+            }
+        }
+
+        function saveProfileChanges(e) {
+            e.preventDefault();
+            const newName = document.getElementById("editFullName").value.trim();
+            const newPhone = document.getElementById("editPhone").value.trim();
+            const newRoll = document.getElementById("editRoll").value.trim();
+            const newCat = document.getElementById("editCategory").value;
+
+            if (!newName) return;
+
+            let userData = {};
+            try {
+                userData = JSON.parse(localStorage.getItem("user") || sessionStorage.getItem("user") || "{}");
+            } catch(e) {}
+
+            userData.fullname = newName;
+            userData.fullName = newName;
+            if (newPhone) userData.phone = newPhone;
+            if (newRoll) userData.cetRollNumber = newRoll;
+            if (newCat) userData.category = newCat;
+
+            localStorage.setItem("user", JSON.stringify(userData));
+            sessionStorage.setItem("user", JSON.stringify(userData));
+
+            // Also update registered_users map
+            if (userData.email) {
+                try {
+                    const regMap = JSON.parse(localStorage.getItem("registered_users") || "{}");
+                    regMap[userData.email.toLowerCase()] = {
+                        ...(regMap[userData.email.toLowerCase()] || {}),
+                        ...userData
+                    };
+                    localStorage.setItem("registered_users", JSON.stringify(regMap));
+                } catch(e) {}
+            }
+
+            toggleEditModal();
+            loadProfile();
+
+            // Refresh navbar auth UI
+            if (typeof window.globalAuthUISync === "function") window.globalAuthUISync();
+        }
+
+        async function handleLogout() {
+            try {
+                await fetch("https://mhtcet-backend-ran6.onrender.com/api/logout", {
+                    method: "POST",
+                    credentials: "include"
+                });
+            } catch (e) {
+                console.warn("Logout API call failed:", e);
+            }
+            localStorage.removeItem("user");
+            sessionStorage.removeItem("user");
+            window.location.href = "login.html";
+        }
+
+        loadProfile();
+    </script>
+    <script src="auth-ui-sync.js"></script>
+</body>
+</html>

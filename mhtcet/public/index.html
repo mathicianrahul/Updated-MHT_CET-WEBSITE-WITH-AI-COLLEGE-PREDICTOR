@@ -18,6 +18,31 @@
     <canvas id="webgl-canvas"></canvas>
     <div id="cursor-glow" class="cursor-glow"></div>
 
+    <!-- Mobile Navigation Drawer & Backdrop -->
+    <div class="mobile-nav-backdrop" id="mobileNavBackdrop"></div>
+    <aside class="mobile-nav-drawer" id="mobileNavDrawer">
+        <div class="mobile-drawer-header">
+            <a href="index.html" class="brand-link">
+                <span class="brand-badge">AIML</span>
+                <span class="brand-text">rahulcounselling</span>
+            </a>
+            <button type="button" class="mobile-drawer-close" id="mobileDrawerClose" aria-label="Close Menu">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <nav class="mobile-drawer-menu">
+            <a href="index.html" class="mobile-nav-link active"><i class="fa-solid fa-house"></i> Home</a>
+            <a href="predictor.html" class="mobile-nav-link"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor</a>
+            <a href="Viewservices.html" class="mobile-nav-link"><i class="fa-solid fa-graduation-cap"></i> Services</a>
+            <a href="consultationForm.html" class="mobile-nav-link"><i class="fa-solid fa-calendar-check"></i> Consultation</a>
+        </nav>
+        <div class="mobile-drawer-actions">
+            <a href="predictor.html" class="mobile-action-btn primary"><i class="fa-solid fa-wand-magic-sparkles"></i> Try AI Predictor</a>
+            <a href="login.html" class="mobile-action-btn secondary"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+            <a href="register.html" class="mobile-action-btn secondary"><i class="fa-solid fa-user-plus"></i> Sign Up</a>
+        </div>
+    </aside>
+
     <div class="main-wrapper">
         <!-- Executive Professional Navbar -->
         <header class="navbar">
@@ -44,6 +69,10 @@
                     <a href="login.html" class="nav-btn login-btn">Login</a>
                     <a href="register.html" class="nav-btn signup-btn">Sign Up</a>
                 </div>
+
+                <button type="button" class="mobile-hamburger-btn" id="mobileHamburgerBtn" aria-label="Open Mobile Menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
             </div>
         </header>
 
@@ -65,10 +94,10 @@
                     </p>
                     <div class="hero-action-row">
                         <a href="predictor.html" class="btn-hero-primary">
-                            Get Matched Now <i class="fa-solid fa-arrow-right"></i>
+                            AI College Predictor <i class="fa-solid fa-arrow-right"></i>
                         </a>
-                        <a href="consultationForm.html" class="btn-hero-secondary" id="bookConsultationBtn">
-                            <i class="fa-solid fa-calendar-check"></i> Book Consultation
+                        <a href="consultationForm.html" class="btn-hero-secondary btn-pill-blue" id="bookConsultationBtn">
+                            <i class="fa-solid fa-calendar-check"></i> Book Free Consultation Now
                         </a>
                     </div>
 
@@ -236,6 +265,7 @@
         </section>
 
         <!-- Student Success Stories Section ($1M Luxury Glassmorphic Design) -->
+        <!-- Student Success Stories Section (Animated Interactive Switcher matching College Photo Switcher) -->
         <section class="testimonials-section">
             <div class="container">
                 <div class="section-header">
@@ -248,17 +278,33 @@
                     </p>
                 </div>
                 
-                <div class="testimonials-grid">
-                    <!-- Testimonial Card 1 -->
-                    <div class="testimonial-glass-card">
-                        <div class="testimonial-card-header">
+                <!-- Student Selector Pill Bar -->
+                <div class="student-selector-bar">
+                    <button type="button" class="student-selector-btn active" data-story="priya" onclick="selectStory('priya')">
+                        <span class="avatar-mini">PJ</span> Priya J. <span class="tag-mini">COEP CSE</span>
+                    </button>
+                    <button type="button" class="student-selector-btn" data-story="rohit" onclick="selectStory('rohit')">
+                        <span class="avatar-mini alt-vjti">RP</span> Rohit P. <span class="tag-mini">VJTI IT</span>
+                    </button>
+                    <button type="button" class="student-selector-btn" data-story="hemangi" onclick="selectStory('hemangi')">
+                        <span class="avatar-mini alt-pict">HR</span> Hemangi R. <span class="tag-mini">PICT AI&DS</span>
+                    </button>
+                    <button type="button" class="student-selector-btn" data-story="amit" onclick="selectStory('amit')">
+                        <span class="avatar-mini alt-wce">AK</span> Amit K. <span class="tag-mini">WCE ENTC</span>
+                    </button>
+                </div>
+
+                <!-- Featured Story Stage Card -->
+                <div class="featured-story-card" id="featuredStoryCard">
+                    <div class="story-card-inner">
+                        <div class="story-card-header">
                             <div class="student-avatar-wrap">
-                                <div class="student-avatar-gradient">PJ</div>
+                                <div class="student-avatar-gradient" id="storyAvatarGrad">PJ</div>
                                 <span class="avatar-check-badge" title="CAP Seat Allotment Verified"><i class="fa-solid fa-check"></i></span>
                             </div>
                             <div class="student-meta">
-                                <h4 class="student-name">Priya Jadhav</h4>
-                                <span class="student-college-pill"><i class="fa-solid fa-building-columns"></i> COEP Pune</span>
+                                <h3 class="student-name" id="storyStudentName">Priya Jadhav</h3>
+                                <span class="student-college-pill" id="storyCollegePill"><i class="fa-solid fa-building-columns"></i> COEP Pune</span>
                             </div>
                             <div class="star-rating">
                                 <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
@@ -266,91 +312,25 @@
                         </div>
 
                         <div class="seat-badge-row">
-                            <span class="seat-badge-item"><i class="fa-solid fa-microchip"></i> Computer Engineering</span>
-                            <span class="seat-badge-item cutoff-tag">99.42 %ile</span>
+                            <span class="seat-badge-item" id="storyBranchBadge"><i class="fa-solid fa-microchip"></i> Computer Engineering</span>
+                            <span class="seat-badge-item cutoff-tag" id="storyPercentileBadge">99.42 %ile</span>
                         </div>
 
-                        <p class="testimonial-quote">
+                        <p class="testimonial-quote" id="storyQuote">
                             "The round-wise option form strategy was 100% accurate! I was confused between COEP & VJTI options, but the data-driven cutoff analysis gave me total clarity. Secured COEP CSE in CAP Round 1!"
                         </p>
                     </div>
 
-                    <!-- Testimonial Card 2 -->
-                    <div class="testimonial-glass-card">
-                        <div class="testimonial-card-header">
-                            <div class="student-avatar-wrap">
-                                <div class="student-avatar-gradient alt-vjti">RP</div>
-                                <span class="avatar-check-badge" title="CAP Seat Allotment Verified"><i class="fa-solid fa-check"></i></span>
-                            </div>
-                            <div class="student-meta">
-                                <h4 class="student-name">Rohit Patil</h4>
-                                <span class="student-college-pill"><i class="fa-solid fa-graduation-cap"></i> VJTI Mumbai</span>
-                            </div>
-                            <div class="star-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                            </div>
+                    <!-- Story Stage Footer Controls -->
+                    <div class="story-controls-footer">
+                        <button type="button" class="story-arrow-btn" onclick="prevStory()"><i class="fa-solid fa-chevron-left"></i></button>
+                        <div class="story-dots-row">
+                            <span class="story-dot active" id="dot-priya" onclick="selectStory('priya')"></span>
+                            <span class="story-dot" id="dot-rohit" onclick="selectStory('rohit')"></span>
+                            <span class="story-dot" id="dot-hemangi" onclick="selectStory('hemangi')"></span>
+                            <span class="story-dot" id="dot-amit" onclick="selectStory('amit')"></span>
                         </div>
-
-                        <div class="seat-badge-row">
-                            <span class="seat-badge-item"><i class="fa-solid fa-laptop-code"></i> Information Technology</span>
-                            <span class="seat-badge-item cutoff-tag">99.18 %ile</span>
-                        </div>
-
-                        <p class="testimonial-quote">
-                            "The AI predictor and personal guidance were flawless. I got precise category quota insights that saved me from making costly mistakes in the option form. Highly recommended for every CET aspirant!"
-                        </p>
-                    </div>
-
-                    <!-- Testimonial Card 3 -->
-                    <div class="testimonial-glass-card">
-                        <div class="testimonial-card-header">
-                            <div class="student-avatar-wrap">
-                                <div class="student-avatar-gradient alt-pict">HR</div>
-                                <span class="avatar-check-badge" title="CAP Seat Allotment Verified"><i class="fa-solid fa-check"></i></span>
-                            </div>
-                            <div class="student-meta">
-                                <h4 class="student-name">Hemangi Rajput</h4>
-                                <span class="student-college-pill"><i class="fa-solid fa-brain"></i> PICT Pune</span>
-                            </div>
-                            <div class="star-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                            </div>
-                        </div>
-
-                        <div class="seat-badge-row">
-                            <span class="seat-badge-item"><i class="fa-solid fa-robot"></i> AI & Data Science</span>
-                            <span class="seat-badge-item cutoff-tag">98.85 %ile</span>
-                        </div>
-
-                        <p class="testimonial-quote">
-                            "Best counselling guidance in Maharashtra. The team explained how home university quotas work and helped me prioritize PICT AI&DS correctly. I secured my top choice effortlessly."
-                        </p>
-                    </div>
-
-                    <!-- Testimonial Card 4 -->
-                    <div class="testimonial-glass-card">
-                        <div class="testimonial-card-header">
-                            <div class="student-avatar-wrap">
-                                <div class="student-avatar-gradient alt-wce">AK</div>
-                                <span class="avatar-check-badge" title="CAP Seat Allotment Verified"><i class="fa-solid fa-check"></i></span>
-                            </div>
-                            <div class="student-meta">
-                                <h4 class="student-name">Amit Kulkarni</h4>
-                                <span class="student-college-pill"><i class="fa-solid fa-satellite-dish"></i> WCE Sangli</span>
-                            </div>
-                            <div class="star-rating">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                            </div>
-                        </div>
-
-                        <div class="seat-badge-row">
-                            <span class="seat-badge-item"><i class="fa-solid fa-bolt"></i> Electronics & Telecomm</span>
-                            <span class="seat-badge-item cutoff-tag">97.90 %ile</span>
-                        </div>
-
-                        <p class="testimonial-quote">
-                            "Extremely structured and transparent guidance. From FC document verification to final CAP round allotment, the counselling experts supported us at every single step!"
-                        </p>
+                        <button type="button" class="story-arrow-btn" onclick="nextStory()"><i class="fa-solid fa-chevron-right"></i></button>
                     </div>
                 </div>
             </div>
@@ -488,8 +468,8 @@
                 </div>
                 
                 <div style="text-align:center; margin-top:3rem;">
-                    <a href="consultationForm.html" class="btn-primary" id="scheduleConsultationBtn">
-                        <i class="fa-solid fa-calendar-check"></i> Book Free Consultation
+                    <a href="consultationForm.html" class="btn-primary btn-pill-blue" id="scheduleConsultationBtn">
+                        <i class="fa-solid fa-calendar-check"></i> Book Free Consultation Now
                     </a>
                 </div>
             </div>
@@ -545,23 +525,8 @@
 
     <!-- Authentication & Interactive Logic -->
     <script>
-async function handleConsultationClick() {
-    try {
-        const res = await fetch("https://mhtcet-backend-ran6.onrender.com/api/check-auth", {
-            credentials: "include"
-        });
-
-        const data = await res.json();
-
-        if (data.loggedIn) {
-            window.location.href = "consultation.html";
-        } else {
-            window.location.href = "login.html";
-        }
-    } catch (error) {
-        console.error("Auth check failed:", error);
-        window.location.href = "login.html";
-    }
+function handleConsultationClick() {
+    window.location.href = "consultationForm.html";
 }
 
 document.getElementById("bookConsultationBtn")
@@ -695,9 +660,179 @@ setInterval(() => {
     const nextIndex = (collegeKeys.indexOf(activeCollegeKey) + 1) % collegeKeys.length;
     selectCollege(collegeKeys[nextIndex]);
 }, 5000);
+
+// Student Success Stories Switcher Engine
+const storyData = {
+    priya: {
+        avatar: 'PJ',
+        avatarClass: '',
+        name: 'Priya Jadhav',
+        college: '<i class="fa-solid fa-building-columns"></i> COEP Pune',
+        branch: '<i class="fa-solid fa-microchip"></i> Computer Engineering',
+        percentile: '99.42 %ile',
+        quote: '"The round-wise option form strategy was 100% accurate! I was confused between COEP & VJTI options, but the data-driven cutoff analysis gave me total clarity. Secured COEP CSE in CAP Round 1!"'
+    },
+    rohit: {
+        avatar: 'RP',
+        avatarClass: 'alt-vjti',
+        name: 'Rohit Patil',
+        college: '<i class="fa-solid fa-graduation-cap"></i> VJTI Mumbai',
+        branch: '<i class="fa-solid fa-laptop-code"></i> Information Technology',
+        percentile: '99.18 %ile',
+        quote: '"The AI predictor and personal guidance were flawless. I got precise category quota insights that saved me from making costly mistakes in the option form. Highly recommended for every CET aspirant!"'
+    },
+    hemangi: {
+        avatar: 'HR',
+        avatarClass: 'alt-pict',
+        name: 'Hemangi Rajput',
+        college: '<i class="fa-solid fa-brain"></i> PICT Pune',
+        branch: '<i class="fa-solid fa-robot"></i> AI & Data Science',
+        percentile: '98.85 %ile',
+        quote: '"Best counselling guidance in Maharashtra. The team explained how home university quotas work and helped me prioritize PICT AI&DS correctly. I secured my top choice effortlessly."'
+    },
+    amit: {
+        avatar: 'AK',
+        avatarClass: 'alt-wce',
+        name: 'Amit Kulkarni',
+        college: '<i class="fa-solid fa-satellite-dish"></i> WCE Sangli',
+        branch: '<i class="fa-solid fa-bolt"></i> Electronics & Telecomm',
+        percentile: '97.90 %ile',
+        quote: '"Extremely structured and transparent guidance. From FC document verification to final CAP round allotment, the counselling experts supported us at every single step!"'
+    }
+};
+
+let activeStoryKey = 'priya';
+const storyKeys = ['priya', 'rohit', 'hemangi', 'amit'];
+
+function selectStory(key) {
+    if (!storyData[key]) return;
+    activeStoryKey = key;
+    const data = storyData[key];
+
+    const cardInner = document.querySelector("#featuredStoryCard .story-card-inner");
+    if (cardInner) {
+        cardInner.style.opacity = '0.2';
+        cardInner.style.transform = 'translateY(6px)';
+        setTimeout(() => {
+            document.getElementById("storyAvatarGrad").innerText = data.avatar;
+            document.getElementById("storyAvatarGrad").className = `student-avatar-gradient ${data.avatarClass}`;
+            document.getElementById("storyStudentName").innerText = data.name;
+            document.getElementById("storyCollegePill").innerHTML = data.college;
+            document.getElementById("storyBranchBadge").innerHTML = data.branch;
+            document.getElementById("storyPercentileBadge").innerText = data.percentile;
+            document.getElementById("storyQuote").innerText = data.quote;
+
+            cardInner.style.opacity = '1';
+            cardInner.style.transform = 'translateY(0)';
+        }, 120);
+    }
+
+    // Update Top Selector Buttons
+    document.querySelectorAll(".student-selector-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-story") === key);
+    });
+
+    // Update Dots
+    storyKeys.forEach(k => {
+        const dot = document.getElementById(`dot-${k}`);
+        if (dot) dot.classList.toggle("active", k === key);
+    });
+}
+
+function nextStory() {
+    const nextIdx = (storyKeys.indexOf(activeStoryKey) + 1) % storyKeys.length;
+    selectStory(storyKeys[nextIdx]);
+}
+
+function prevStory() {
+    const prevIdx = (storyKeys.indexOf(activeStoryKey) - 1 + storyKeys.length) % storyKeys.length;
+    selectStory(storyKeys[prevIdx]);
+}
+
+// Auto-cycle student success stories every 4.5 seconds
+setInterval(() => {
+    nextStory();
+}, 4500);
+
+// Mobile Navigation Drawer Toggle Logic
+const mobileHamburgerBtn = document.getElementById("mobileHamburgerBtn");
+const mobileNavDrawer = document.getElementById("mobileNavDrawer");
+const mobileNavBackdrop = document.getElementById("mobileNavBackdrop");
+const mobileDrawerClose = document.getElementById("mobileDrawerClose");
+
+function openMobileMenu() {
+    if (mobileNavDrawer && mobileNavBackdrop) {
+        mobileNavDrawer.classList.add("active");
+        mobileNavBackdrop.classList.add("active");
+        document.body.style.overflow = "hidden";
+    }
+}
+
+function closeMobileMenu() {
+    if (mobileNavDrawer && mobileNavBackdrop) {
+        mobileNavDrawer.classList.remove("active");
+        mobileNavBackdrop.classList.remove("active");
+        document.body.style.overflow = "";
+    }
+}
+
+if (mobileHamburgerBtn) mobileHamburgerBtn.addEventListener("click", openMobileMenu);
+if (mobileDrawerClose) mobileDrawerClose.addEventListener("click", closeMobileMenu);
+if (mobileNavBackdrop) mobileNavBackdrop.addEventListener("click", closeMobileMenu);
+
+document.querySelectorAll(".mobile-nav-link, .mobile-action-btn").forEach(link => {
+    link.addEventListener("click", closeMobileMenu);
+});
 </script>
+
+    <!-- Mobile Sticky Floating Quick Action Bar (Thumb-friendly for Android users) -->
+    <div class="mobile-sticky-bar">
+        <a href="predictor.html" class="mobile-sticky-btn primary">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor
+        </a>
+        <a href="consultationForm.html" class="mobile-sticky-btn secondary">
+            <i class="fa-solid fa-calendar-check"></i> Book Consultation
+        </a>
+    </div>
+
+    <script>
+        (function syncHomePageAuth() {
+            const userStr = localStorage.getItem("user") || sessionStorage.getItem("user");
+            if (!userStr) return;
+            try {
+                const user = JSON.parse(userStr);
+                if (!user) return;
+                const initials = (user.fullname || user.fullName || "Student").split(" ").map(n=>n[0]).join("").toUpperCase().slice(0, 2);
+                
+                // Desktop navbar update
+                const authArea = document.getElementById("authArea") || document.querySelector(".navbar-buttons");
+                if (authArea) {
+                    authArea.innerHTML = `
+                        <a href="predictor.html" class="nav-btn predictor-cta-btn" style="text-decoration:none;">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor
+                        </a>
+                        <a href="profile.html" class="nav-btn profile-nav-btn" style="text-decoration:none; background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe; font-weight:700; padding:0.45rem 0.95rem; border-radius:10px; display:inline-flex; align-items:center; gap:8px;">
+                            <span style="width:22px; height:22px; border-radius:50%; background:#2563eb; color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:10px; font-weight:800;">${initials}</span>
+                            <span>My Profile</span>
+                        </a>
+                    `;
+                }
+
+                // Mobile drawer update
+                const mobileActions = document.querySelector(".mobile-drawer-actions");
+                if (mobileActions) {
+                    mobileActions.innerHTML = `
+                        <a href="predictor.html" class="mobile-action-btn primary"><i class="fa-solid fa-wand-magic-sparkles"></i> Try AI Predictor</a>
+                        <a href="profile.html" class="mobile-action-btn secondary" style="background:#eff6ff; color:#2563eb; font-weight:700;"><i class="fa-solid fa-user-circle"></i> My Profile</a>
+                    `;
+                }
+            } catch(e) {}
+        })();
+    </script>
     <!-- Three.js 3D WebGL Library & Custom Engine -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="3d-scene.js"></script>
+    <script src="scroll-reveal.js"></script>
+    <script src="auth-ui-sync.js"></script>
 </body>
 </html>

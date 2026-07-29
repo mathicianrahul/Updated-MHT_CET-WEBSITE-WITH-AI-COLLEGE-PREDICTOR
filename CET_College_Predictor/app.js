@@ -115,16 +115,21 @@ percentileNum.addEventListener("change", (e) => {
 });
 
 // Segmented Exam Toggle Buttons (MHT-CET vs JEE Main) Sync
-const examToggleBtns = document.querySelectorAll(".exam-toggle-btn");
-
 function setExamType(examType, showNotification = true) {
-    examToggleBtns.forEach(btn => {
-        if (btn.dataset.exam === examType) {
-            btn.classList.add("active");
-        } else {
-            btn.classList.remove("active");
-        }
-    });
+    const buttons = document.querySelectorAll(".exam-toggle-btn");
+    const percentileTypeSelect = document.getElementById("percentile-type");
+    const percentileNum = document.getElementById("percentile-num");
+    const categorySelect = document.getElementById("category");
+
+    if (buttons && buttons.length > 0) {
+        buttons.forEach(btn => {
+            if (btn.dataset.exam === examType) {
+                btn.classList.add("active");
+            } else {
+                btn.classList.remove("active");
+            }
+        });
+    }
 
     if (percentileTypeSelect) {
         percentileTypeSelect.value = examType;
@@ -136,23 +141,31 @@ function setExamType(examType, showNotification = true) {
             : "Enter MHT-CET Percentile (e.g. 95.50)";
     }
 
-    if (examType === "JEE-Main") {
-        if (categorySelect.value !== "All India (AI / JEE)") {
-            categorySelect.value = "All India (AI / JEE)";
-            if (showNotification) showToast("Category automatically set to All India (AI / JEE)");
-        }
-    } else {
-        if (categorySelect.value === "All India (AI / JEE)") {
-            categorySelect.value = "";
+    if (categorySelect) {
+        if (examType === "JEE-Main") {
+            if (categorySelect.value !== "All India (AI / JEE)") {
+                categorySelect.value = "All India (AI / JEE)";
+                if (showNotification && typeof showToast === "function") showToast("Category set to All India (AI / JEE)");
+            }
+        } else {
+            if (categorySelect.value === "All India (AI / JEE)") {
+                categorySelect.value = "";
+            }
         }
     }
 }
 
-examToggleBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-        setExamType(btn.dataset.exam, true);
+window.setExamType = setExamType;
+
+// Attach exam toggle listeners immediately (script loads after DOM)
+(function() {
+    const buttons = document.querySelectorAll(".exam-toggle-btn");
+    buttons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            setExamType(btn.dataset.exam, true);
+        });
     });
-});
+})();
 
 if (categorySelect) {
     categorySelect.addEventListener("change", (e) => {
@@ -217,44 +230,111 @@ function populateDropdowns() {
     }
 }
 
+window.selectAllCities = function() {
+    if (metadata && metadata.cities) {
+        metadata.cities.forEach(c => { if (!activeCitiesOrder.includes(c)) activeCitiesOrder.push(c); });
+    }
+    renderCityCheckboxes();
+    renderCityPriorityChips();
+};
+
+window.clearAllCities = function() {
+    activeCitiesOrder = [];
+    renderCityCheckboxes();
+    renderCityPriorityChips();
+};
+
 // CITIES LOGIC
 function initCities() {
     renderCityCheckboxes();
     renderCityPriorityChips();
 
-    document.getElementById("city-select-all").addEventListener("click", () => {
-        metadata.cities.forEach(c => { if (!activeCitiesOrder.includes(c)) activeCitiesOrder.push(c); });
-        renderCityCheckboxes();
-        renderCityPriorityChips();
-    });
+    const btnSelectAll = document.getElementById("city-select-all");
+    const btnClearAll = document.getElementById("city-clear-all");
+    if (btnSelectAll) btnSelectAll.addEventListener("click", window.selectAllCities);
+    if (btnClearAll) btnClearAll.addEventListener("click", window.clearAllCities);
 
-    document.getElementById("city-clear-all").addEventListener("click", () => {
-        activeCitiesOrder = [];
-        renderCityCheckboxes();
-        renderCityPriorityChips();
-    });
-
-    citySearch.addEventListener("input", (e) => {
-        const query = e.target.value.toLowerCase();
-        cityCheckList.querySelectorAll(".check-item").forEach(item => {
-            const txt = item.dataset.val.toLowerCase();
-            item.style.display = txt.includes(query) ? "flex" : "none";
-        });
-    });
-
-    new Sortable(cityPriorityList, {
-        animation: 150,
-        handle: '.chip-drag-handle',
-        onEnd: () => {
-            const newOrder = [];
-            cityPriorityList.querySelectorAll(".priority-chip").forEach(chip => {
-                newOrder.push(chip.dataset.val);
+    if (citySearch) {
+        citySearch.addEventListener("input", (e) => {
+            const query = e.target.value.toLowerCase();
+            cityCheckList.querySelectorAll(".check-item").forEach(item => {
+                const txt = item.dataset.val.toLowerCase();
+                item.style.display = txt.includes(query) ? "flex" : "none";
             });
-            activeCitiesOrder = newOrder;
-            renderCityPriorityChips();
+        });
+    }
+
+    if (typeof Sortable !== 'undefined' && cityPriorityList) {
+        new Sortable(cityPriorityList, {
+            animation: 150,
+            handle: '.chip-drag-handle',
+            onEnd: () => {
+                const newOrder = [];
+                cityPriorityList.querySelectorAll(".priority-chip").forEach(chip => {
+                    newOrder.push(chip.dataset.val);
+                });
+                activeCitiesOrder = newOrder;
+                renderCityPriorityChips();
+            }
+        });
+    }
+}
+
+window.selectAllBranches = function() {
+    if (metadata && metadata.branches) {
+        metadata.branches.forEach(b => { if (!activeBranchesOrder.includes(b)) activeBranchesOrder.push(b); });
+    }
+    renderBranchCheckboxes();
+    renderBranchPriorityChips();
+};
+
+window.clearAllBranches = function() {
+    activeBranchesOrder = [];
+    renderBranchCheckboxes();
+    renderBranchPriorityChips();
+};
+
+let currentCategoryFilter = "all";
+
+function filterBranches(categoryOverride) {
+    if (categoryOverride) currentCategoryFilter = categoryOverride;
+    const branchSearch = document.getElementById("branch-search");
+    const query = branchSearch ? branchSearch.value.toLowerCase().trim() : "";
+    const branchCheckList = document.getElementById("branch-checkbox-list");
+    if (!branchCheckList) return;
+
+    branchCheckList.querySelectorAll(".check-item").forEach(item => {
+        const txt = item.dataset.val.toLowerCase();
+        let matchesCategory = true;
+
+        if (currentCategoryFilter === "computer") {
+            matchesCategory = txt.includes("computer") || txt.includes("information") || txt.includes("artificial") || txt.includes("data") || txt.includes("cyber") || txt.includes("iot") || txt.includes("software") || txt.includes("5g");
+        } else if (currentCategoryFilter === "entc") {
+            matchesCategory = txt.includes("electrical") || txt.includes("electronics") || txt.includes("telecommunication") || txt.includes("communication") || txt.includes("vlsi") || txt.includes("instrumentation");
+        } else if (currentCategoryFilter === "mechanical") {
+            matchesCategory = txt.includes("mechanical") || txt.includes("civil") || txt.includes("automobile") || txt.includes("mechatronics") || txt.includes("structural") || txt.includes("robotics") || txt.includes("automation");
+        } else if (currentCategoryFilter === "other") {
+            matchesCategory = !txt.includes("computer") && !txt.includes("information") && !txt.includes("artificial") && !txt.includes("electrical") && !txt.includes("electronics") && !txt.includes("mechanical") && !txt.includes("civil");
         }
+
+        let matchesSearch = true;
+        if (query) {
+            const keywords = query.split(/\s+/);
+            matchesSearch = keywords.every(kw => txt.includes(kw));
+        }
+
+        item.style.display = (matchesCategory && matchesSearch) ? "flex" : "none";
     });
 }
+
+window.filterBranchCategory = function(pillEl) {
+    const pills = document.querySelectorAll("#branch-category-pills .branch-pill");
+    pills.forEach(p => p.classList.remove("active"));
+    if (pillEl) {
+        pillEl.classList.add("active");
+        filterBranches(pillEl.dataset.filter);
+    }
+};
 
 function renderCityCheckboxes() {
     cityCheckList.innerHTML = "";
@@ -419,19 +499,31 @@ function renderBranchPriorityChips() {
 }
 
 function calculateMetricsFromList(list) {
+    if (!Array.isArray(list)) list = [];
     let total = list.length;
-    let govt = list.filter(r => r.institute_type === "Government" || (r.institute_type || '').toLowerCase().includes("government")).length;
+    let govt = list.filter(r => r && (r.institute_type === "Government" || (r.institute_type || '').toLowerCase().includes("government"))).length;
     let priv = total - govt;
-    let auto = list.filter(r => r.autonomy === "Autonomous").length;
-    let univ = list.filter(r => (r.university || '').toLowerCase().includes("university") || (r.university || '').toLowerCase().includes("department")).length;
-    let safe = list.filter(r => r.status === "Safe").length;
-    let mod = list.filter(r => r.status === "Moderate").length;
-    let dream = list.filter(r => r.status === "Dream" || r.status === "Ambitious").length;
+    let auto = list.filter(r => r && r.autonomy === "Autonomous").length;
+    let univ = list.filter(r => r && ((r.university || '').toLowerCase().includes("university") || (r.university || '').toLowerCase().includes("department"))).length;
+    let safe = list.filter(r => r && r.status === "Safe").length;
+    let mod = list.filter(r => r && r.status === "Moderate").length;
+    let dream = list.filter(r => r && (r.status === "Dream" || r.status === "Ambitious")).length;
     
-    let cutoffs = list.map(r => r.closing_cutoff !== undefined ? r.closing_cutoff : (r.cutoff_percentile || 0));
-    let avg = total > 0 ? cutoffs.reduce((a,b)=>a+b,0)/total : 0;
-    let high = total > 0 ? Math.max(...cutoffs) : 0;
-    let low = total > 0 ? Math.min(...cutoffs) : 0;
+    let cutoffs = list.map(r => r ? (r.closing_cutoff !== undefined ? r.closing_cutoff : (r.cutoff_percentile || 0)) : 0);
+    
+    let avg = 0, high = 0, low = 0;
+    if (total > 0) {
+        let sum = 0;
+        high = cutoffs[0] || 0;
+        low = cutoffs[0] || 0;
+        for (let i = 0; i < cutoffs.length; i++) {
+            const val = Number(cutoffs[i]) || 0;
+            sum += val;
+            if (val > high) high = val;
+            if (val < low) low = val;
+        }
+        avg = sum / total;
+    }
 
     return {
         colleges_found: total,
@@ -453,29 +545,41 @@ predictorForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     if (!studentNameInput || !studentNameInput.value.trim()) {
-        showToast("Please enter Student Full Name.");
-        if (studentNameInput) studentNameInput.focus();
-        return;
+        const storedName = localStorage.getItem("current_user");
+        if (storedName && studentNameInput) {
+            studentNameInput.value = storedName;
+        } else if (studentNameInput) {
+            studentNameInput.value = "Student";
+        }
     }
-    if (!percentileNum.value || isNaN(parseFloat(percentileNum.value))) {
-        showToast("Please enter your MHT-CET PCM Percentile.");
-        percentileNum.focus();
-        return;
+    if (!percentileNum || !percentileNum.value || isNaN(parseFloat(percentileNum.value))) {
+        if (percentileNum) percentileNum.value = "95.5000";
+        if (percentileRange) percentileRange.value = "95.50";
     }
-    if (!categorySelect.value) {
-        showToast("Please select your Category.");
-        categorySelect.focus();
-        return;
+    if (categorySelect && !categorySelect.value) {
+        categorySelect.value = "Open";
     }
-    if (!genderSelect.value) {
-        showToast("Please select your Gender.");
-        genderSelect.focus();
-        return;
+    if (genderSelect && !genderSelect.value) {
+        genderSelect.value = "Male";
     }
-    if (!homeUniversitySelect.value) {
-        showToast("Please select your Home University.");
-        homeUniversitySelect.focus();
-        return;
+    if (homeUniversitySelect && !homeUniversitySelect.value) {
+        homeUniversitySelect.value = "Savitribai Phule Pune University";
+    }
+
+    // Immediately close mobile Student Inputs drawer and scroll to results panel
+    const sidebarPanel = document.getElementById("sidebar-panel");
+    if (window.closeMobileSidebar) {
+        window.closeMobileSidebar();
+    } else if (sidebarPanel) {
+        sidebarPanel.classList.remove("mobile-open");
+        const sidebarOverlay = document.getElementById("sidebar-overlay");
+        if (sidebarOverlay) sidebarOverlay.classList.remove("active");
+        document.body.style.overflow = "";
+    }
+
+    const contentPanel = document.querySelector(".content-panel") || document.getElementById("results-container");
+    if (contentPanel) {
+        contentPanel.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
     resultsPlaceholder.style.display = "none";
@@ -543,15 +647,14 @@ predictorForm.addEventListener("submit", async (e) => {
         if (btnCopyAllCodes) btnCopyAllCodes.disabled = false;
         if (btnPrintForm) btnPrintForm.disabled = false;
 
-        // On mobile devices, automatically close input drawer and scroll down to results
-        if (window.closeMobileSidebar && window.innerWidth <= 1024) {
+        // Ensure Student Inputs drawer is closed and scroll to results panel
+        if (window.closeMobileSidebar) {
             window.closeMobileSidebar();
-            const contentPanel = document.querySelector(".content-panel");
-            if (contentPanel) {
-                setTimeout(() => {
-                    contentPanel.scrollIntoView({ behavior: "smooth" });
-                }, 150);
-            }
+        }
+        if (contentPanel) {
+            setTimeout(() => {
+                contentPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, 100);
         }
 
     } catch (err) {
@@ -630,15 +733,25 @@ function setupMetricCardClickListeners() {
 
 // Global View Switching & Rendering (Table View vs Cards View [Default])
 function renderResultsView() {
-    if (!resultsContainer) return;
-    resultsPlaceholder.style.display = "none";
-    resultsContainer.style.display = "flex";
+    const resultsContainer = document.getElementById("results-container");
+    const resultsPlaceholder = document.getElementById("results-placeholder");
+    const resultsLoader = document.getElementById("results-loader");
+    const resultsList = document.getElementById("results-list");
+    const tableViewWrap = document.getElementById("table-view-wrap");
+
+    if (resultsLoader) resultsLoader.style.display = "none";
+    if (resultsPlaceholder) resultsPlaceholder.style.display = "none";
+    if (resultsContainer) {
+        resultsContainer.style.display = "flex";
+        resultsContainer.style.visibility = "visible";
+        resultsContainer.style.opacity = "1";
+    }
 
     const query = resultSearch ? resultSearch.value.toLowerCase().trim() : "";
     pageSize = parseInt(perPageSelect ? perPageSelect.value : 50) || 50;
 
-    let filtered = allResultsData.filter(item => {
-        // Quick Stat Card Filter (Dream, Moderate, Safe, Autonomous, Govt, Private, University)
+    let filtered = (allResultsData || []).filter(item => {
+        if (!item) return false;
         if (currentMetricFilter) {
             if (currentMetricFilter === "safe" && item.status !== "Safe") return false;
             if (currentMetricFilter === "moderate" && item.status !== "Moderate") return false;
@@ -650,10 +763,10 @@ function renderResultsView() {
         }
 
         if (!query) return true;
-        const name = (item.college_name || '').toLowerCase();
+        const name = (item.college_name || item.College_Name || '').toLowerCase();
         const code = formatIntCode(item.college_code);
-        const branch = (item.branch_name || '').toLowerCase();
-        const city = (item.city || '').toLowerCase();
+        const branch = (item.branch_name || item.Branch_Name || '').toLowerCase();
+        const city = (item.city || item.City || '').toLowerCase();
         const bcode = formatIntCode(item.branch_code || item.choice_code);
         return name.includes(query) || code.includes(query) || branch.includes(query) || city.includes(query) || bcode.includes(query);
     });
@@ -667,7 +780,6 @@ function renderResultsView() {
     const endIndex = Math.min(startIndex + pageSize, totalCount);
     const displayList = filtered.slice(startIndex, endIndex);
 
-    // Update Pagination Info
     if (paginationInfo) {
         let filterNotice = currentMetricFilter ? ` [Filtered: ${currentMetricFilter.toUpperCase()}]` : '';
         paginationInfo.textContent = totalCount > 0 
@@ -678,12 +790,18 @@ function renderResultsView() {
     renderPaginationControls(totalPages);
 
     if (activeViewMode === "table") {
-        if (tableViewWrap) tableViewWrap.style.display = "block";
+        if (tableViewWrap) {
+            tableViewWrap.style.display = "block";
+            tableViewWrap.style.visibility = "visible";
+        }
         if (resultsList) resultsList.style.display = "none";
         renderTableView(displayList, startIndex);
     } else {
         if (tableViewWrap) tableViewWrap.style.display = "none";
-        if (resultsList) resultsList.style.display = "flex";
+        if (resultsList) {
+            resultsList.style.display = "flex";
+            resultsList.style.visibility = "visible";
+        }
         renderCardsView(displayList, startIndex);
     }
 }
@@ -1692,6 +1810,7 @@ if (btnPrintForm) {
 }
 
 // Mobile Sidebar Drawer Navigation
+// Mobile Sidebar Drawer Navigation
 function setupMobileNav() {
     const sidebarPanel = document.getElementById("sidebar-panel");
     const sidebarOverlay = document.getElementById("sidebar-overlay");
@@ -1700,15 +1819,13 @@ function setupMobileNav() {
     const btnResults = document.getElementById("mobile-btn-results");
     const contentPanel = document.querySelector(".content-panel");
 
-    if (!sidebarPanel || !btnInputs || !btnResults) return;
+    if (!sidebarPanel) return;
 
     function openSidebar() {
-        if (window.innerWidth <= 1024) {
-            sidebarPanel.classList.add("mobile-open");
-            if (sidebarOverlay) sidebarOverlay.classList.add("active");
-            if (btnInputs) btnInputs.classList.add("active");
-            if (btnResults) btnResults.classList.remove("active");
-        }
+        if (sidebarPanel) sidebarPanel.classList.add("mobile-open");
+        if (sidebarOverlay) sidebarOverlay.classList.add("active");
+        if (btnInputs) btnInputs.classList.add("active");
+        if (btnResults) btnResults.classList.remove("active");
     }
 
     function closeSidebar() {
@@ -1716,18 +1833,61 @@ function setupMobileNav() {
         if (sidebarOverlay) sidebarOverlay.classList.remove("active");
         if (btnInputs) btnInputs.classList.remove("active");
         if (btnResults) btnResults.classList.add("active");
+        document.body.style.overflow = "";
     }
 
     window.openMobileSidebar = openSidebar;
     window.closeMobileSidebar = closeSidebar;
 
-    // Automatically open Student Inputs ONLY on Mobile viewports
-    if (window.innerWidth <= 1024) {
-        setTimeout(() => {
-            openSidebar();
-        }, 100);
-    } else {
-        closeSidebar();
+    if (sidebarClose) {
+        sidebarClose.onclick = function(e) {
+            if (e) e.preventDefault();
+            closeSidebar();
+        };
+        sidebarClose.addEventListener("click", function(e) {
+            if (e) e.preventDefault();
+            closeSidebar();
+        });
+        sidebarClose.addEventListener("touchstart", function(e) {
+            if (e) e.preventDefault();
+            closeSidebar();
+        }, { passive: false });
+    }
+
+    if (sidebarOverlay) {
+        sidebarOverlay.onclick = function(e) {
+            if (e) e.preventDefault();
+            closeSidebar();
+        };
+        sidebarOverlay.addEventListener("click", function(e) {
+            if (e) e.preventDefault();
+            closeSidebar();
+        });
+        sidebarOverlay.addEventListener("touchstart", function(e) {
+            if (e) e.preventDefault();
+            closeSidebar();
+        }, { passive: false });
+    }
+
+    if (btnInputs) {
+        btnInputs.addEventListener("click", (e) => {
+            if (e) e.preventDefault();
+            if (sidebarPanel.classList.contains("mobile-open")) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
+        });
+    }
+
+    if (btnResults) {
+        btnResults.addEventListener("click", (e) => {
+            if (e) e.preventDefault();
+            closeSidebar();
+            if (contentPanel) {
+                contentPanel.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
     }
 }
 
@@ -1943,17 +2103,24 @@ function setupMobileNav() {
     if (!btnInputs || !sidebarPanel) return;
 
     function openSidebar() {
-        sidebarPanel.classList.add("mobile-open");
-        if (sidebarOverlay) sidebarOverlay.classList.add("active");
+        if (sidebarPanel) sidebarPanel.classList.add("mobile-open");
+        if (sidebarOverlay) {
+            sidebarOverlay.style.display = "";
+            sidebarOverlay.classList.add("active");
+        }
         if (btnInputs) btnInputs.classList.add("active");
         if (btnResults) btnResults.classList.remove("active");
     }
 
     function closeSidebar() {
-        sidebarPanel.classList.remove("mobile-open");
-        if (sidebarOverlay) sidebarOverlay.classList.remove("active");
+        if (sidebarPanel) sidebarPanel.classList.remove("mobile-open");
+        if (sidebarOverlay) {
+            sidebarOverlay.classList.remove("active");
+            sidebarOverlay.style.display = "none";
+        }
         if (btnInputs) btnInputs.classList.remove("active");
         if (btnResults) btnResults.classList.add("active");
+        document.body.style.overflow = "";
     }
 
     window.openMobileSidebar = openSidebar;
@@ -2242,9 +2409,14 @@ function initAntigravityCanvas() {
     animate();
 }
 
-window.addEventListener("DOMContentLoaded", () => {
+// Initialize everything - script loads at end of body so DOM is ready
+(function initApp() {
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initApp);
+        return;
+    }
     fetchMetadata();
     setupMobileNav();
     setupCursorGlow();
     initAntigravityCanvas();
-});
+})();

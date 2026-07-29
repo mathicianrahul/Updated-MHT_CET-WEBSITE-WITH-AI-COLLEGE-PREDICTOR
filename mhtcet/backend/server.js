@@ -3,6 +3,7 @@ require("dotenv").config();
 
 const bcrypt = require("bcrypt");
 const User = require("./models/User");
+const Consultation = require("./models/Consultation");
 
 const express = require("express");
 const mongoose = require("mongoose");
@@ -34,11 +35,23 @@ const requireAdmin = async (req, res, next) => {
 
 app.set("trust proxy", 1);
 // ---------- MIDDLEWARE ----------
+const allowedOrigins = [
+  "http://localhost:5500",
+  "http://127.0.0.1:5500",
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "http://localhost:8080",
+  "https://aimlrahulcounselling.netlify.app"
+];
 app.use(cors({
-  origin: [
-    "http://localhost:5500",
-    "https://aimlrahulcounselling.netlify.app"
-  ],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (file://, mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(null, true); // Allow all for now during development
+  },
   credentials: true
 }));
 
@@ -67,26 +80,26 @@ mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log("MongoDB connected"))
 .catch(err => console.log(err));
 
-// ---------- SIGNUP API ----------
-app.post("/api/signup", async (req, res) => {
+// ---------- SIGNUP / REGISTER API ----------
+const handleSignup = async (req, res) => {
   try {
-    const { fullname, email, phone, cetRollNumber, category, password } = req.body;
-
+    const { fullname, fullName, email, phone, cetRollNumber, category, password } = req.body;
+    const nameToUse = fullname || fullName;
 
     // Check all fields
-    if (!fullname || !email || !phone || !cetRollNumber || !category || !password) {
-      return res.json({
+    if (!nameToUse || !email || !phone || !cetRollNumber || !category || !password) {
+      return res.status(400).json({
         success: false,
         message: "All fields are required"
       });
     }
 
     // Check existing user
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: email.toLowerCase().trim() });
     if (existingUser) {
-      return res.json({
+      return res.status(400).json({
         success: false,
-        message: "Email already registered"
+        message: "Email is already registered. Please sign in."
       });
     }
 
@@ -94,29 +107,36 @@ app.post("/api/signup", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Save user
-    await User.create({
-      fullname,
-      email,
-      phone,
-      cetRollNumber,
+    const newUser = await User.create({
+      fullname: nameToUse.trim(),
+      email: email.toLowerCase().trim(),
+      phone: phone.trim(),
+      cetRollNumber: cetRollNumber.trim(),
       category,
       password: hashedPassword
     });
 
-    res.json({
+    res.status(201).json({
       success: true,
-      message: "Account created successfully"
+      message: "Account created successfully! Please sign in.",
+      user: {
+        fullname: newUser.fullname,
+        email: newUser.email
+      }
     });
 
   } catch (error) {
-  console.error("SIGNUP ERROR:", error);
-  res.json({
-    success: false,
-    message: error.message
-  });
-}
+    console.error("SIGNUP ERROR:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message || "Server error during registration"
+    });
+  }
+};
 
-});
+app.post("/api/signup", handleSignup);
+app.post("/api/register", handleSignup);
+
 
 // ---------- LOGIN API ----------
 app.post("/api/login", async (req, res) => {
@@ -157,7 +177,11 @@ app.post("/api/login", async (req, res) => {
       message: "Login successful",
       user: {
         fullname: user.fullname,
-        email: user.email
+        email: user.email,
+        phone: user.phone,
+        cetRollNumber: user.cetRollNumber,
+        category: user.category,
+        createdAt: user.createdAt
       }
     });
 
@@ -190,7 +214,7 @@ app.get("/api/current-user", async (req, res) => {
       return res.json({ loggedIn: false });
     }
 
-    const user = await User.findById(req.session.userId).select("fullname email");
+    const user = await User.findById(req.session.userId).select("fullname email phone cetRollNumber category createdAt");
     if (!user) {
       return res.json({ loggedIn: false });
     }
@@ -199,7 +223,11 @@ app.get("/api/current-user", async (req, res) => {
       loggedIn: true,
       user: {
         fullname: user.fullname,
-        email: user.email
+        email: user.email,
+        phone: user.phone,
+        cetRollNumber: user.cetRollNumber,
+        category: user.category,
+        createdAt: user.createdAt
       }
     });
   } catch (err) {
@@ -259,6 +287,55 @@ app.get("/api/admin/users", requireAdmin, async (req, res) => {
   }
 });
 
+
+// ---------- CONSULTATION REQUEST API ----------
+app.post("/api/consultation", async (req, res) => {
+  try {
+    const { fullName, email, phone, percentile, subjectGroup, city, preferredDate, preferredTime, additionalInfo } = req.body;
+    console.log("=== NEW CONSULTATION SUBMISSION RECEIVED ===");
+    console.log("Name:", fullName);
+    console.log("Email:", email);
+    console.log("Phone:", phone);
+    console.log("Percentile:", percentile);
+    console.log("City:", city);
+    console.log("==========================================");
+
+    // Save permanently to MongoDB Database
+    if (fullName && email) {
+      await Consultation.create({
+        fullName: fullName.trim(),
+        email: email.toLowerCase().trim(),
+        phone: (phone || "").trim(),
+        percentile: (percentile || "").toString(),
+        subjectGroup: subjectGroup || "",
+        city: city || "",
+        preferredDate: preferredDate || "",
+        preferredTime: preferredTime || "",
+        additionalInfo: additionalInfo || ""
+      });
+      console.log("✅ Saved consultation lead to MongoDB!");
+    }
+
+    res.json({
+      success: true,
+      message: "Consultation request recorded successfully!"
+    });
+  } catch (error) {
+    console.error("CONSULTATION SUBMIT ERROR:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+// ---------- ADMIN: GET ALL CONSULTATION LEADS ----------
+app.get("/api/admin/consultations", requireAdmin, async (req, res) => {
+  try {
+    const consultations = await Consultation.find().sort({ createdAt: -1 });
+    res.json({ success: true, consultations });
+  } catch (error) {
+    console.error("ADMIN CONSULTATIONS ERROR:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
 
 // ---------- START SERVER ----------
 const PORT = process.env.PORT || 5000;

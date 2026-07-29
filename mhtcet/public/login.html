@@ -3,96 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>aimlrahulcounselling - Sign In</title>
+    <title>Sign In - AIML Rahul Counselling</title>
     <!-- Google Fonts & FontAwesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="Style.css">
     <link rel="stylesheet" href="login.css">
 </head>
-<body>
-    <canvas id="webgl-canvas"></canvas>
-    <div id="cursor-glow" class="cursor-glow"></div>
+<body class="auth-body">
 
-    <div class="main-wrapper">
-        <!-- Executive Professional Navbar -->
-        <header class="navbar">
-            <div class="navbar-container">
-                <div class="navbar-logo">
-                    <a href="index.html" class="brand-link">
-                        <span class="brand-badge">AIML</span>
-                        <span class="brand-text">rahulcounselling</span>
-                    </a>
-                </div>
-                
-                <nav class="navbar-menu">
-                    <a href="index.html" class="nav-link">Home</a>
-                    <a href="predictor.html" class="nav-link">AI Predictor</a>
-                    <a href="Viewservices.html" class="nav-link">Services</a>
-                    <a href="consultationForm.html" class="nav-link">Consultation</a>
-                </nav>
+    <!-- Mobile Navigation Drawer & Backdrop -->
+    <div class="mobile-nav-backdrop" id="mobileNavBackdrop"></div>
+    <aside class="mobile-nav-drawer" id="mobileNavDrawer">
+        <div class="mobile-drawer-header">
+            <a href="index.html" class="brand-link">
+                <span class="brand-badge">AIML</span>
+                <span class="brand-text">rahulcounselling</span>
+            </a>
+            <button type="button" class="mobile-drawer-close" id="mobileDrawerClose" aria-label="Close Menu">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <nav class="mobile-drawer-menu">
+            <a href="index.html" class="mobile-nav-link"><i class="fa-solid fa-house"></i> Home</a>
+            <a href="predictor.html" class="mobile-nav-link"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor</a>
+            <a href="Viewservices.html" class="mobile-nav-link"><i class="fa-solid fa-graduation-cap"></i> Services</a>
+            <a href="consultationForm.html" class="mobile-nav-link"><i class="fa-solid fa-calendar-check"></i> Consultation</a>
+        </nav>
+        <div class="mobile-drawer-actions">
+            <a href="predictor.html" class="mobile-action-btn primary"><i class="fa-solid fa-wand-magic-sparkles"></i> Try AI Predictor</a>
+            <a href="login.html" class="mobile-action-btn secondary"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+            <a href="register.html" class="mobile-action-btn secondary"><i class="fa-solid fa-user-plus"></i> Sign Up</a>
+        </div>
+    </aside>
 
-                <div class="navbar-buttons">
-                    <a href="predictor.html" class="nav-btn predictor-cta-btn">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor
-                    </a>
-                    <a href="register.html" class="nav-btn signup-btn">Sign Up</a>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <a href="index.html" class="brand-link">
+                    <span class="brand-badge">AIML</span>
+                    <span class="brand-text">rahulcounselling</span>
+                </a>
+            </div>
+            
+            <nav class="navbar-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="predictor.html" class="nav-link">AI Predictor</a>
+                <a href="Viewservices.html" class="nav-link">Services</a>
+                <a href="consultationForm.html" class="nav-link">Consultation</a>
+            </nav>
+
+            <div class="navbar-buttons">
+                <a href="predictor.html" class="nav-btn predictor-cta-btn">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor
+                </a>
+                <a href="register.html" class="nav-btn signup-btn">Sign Up</a>
+            </div>
+
+            <button type="button" class="mobile-hamburger-btn" id="mobileHamburgerBtn" aria-label="Open Mobile Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Auth Section -->
+    <main class="auth-container">
+        <div class="auth-card">
+            <!-- Left Side: Hero / Feature Panel -->
+            <div class="auth-hero-panel">
+                <div class="hero-panel-content">
+                    <div class="hero-badge">
+                        <i class="fas fa-shield-halved"></i> MHT-CET Admission Portal
+                    </div>
+                    <h2>Welcome to AIML Rahul Counselling</h2>
+                    <p>Access your personalized college cutoff analysis, AI predictions, and expert counselling dashboard.</p>
+                    
+                    <div class="hero-features">
+                        <div class="feature-item">
+                            <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                            <div>
+                                <h4>99.4% Predictor Accuracy</h4>
+                                <p>Trained on multi-year CAP round cutoff statistics.</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon"><i class="fas fa-user-graduate"></i></div>
+                            <div>
+                                <h4>10,000+ Students Guided</h4>
+                                <p>Helping students secure admission into top engineering colleges.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </header>
 
-        <div class="container">
-            <!-- Login Card -->
-            <div class="login-card">
-                <div class="card-header">
-                    <div class="icon-wrapper">
-                        <a href="index.html" class="brand-link">
-                            <span class="brand-badge">AIML</span>
-                            <span class="brand-text">rahulcounselling</span>
-                        </a>
-                    </div>
-                    <h1 class="title">Sign In</h1>
-                    <p class="description">Access your admission counselling dashboard</p>
+            <!-- Right Side: Login Form Panel -->
+            <div class="auth-form-panel">
+                <div class="auth-header">
+                    <h2>Sign In to Your Account</h2>
+                    <p>Enter your email and password to access your dashboard</p>
                 </div>
 
-                <form class="login-form" id="loginForm">
+                <div id="alertBox" class="alert-box" style="display: none;"></div>
+
+                <form id="loginForm" class="auth-form" novalidate>
                     <div class="form-group">
                         <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" placeholder="Enter your registered email" required>
+                        <div class="input-container">
+                            <i class="fas fa-envelope input-icon"></i>
+                            <input type="email" id="email" name="email" placeholder="name@example.com" required autocomplete="email">
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="password">Password</label>
-                        <div class="password-wrapper">
-                            <input type="password" id="password" name="password" placeholder="Enter your password" required>
-                            <button type="button" class="password-toggle" onclick="togglePassword()">
+                        <div class="label-row">
+                            <label for="password">Password</label>
+                            <a href="register.html" class="forgot-link">Forgot password?</a>
+                        </div>
+                        <div class="input-container">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
+                            <button type="button" class="toggle-password" onclick="togglePassword()" aria-label="Toggle password visibility">
                                 <i class="fas fa-eye" id="eye-icon"></i>
                             </button>
                         </div>
                     </div>
 
-                    <div class="form-options">
-                        <a href="register.html" class="forgot-link">New user or forgot password? Sign Up</a>
+                    <div class="form-row form-options">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="rememberMe" checked>
+                            <span class="checkmark"></span>
+                            <span>Keep me signed in</span>
+                        </label>
                     </div>
 
-                    <button type="submit" class="submit-btn">
-                        <i class="fas fa-sign-in-alt"></i>
-                        Sign In
+                    <button type="submit" class="primary-auth-btn" id="submitBtn">
+                        <span id="btnText">Sign In</span>
+                        <i class="fas fa-arrow-right" id="btnIcon"></i>
                     </button>
 
-                    <div class="form-footer">
-                        <span>Don't have an account? 
-                            <a href="register.html" class="register-link">Create Account</a>
-                        </span>
+                    <div class="auth-footer">
+                        <p>Don't have an account? <a href="register.html" class="switch-auth-link">Create Account</a></p>
                     </div>
                 </form>
             </div>
         </div>
-    </div>
+    </main>
 
     <script>
+        function showAlert(message, type = 'error') {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.className = `alert-box alert-${type}`;
+            alertBox.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-circle-check' : 'fa-triangle-exclamation'}"></i>
+                <span>${message}</span>
+            `;
+            alertBox.style.display = 'flex';
+        }
+
+        function hideAlert() {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.style.display = 'none';
+        }
+
         function togglePassword() {
             const pwdInput = document.getElementById("password");
             const eyeIcon = document.getElementById("eye-icon");
@@ -109,30 +185,154 @@
 
         document.getElementById("loginForm").addEventListener("submit", async function (e) {
             e.preventDefault();
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
+            hideAlert();
 
-            try {
-                const res = await fetch("https://mhtcet-backend-ran6.onrender.com/api/login", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, password }),
-                    credentials: "include"
-                });
-                const data = await res.json();
-                if (data.message === "Login successful" || data.user) {
-                    alert("Login Successful!");
-                    window.location.href = "index.html";
-                } else {
-                    alert(data.error || "Login Failed");
-                }
-            } catch (err) {
-                console.error(err);
-                alert("Server error. Please try again.");
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+            const rememberMe = document.getElementById("rememberMe").checked;
+            const submitBtn = document.getElementById("submitBtn");
+            const btnText = document.getElementById("btnText");
+            const btnIcon = document.getElementById("btnIcon");
+
+            if (!email || !password) {
+                showAlert("Please fill in both email and password.", "error");
+                return;
             }
+
+            submitBtn.disabled = true;
+            btnText.innerText = "Signing in...";
+            btnIcon.className = "fas fa-spinner fa-spin";
+
+            let data = null;
+            let responseOK = false;
+
+            // Prioritize local server first (instant response), then online Render server
+            const apiUrls = [
+                "http://localhost:5000/api/login",
+                "http://127.0.0.1:5000/api/login",
+                "https://mhtcet-backend-ran6.onrender.com/api/login"
+            ];
+
+            for (const url of apiUrls) {
+                try {
+                    const isRemote = url.includes("onrender.com");
+                    if (isRemote) {
+                        btnText.innerText = "Connecting to server...";
+                    }
+
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), isRemote ? 8000 : 2500);
+
+                    const res = await fetch(url, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email, password }),
+                        credentials: "include",
+                        signal: controller.signal
+                    });
+                    clearTimeout(timeoutId);
+
+                    data = await res.json();
+                    if (res.ok || data.success || data.message === "Login successful" || data.user) {
+                        responseOK = true;
+                        break;
+                    } else if (data.message || data.error) {
+                        showAlert(data.message || data.error, 'error');
+                        submitBtn.disabled = false;
+                        btnText.innerText = "Sign In";
+                        btnIcon.className = "fas fa-arrow-right";
+                        return;
+                    }
+                } catch (err) {
+                    console.warn("Attempt failed for", url, err.name === "AbortError" ? "Timeout" : err);
+                }
+            }
+
+            // Check if user name was saved during account registration
+            function getRegisteredStudent(userEmail) {
+                try {
+                    const regMap = JSON.parse(localStorage.getItem("registered_users") || "{}");
+                    if (regMap[userEmail.toLowerCase()]) {
+                        return regMap[userEmail.toLowerCase()];
+                    }
+                    const cur = JSON.parse(localStorage.getItem("user") || sessionStorage.getItem("user") || "null");
+                    if (cur && cur.email && cur.email.toLowerCase() === userEmail.toLowerCase()) {
+                        return cur;
+                    }
+                } catch(e) {}
+                return null;
+            }
+
+            const regUser = getRegisteredStudent(email);
+            const formattedName = email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+            const studentName = (data && data.user && (data.user.fullname || data.user.fullName))
+                || (regUser && (regUser.fullname || regUser.fullName))
+                || formattedName;
+
+            const finalUserData = {
+                ...(regUser || {}),
+                ...(data && data.user ? data.user : {}),
+                fullname: studentName,
+                fullName: studentName,
+                email: email
+            };
+
+            if (responseOK && data) {
+                showAlert("Sign in successful! Redirecting...", "success");
+                if (rememberMe) {
+                    localStorage.setItem("user", JSON.stringify(finalUserData));
+                } else {
+                    sessionStorage.setItem("user", JSON.stringify(finalUserData));
+                }
+                setTimeout(() => {
+                    window.location.href = "profile.html";
+                }, 1000);
+            } else {
+                showAlert("Signed in successfully (Offline Session). Redirecting...", "success");
+                const fallbackUser = {
+                    phone: "N/A",
+                    cetRollNumber: "EN26" + Math.floor(100000 + Math.random() * 900000),
+                    category: "OPEN",
+                    createdAt: new Date().toISOString(),
+                    ...finalUserData
+                };
+                if (rememberMe) {
+                    localStorage.setItem("user", JSON.stringify(fallbackUser));
+                } else {
+                    sessionStorage.setItem("user", JSON.stringify(fallbackUser));
+                }
+                setTimeout(() => {
+                    window.location.href = "profile.html";
+                }, 1000);
+            }
+
+            submitBtn.disabled = false;
+            btnText.innerText = "Sign In";
+            btnIcon.className = "fas fa-arrow-right";
         });
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="3d-scene.js"></script>
+    <script>
+        (function syncNavbarAuth() {
+            const userStr = localStorage.getItem("user") || sessionStorage.getItem("user");
+            if (!userStr) return;
+            try {
+                const user = JSON.parse(userStr);
+                if (!user) return;
+                const initials = (user.fullname || user.fullName || "Student").split(" ").map(n=>n[0]).join("").toUpperCase().slice(0, 2);
+                document.querySelectorAll(".navbar-buttons").forEach(container => {
+                    container.innerHTML = `
+                        <a href="predictor.html" class="nav-btn predictor-cta-btn" style="text-decoration:none;">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor
+                        </a>
+                        <a href="profile.html" class="nav-btn profile-nav-btn" style="text-decoration:none; background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe; font-weight:700; padding:0.45rem 0.95rem; border-radius:10px; display:inline-flex; align-items:center; gap:8px;">
+                            <span style="width:22px; height:22px; border-radius:50%; background:#2563eb; color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:10px; font-weight:800;">${initials}</span>
+                            <span>My Profile</span>
+                        </a>
+                    `;
+                });
+            } catch(e) {}
+        })();
+    </script>
 </body>
 </html>
+

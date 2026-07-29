@@ -61,7 +61,7 @@
         <div class="main-body">
 
             <!-- Mobile Sidebar Backdrop Overlay -->
-            <div class="sidebar-overlay" id="sidebar-overlay"></div>
+            <div class="sidebar-overlay" id="sidebar-overlay" onclick="if(window.closeMobileSidebar){window.closeMobileSidebar();}else{document.getElementById('sidebar-panel')?.classList.remove('mobile-open');document.getElementById('sidebar-overlay')?.classList.remove('active');}"></div>
 
             <!-- Left Sidebar: Student Inputs -->
             <aside class="sidebar-panel" id="sidebar-panel">
@@ -70,7 +70,7 @@
                         <i class="fa-solid fa-sliders"></i>
                         <h2>Student Inputs</h2>
                     </div>
-                    <button type="button" class="mobile-close-btn" id="mobile-sidebar-close" title="Close Panel">
+                    <button type="button" class="mobile-close-btn" id="mobile-sidebar-close" onclick="if(window.closeMobileSidebar){window.closeMobileSidebar();}else{document.getElementById('sidebar-panel')?.classList.remove('mobile-open');document.getElementById('sidebar-overlay')?.classList.remove('active');}" title="Close Panel" aria-label="Close Panel">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
@@ -91,10 +91,10 @@
                         
                         <!-- Segmented Exam Toggle -->
                         <div class="exam-toggle-group" id="exam-toggle-group">
-                            <button type="button" class="exam-toggle-btn active" data-exam="MHT-CET">
+                            <button type="button" class="exam-toggle-btn active" data-exam="MHT-CET" onclick="if(window.setExamType) window.setExamType('MHT-CET', true)">
                                 <i class="fa-solid fa-graduation-cap"></i> MHT-CET (PCM)
                             </button>
-                            <button type="button" class="exam-toggle-btn" data-exam="JEE-Main">
+                            <button type="button" class="exam-toggle-btn" data-exam="JEE-Main" onclick="if(window.setExamType) window.setExamType('JEE-Main', true)">
                                 <i class="fa-solid fa-star"></i> JEE Main
                             </button>
                         </div>
@@ -226,7 +226,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" id="btn-submit" class="submit-btn">
+                    <button type="submit" id="btn-submit" class="submit-btn" onclick="if(window.closeMobileSidebar){window.closeMobileSidebar();}const sp=document.getElementById('sidebar-panel');if(sp)sp.classList.remove('mobile-open');const so=document.getElementById('sidebar-overlay');if(so){so.classList.remove('active');so.style.display='none';}">
                         <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Option Form List
                     </button>
                 </form>

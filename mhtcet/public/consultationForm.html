@@ -2,284 +2,455 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>Book Your Free Consultation - aimlrahulcounselling</title>
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="Style.css">
     <link rel="stylesheet" href="consultationForm.css">
 </head>
 <body>
-    <canvas id="webgl-canvas"></canvas>
-    <div id="cursor-glow" class="cursor-glow"></div>
-    <header>
-    <div class="container">
-        <div class="logo">
-            <span class="logo-icon">📘</span>
-            <span class="logo-text">aimlrahulcounselling</span>
+
+    <!-- Mobile Navigation Drawer & Backdrop -->
+    <div class="mobile-nav-backdrop" id="mobileNavBackdrop"></div>
+    <aside class="mobile-nav-drawer" id="mobileNavDrawer">
+        <div class="mobile-drawer-header">
+            <a href="index.html" class="brand-link">
+                <span class="brand-badge">AIML</span>
+                <span class="brand-text">rahulcounselling</span>
+            </a>
+            <button type="button" class="mobile-drawer-close" id="mobileDrawerClose" aria-label="Close Menu">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
         </div>
-        <nav class="navigation">
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="viewservices.html">Services</a></li>
-                <li><a href="index.html#contact">Contact</a></li>
-            </ul>
+        <nav class="mobile-drawer-menu">
+            <a href="index.html" class="mobile-nav-link"><i class="fa-solid fa-house"></i> Home</a>
+            <a href="predictor.html" class="mobile-nav-link"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor</a>
+            <a href="Viewservices.html" class="mobile-nav-link"><i class="fa-solid fa-graduation-cap"></i> Services</a>
+            <a href="consultationForm.html" class="mobile-nav-link active"><i class="fa-solid fa-calendar-check"></i> Consultation</a>
         </nav>
-    </div>
-</header>
+        <div class="mobile-drawer-actions">
+            <a href="predictor.html" class="mobile-action-btn primary"><i class="fa-solid fa-wand-magic-sparkles"></i> Try AI Predictor</a>
+            <a href="login.html" class="mobile-action-btn secondary"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+            <a href="register.html" class="mobile-action-btn secondary"><i class="fa-solid fa-user-plus"></i> Sign Up</a>
+        </div>
+    </aside>
 
+    <div class="main-wrapper">
+        <!-- Executive Professional Navbar -->
+        <header class="navbar">
+            <div class="navbar-container">
+                <div class="navbar-logo">
+                    <a href="index.html" class="brand-link">
+                        <span class="brand-badge">AIML</span>
+                        <span class="brand-text">rahulcounselling</span>
+                    </a>
+                </div>
+                
+                <nav class="navbar-menu">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="predictor.html" class="nav-link">AI Predictor</a>
+                    <a href="Viewservices.html" class="nav-link">Services</a>
+                    <a href="consultationForm.html" class="nav-link active">Consultation</a>
+                </nav>
 
-    <main>
-        
-        <div class="form-container">
-            <div class="hero-section">
-                <div class="hero-content">
+                <div class="navbar-buttons" id="authArea">
+                    <a href="predictor.html" class="nav-btn predictor-cta-btn">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor
+                    </a>
+                    <a href="admin.html" id="adminLink" class="nav-btn hidden"><i class="fa-solid fa-user-shield"></i> Admin</a>
+                    <a href="login.html" class="nav-btn login-btn">Login</a>
+                    <a href="register.html" class="nav-btn signup-btn">Sign Up</a>
+                </div>
+
+                <button class="mobile-hamburger-btn" id="mobileHamburgerBtn" aria-label="Open menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </header>
+
+        <main class="consultation-main-content">
+            <div class="container form-container">
+                <!-- Hero Left Column -->
+                <div class="hero-section">
+                    <div class="hero-pill-badge">
+                        <span class="pulse-dot"></span> Official MHT-CET 2026 Admissions Guide
+                    </div>
+
                     <h1 class="hero-title">
                         Schedule Your
-                        <span class="free-consultation">Free Consultation</span>
+                        <span class="free-consultation">Free 1-on-1 Session</span>
                     </h1>
                     <p class="hero-description">
-                        Get expert guidance for MHT-CET admissions and secure your seat in top engineering colleges across Maharashtra.
+                        Get expert data-driven guidance for MHT-CET admissions and secure your seat in top engineering colleges across Maharashtra.
                     </p>
 
                     <div class="benefits-list">
                         <div class="benefit-item">
-                            <span class="check-icon">✓</span>
-                            <span>Personalized college recommendations</span>
+                            <span class="check-icon"><i class="fa-solid fa-check"></i></span>
+                            <span>Personalized college recommendations based on percentile</span>
                         </div>
                         <div class="benefit-item">
-                            <span class="check-icon">✓</span>
-                            <span>Cut-off predictions based on your percentile</span>
+                            <span class="check-icon"><i class="fa-solid fa-check"></i></span>
+                            <span>Cut-off analytics & AI option list optimization</span>
                         </div>
                         <div class="benefit-item">
-                            <span class="check-icon">✓</span>
-                            <span>Branch selection guidance</span>
+                            <span class="check-icon"><i class="fa-solid fa-check"></i></span>
+                            <span>Branch selection & career trajectory guidance</span>
                         </div>
                         <div class="benefit-item">
-                            <span class="check-icon">✓</span>
-                            <span>Complete admission process support</span>
+                            <span class="check-icon"><i class="fa-solid fa-check"></i></span>
+                            <span>Complete FC document & CAP round process support</span>
                         </div>
                         <div class="benefit-item">
-                            <span class="check-icon">✓</span>
-                            <span>Scholarship opportunities</span>
+                            <span class="check-icon"><i class="fa-solid fa-check"></i></span>
+                            <span>TFWS & Scholarship eligibility advice</span>
                         </div>
                     </div>
 
                     <div class="info-box">
-                        <h3>What You'll Get:</h3>
+                        <h3><i class="fa-solid fa-gift"></i> What You'll Get:</h3>
                         <ul>
-                            <li>• 30-minute one-on-one consultation</li>
-                            <li>• Detailed college preference list</li>
-                            <li>• Admission strategy roadmap</li>
-                            <li>• Priority support during CAP rounds</li>
+                            <li><i class="fa-solid fa-clock"></i> 30-minute one-on-one video consultation</li>
+                            <li><i class="fa-solid fa-list-ol"></i> Custom priority option list PDF</li>
+                            <li><i class="fa-solid fa-map-location-dot"></i> Personalized admission strategy roadmap</li>
+                            <li><i class="fa-solid fa-headset"></i> Direct WhatsApp expert support during CAP rounds</li>
                         </ul>
                     </div>
 
                     <div class="limited-offer">
-                        <strong>Limited Time:</strong> Free consultations available for the first 100 students only!
+                        <i class="fa-solid fa-fire"></i> <strong>Limited Seats:</strong> Free consultations available for the first 100 students!
+                    </div>
+                </div>
+
+                <!-- Form Right Column -->
+                <div class="form-section">
+                    <div class="form-card">
+                        <div class="form-header">
+                            <div class="calendar-icon-badge"><i class="fa-solid fa-calendar-check"></i></div>
+                            <h2>Book Your Free Session</h2>
+                            <p>Fill out the form below and we'll get back to you within 24 hours</p>
+                        </div>
+                        
+                        <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+                        <form class="consultation-form" id="counsellingForm" action="https://script.google.com/macros/s/AKfyeby2E_jocW-1jGrqhiAwyiHL4az1alymJUV_17tWZ39UK8Y2xN6LBL4DClb9SJRby7wN/exec" method="POST" target="hidden_iframe">
+                            <input type="hidden" name="access_key" value="13fafc42-0ae7-4b6a-a3b3-5aa204e6b18b">
+
+                            <!-- Personal Information -->
+                            <div class="form-group">
+                                <label for="fullName">
+                                    <i class="fa-solid fa-user label-icon"></i> Full Name *
+                                </label>
+                                <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" autocomplete="name" required>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="email">
+                                        <i class="fa-solid fa-envelope label-icon"></i> Email Address *
+                                    </label>
+                                    <input type="email" id="email" name="email" placeholder="your.email@example.com" inputmode="email" autocomplete="email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">
+                                        <i class="fa-solid fa-phone label-icon"></i> Phone Number *
+                                    </label>
+                                    <input type="tel" id="phone" name="phone" placeholder="+91 9876543210" inputmode="tel" autocomplete="tel" required>
+                                </div>
+                            </div>
+
+                            <!-- Academic Information -->
+                            <div class="section-divider">
+                                <h3>
+                                    <i class="fa-solid fa-graduation-cap section-icon"></i> Academic Details
+                                </h3>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="percentile">
+                                        <i class="fa-solid fa-bullseye label-icon"></i> MHT-CET Percentile *
+                                    </label>
+                                    <input type="number" id="percentile" name="percentile" placeholder="e.g. 98.45" min="0" max="100" step="0.01" inputmode="decimal" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="subjectGroup"><i class="fa-solid fa-book-open label-icon"></i> Subject Group *</label>
+                                    <select id="subjectGroup" name="subjectGroup" required>
+                                        <option value="">Select your subject group</option>
+                                        <option value="PCM">PCM (Physics, Chemistry, Math)</option>
+                                        <option value="PCB">PCB (Physics, Chemistry, Biology)</option>
+                                        <option value="PCM + BIOLOGY">PCMB (Both Mathematics & Biology)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="city">
+                                    <i class="fa-solid fa-location-dot label-icon"></i> Home District / City *
+                                </label>
+                                <select id="city" name="city" required>
+                                    <option value="">Select your District / City</option>
+                                    <option value="ahmednagar">Ahmednagar</option>
+                                    <option value="akola">Akola</option>
+                                    <option value="amravati">Amravati</option>
+                                    <option value="chhatrapati-sambhajinagar">Chhatrapati Sambhajinagar</option>
+                                    <option value="beed">Beed</option>
+                                    <option value="bhandara">Bhandara</option>
+                                    <option value="buldhana">Buldhana</option>
+                                    <option value="chandrapur">Chandrapur</option>
+                                    <option value="dhule">Dhule</option>
+                                    <option value="gadchiroli">Gadchiroli</option>
+                                    <option value="gondia">Gondia</option>
+                                    <option value="hingoli">Hingoli</option>
+                                    <option value="jalgaon">Jalgaon</option>
+                                    <option value="jalna">Jalna</option>
+                                    <option value="kolhapur">Kolhapur</option>
+                                    <option value="latur">Latur</option>
+                                    <option value="mumbai-city">Mumbai City</option>
+                                    <option value="mumbai-suburban">Mumbai Suburban</option>
+                                    <option value="nagpur">Nagpur</option>
+                                    <option value="nanded">Nanded</option>
+                                    <option value="nandurbar">Nandurbar</option>
+                                    <option value="nashik">Nashik</option>
+                                    <option value="Dharashiv">Dharashiv</option>
+                                    <option value="palghar">Palghar</option>
+                                    <option value="parbhani">Parbhani</option>
+                                    <option value="pune">Pune</option>
+                                    <option value="raigad">Raigad</option>
+                                    <option value="ratnagiri">Ratnagiri</option>
+                                    <option value="sangli">Sangli</option>
+                                    <option value="satara">Satara</option>
+                                    <option value="sindhudurg">Sindhudurg</option>
+                                    <option value="solapur">Solapur</option>
+                                    <option value="thane">Thane</option>
+                                    <option value="wardha">Wardha</option>
+                                    <option value="washim">Washim</option>
+                                    <option value="yavatmal">Yavatmal</option>
+                                </select>
+                            </div>
+
+                            <!-- Preferred Schedule -->
+                            <div class="section-divider">
+                                <h3>
+                                    <i class="fa-solid fa-clock section-icon"></i> Preferred Schedule
+                                </h3>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="preferredDate"><i class="fa-solid fa-calendar label-icon"></i> Preferred Date</label>
+                                    <input type="date" id="preferredDate" name="preferredDate">
+                                </div>
+                                <div class="form-group">
+                                    <label for="preferredTime"><i class="fa-solid fa-hourglass-half label-icon"></i> Preferred Time</label>
+                                    <select id="preferredTime" name="preferredTime">
+                                        <option value="">Select time slot</option>
+                                        <option value="morning">Morning (9:00 AM - 12:00 PM)</option>
+                                        <option value="afternoon">Afternoon (12:00 PM - 5:00 PM)</option>
+                                        <option value="evening">Evening (5:00 PM - 8:00 PM)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="additionalInfo"><i class="fa-solid fa-comment-dots label-icon"></i> Additional Information (Optional)</label>
+                                <textarea id="additionalInfo" name="additionalInfo" rows="3" placeholder="Tell us about your target colleges, preferred branches (e.g. CSE/IT), or specific queries..."></textarea>
+                            </div>
+
+                            <button type="submit" class="submit-btn btn-pill-blue" id="sub">
+                                <span class="btn-text"><i class="fa-solid fa-calendar-check"></i> Schedule Free Consultation Now</span>
+                                <div class="loading-spinner" style="display: none;">
+                                    <div class="spinner"></div>
+                                    Scheduling Your Session...
+                                </div>
+                            </button>
+
+                            <p class="privacy-notice">
+                                <i class="fa-solid fa-lock"></i> We respect your privacy. Your information is 100% secure and used solely for admission guidance.
+                            </p>
+                            <p id="msg" style="display:none; margin-top:20px; text-align:center;"></p>
+
+                        </form>
                     </div>
                 </div>
             </div>
+        </main>
 
-            <div class="form-section">
-                <div class="form-card">
-                    <div class="form-header">
-                        <div class="calendar-icon">📅</div>
-                        <h2>Book Your Free Session</h2>
-                        <p>Fill out the form below and we'll get back to you within 24 hours</p>
-                    </div>
-                    
-                    <form class="consultation-form" id="counsellingForm">
-
-
-                        <!-- Personal Information -->
-                        <div class="form-group">
-                            <label for="fullName">
-                                <span class="icon">👤</span>
-                                Full Name *
-                            </label>
-                            <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required>
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <div class="navbar-logo" style="margin-bottom:1rem;">
+                            <a href="index.html" class="brand-link">
+                                <span class="brand-badge">AIML</span>
+                                <span class="brand-text" style="color:#fff;">rahulcounselling</span>
+                            </a>
                         </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="email">
-                                    <span class="icon">✉️</span>
-                                    Email Address *
-                                </label>
-                                <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="phone">
-                                    <span class="icon">📞</span>
-                                    Phone Number *
-                                </label>
-                                <input type="tel" id="phone" name="phone" placeholder="+91 9876543210" required>
-                            </div>
-                        </div>
-
-                        <!-- Academic Information -->
-                        <div class="section-divider">
-                            <h3>
-                                <span class="section-icon">📚</span>
-                                Academic Details
-                            </h3>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="percentile">
-                                    <span class="icon">🎯</span>
-                                    MHT-CET Percentile *
-                                </label>
-                                <input type="number" id="percentile" name="percentile" placeholder="Enter your percentile (0-100)" min="0" max="100" step="0.01" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="subject">Subject Group *</label>
-                                <select id="subjectGroup" name="subjectGroup" required>
-                                    <option value="">Select your subject group</option>
-                                    <option value="PCM">PCM (Physics, Chemistry, Mathematics)</option>
-                                    <option value="PCB">PCB (Physics, Chemistry, Biology)</option>
-                                    <option value="PCM + BIOLOGY">PCMB (Physics, Chemistry, Mathematics, Biology)</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="city">
-                                <span class="icon">📍</span>
-                                City *
-                            </label>
-                            <select id="city" name="city" required>
-                                <option value="" disabled selected>Select Your City</option>
-                                <option value="ahmednagar">Ahmednagar</option>
-                                <option value="akola">Akola</option>
-                                <option value="amravati">Amravati</option>
-                                <option value="chhatrapati-sambhajinagar">Chhatrapati Sambhajinagar</option>
-                                <option value="beed">Beed</option>
-                                <option value="bhandara">Bhandara</option>
-                                <option value="buldhana">Buldhana</option>
-                                <option value="chandrapur">Chandrapur</option>
-                                <option value="dhule">Dhule</option>
-                                <option value="gadchiroli">Gadchiroli</option>
-                                <option value="gondia">Gondia</option>
-                                <option value="hingoli">Hingoli</option>
-                                <option value="jalgaon">Jalgaon</option>
-                                <option value="jalna">Jalna</option>
-                                <option value="kolhapur">Kolhapur</option>
-                                <option value="latur">Latur</option>
-                                <option value="mumbai-city">Mumbai City</option>
-                                <option value="mumbai-suburban">Mumbai Suburban</option>
-                                <option value="nagpur">Nagpur</option>
-                                <option value="nanded">Nanded</option>
-                                <option value="nandurbar">Nandurbar</option>
-                                <option value="nashik">Nashik</option>
-                                <option value="Dharashiv"> Dharashiv</option>
-                                <option value="palghar">Palghar</option>
-                                <option value="parbhani">Parbhani</option>
-                                <option value="pune">Pune</option>
-                                <option value="raigad">Raigad</option>
-                                <option value="ratnagiri">Ratnagiri</option>
-                                <option value="sangli">Sangli</option>
-                                <option value="satara">Satara</option>
-                                <option value="sindhudurg">Sindhudurg</option>
-                                <option value="solapur">Solapur</option>
-                                <option value="thane">Thane</option>
-                                <option value="wardha">Wardha</option>
-                                <option value="washim">Washim</option>
-                                <option value="yavatmal">Yavatmal</option>
-                            </select>
-                        </div>
-
-                        <!-- Preferred Schedule -->
-                        <div class="section-divider">
-                            <h3>
-                                <span class="section-icon">🕐</span>
-                                Preferred Schedule
-                            </h3>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="preferredDate">Preferred Date</label>
-                                <input type="date" id="preferredDate" name="preferredDate">
-                            </div>
-                            <div class="form-group">
-                                <label for="preferredTime">Preferred Time</label>
-                                <select id="preferredTime" name="preferredTime">
-                                    <option value="">Select time slot</option>
-                                    <option value="morning">Morning (9:00 AM - 12:00 PM)</option>
-                                    <option value="afternoon">Afternoon (12:00 PM - 5:00 PM)</option>
-                                    <option value="evening">Evening (5:00 PM - 8:00 PM)</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="message">Additional Information (Optional)</label>
-                            <textarea id="additionalInfo" name="additionalInfo" rows="4" placeholder="Tell us about your goals, preferred colleges, or any specific questions..."></textarea>
-                        </div>
-
-                        <button type="submit" class="submit-btn" id="sub">
-                            <span class="btn-text">Schedule Free Consultation</span>
-                            <div class="loading-spinner" style="display: none;">
-                                <div class="spinner"></div>
-                                Scheduling Your Consultation...
-                            </div>
-                        </button>
-
-                        <p class="privacy-notice">
-                            By submitting this form, you agree to receive communication from our counselling team.
-                            We respect your privacy and will never share your information.
+                        <p class="footer-desc">
+                            Maharashtra's premier data-backed MHT-CET admission guidance platform. Helping engineering aspirants get admitted to VJTI, COEP, PICT, Walchand, and top colleges.
                         </p>
-                        <p id="msg" style="display:none; margin-top:20px; text-align:center;"></p>
-
-                    </form>
+                    </div>
+                    <div class="footer-col">
+                        <h4 class="footer-title">Quick Links</h4>
+                        <ul class="footer-links">
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="predictor.html">AI Predictor</a></li>
+                            <li><a href="Viewservices.html">Services</a></li>
+                            <li><a href="consultationForm.html">Book Consultation</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4 class="footer-title">Contact Us</h4>
+                        <ul class="footer-links">
+                            <li><a href="tel:+918261975508"><i class="fa-solid fa-phone"></i> +91 82619 75508</a></li>
+                            <li><a href="mailto:rgirase312@gmail.com"><i class="fa-solid fa-envelope"></i> rgirase312@gmail.com</a></li>
+                            <li><i class="fa-solid fa-location-dot"></i> Pune & Dhule, Maharashtra</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>© 2026 aimlrahulcounselling. All rights reserved.</p>
+                    <p>Designed for MHT-CET 2026 Engineering Aspirants</p>
                 </div>
             </div>
-        </div>
-    </main>
-<script>
-const form = document.getElementById("counsellingForm");
-const submitBtn = document.getElementById("sub");
-const btnText = submitBtn.querySelector(".btn-text");
-const loader = submitBtn.querySelector(".loading-spinner");
-const msg = document.getElementById("msg");
+        </footer>
+    </div>
 
-form.addEventListener("submit", function (e) {
-    e.preventDefault();
+    <!-- Scripts -->
+    <script>
+    // Auto-prefill student details if logged in
+    (function autoPrefillUser() {
+        const userStr = localStorage.getItem("user") || sessionStorage.getItem("user");
+        if (!userStr) return;
+        try {
+            const user = JSON.parse(userStr);
+            if (user.fullname || user.fullName) {
+                const nameInput = document.getElementById("fullName");
+                if (nameInput) nameInput.value = user.fullname || user.fullName;
+            }
+            if (user.email) {
+                const emailInput = document.getElementById("email");
+                if (emailInput) emailInput.value = user.email;
+            }
+            if (user.phone) {
+                const phoneInput = document.getElementById("phone");
+                if (phoneInput) phoneInput.value = user.phone;
+            }
+        } catch(e) {}
+    })();
 
-    // UI changes
-    btnText.style.display = "none";
-    loader.style.display = "block";
-    submitBtn.disabled = true;
-    msg.style.display = "none";
+    let submitted = false;
 
-    const data = new FormData(form);
+    const form = document.getElementById("counsellingForm");
+    const submitBtn = document.getElementById("sub");
+    const btnText = submitBtn.querySelector(".btn-text");
+    const loader = submitBtn.querySelector(".loading-spinner");
+    const msg = document.getElementById("msg");
+    const hiddenIframe = document.getElementById("hidden_iframe");
 
-    fetch("https://script.google.com/macros/s/AKfycbx6kPvVWwVlYjST6uF2UFRTKVauBdBoaG4HeRItL4OEKZ-uoxY6udDr9wmB2KAiGb7mNA/exec", {
-        method: "POST",
-        body: data
-    })
-    .then(res => res.text())
-    .then(response => {
-    
-        msg.style.display = "block";
-        msg.style.color = "green";
-        msg.innerText = "✅😊Consultation booked successfully! Our team will contact you within 24 hours.";
+    if (hiddenIframe) {
+        hiddenIframe.addEventListener("load", function () {
+            if (submitted) {
+                btnText.style.display = "inline-flex";
+                loader.style.display = "none";
+                submitBtn.disabled = false;
 
-        form.reset();
-    })
-    .catch(() => {
-        msg.style.display = "block";
-        msg.style.color = "red";
-        msg.innerText = "❌ Something went wrong. Please try again later.";
-    })
-    .finally(() => {
-        btnText.style.display = "inline";
-        loader.style.display = "none";
-        submitBtn.disabled = false;
+                msg.style.display = "block";
+                msg.style.color = "#059669";
+                msg.style.fontWeight = "700";
+                msg.style.padding = "12px 16px";
+                msg.style.background = "#ecfdf5";
+                msg.style.borderRadius = "12px";
+                msg.style.border = "1px solid #a7f3d0";
+                msg.innerHTML = "✅ Consultation booked successfully! Your details have been submitted and confirmed. We will contact you within 24 hours.";
+
+                form.reset();
+                submitted = false;
+            }
+        });
+    }
+
+    form.addEventListener("submit", function (e) {
+        btnText.style.display = "none";
+        loader.style.display = "flex";
+        submitBtn.disabled = true;
+        msg.style.display = "none";
+
+        submitted = true;
+
+        const formData = new FormData(form);
+        const formProps = Object.fromEntries(formData);
+
+        const web3Payload = {
+            access_key: "13fafc42-0ae7-4b6a-a3b3-5aa204e6b18b",
+            subject: `🔔 NEW MHT-CET CONSULTATION: ${formProps.fullName || 'Student'} (${formProps.percentile || '0'} %ile)`,
+            from_name: "MHT-CET Counselling Portal",
+            "Student Name": formProps.fullName || "Not Provided",
+            "Email Address": formProps.email || "Not Provided",
+            "Phone Number": formProps.phone || "Not Provided",
+            "MHT-CET Percentile": formProps.percentile || "Not Provided",
+            "Subject Group": formProps.subjectGroup || "Not Provided",
+            "City": formProps.city || "Not Provided",
+            "Preferred Date": formProps.preferredDate || "Flexible",
+            "Preferred Time": formProps.preferredTime || "Flexible",
+            "Additional Information": formProps.additionalInfo || "None"
+        };
+
+        fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(web3Payload)
+        }).catch(() => {});
+
+        fetch("https://formsubmit.co/ajax/rgirase313@gmail.com", {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(web3Payload)
+        }).catch(() => {});
+
+        fetch("http://localhost:5000/api/consultation", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formProps)
+        }).catch(() => {});
     });
-});
-</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="3d-scene.js"></script>
+
+    // Mobile Hamburger Menu Drawer Handler
+    const mobileHamburgerBtn = document.getElementById("mobileHamburgerBtn");
+    const mobileNavDrawer = document.getElementById("mobileNavDrawer");
+    const mobileNavBackdrop = document.getElementById("mobileNavBackdrop");
+    const mobileDrawerClose = document.getElementById("mobileDrawerClose");
+
+    function openMobileDrawer() {
+        if (mobileNavDrawer && mobileNavBackdrop) {
+            mobileNavDrawer.classList.add("active");
+            mobileNavBackdrop.classList.add("active");
+            document.body.style.overflow = "hidden";
+        }
+    }
+
+    function closeMobileDrawer() {
+        if (mobileNavDrawer && mobileNavBackdrop) {
+            mobileNavDrawer.classList.remove("active");
+            mobileNavBackdrop.classList.remove("active");
+            document.body.style.overflow = "";
+        }
+    }
+
+    if (mobileHamburgerBtn) mobileHamburgerBtn.addEventListener("click", openMobileDrawer);
+    if (mobileDrawerClose) mobileDrawerClose.addEventListener("click", closeMobileDrawer);
+    if (mobileNavBackdrop) mobileNavBackdrop.addEventListener("click", closeMobileDrawer);
+    </script>
+    <script src="auth-ui-sync.js"></script>
 </body>
 </html>

@@ -17,44 +17,121 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <!-- SheetJS for Export XLSX -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="Style.css">
     <link rel="stylesheet" href="predictor.css">
 </head>
 
 <body>
-    <div class="app-layout">
+    <!-- Mobile Navigation Drawer & Backdrop -->
+    <div class="mobile-nav-backdrop" id="mobileNavBackdrop"></div>
+    <aside class="mobile-nav-drawer" id="mobileNavDrawer">
+        <div class="mobile-drawer-header">
+            <a href="index.html" class="brand-link">
+                <span class="brand-badge">AIML</span>
+                <span class="brand-text">rahulcounselling</span>
+            </a>
+            <button type="button" class="mobile-drawer-close" id="mobileDrawerClose" aria-label="Close Menu">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <nav class="mobile-drawer-menu">
+            <a href="index.html" class="mobile-nav-link"><i class="fa-solid fa-house"></i> Home</a>
+            <a href="predictor.html" class="mobile-nav-link active"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor</a>
+            <a href="Viewservices.html" class="mobile-nav-link"><i class="fa-solid fa-graduation-cap"></i> Services</a>
+            <a href="consultationForm.html" class="mobile-nav-link"><i class="fa-solid fa-calendar-check"></i> Consultation</a>
+        </nav>
+        <div class="mobile-drawer-actions">
+            <a href="predictor.html" class="mobile-action-btn primary"><i class="fa-solid fa-wand-magic-sparkles"></i> Try AI Predictor</a>
+            <a href="login.html" class="mobile-action-btn secondary"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+            <a href="register.html" class="mobile-action-btn secondary"><i class="fa-solid fa-user-plus"></i> Sign Up</a>
+        </div>
+    </aside>
+    <!-- Auth Gate Overlay -->
+    <div id="auth-gate" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(248,250,252,0.92); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); display:flex; align-items:center; justify-content:center; flex-direction:column; font-family:'Inter',-apple-system,sans-serif;">
+        <div style="max-width:480px; width:90%; background:#ffffff; border:1px solid #e2e8f0; border-radius:24px; padding:3rem 2.5rem; box-shadow:0 25px 50px -12px rgba(15,23,42,0.12); text-align:center;">
+            <div style="width:72px; height:72px; margin:0 auto 1.5rem; border-radius:50%; background:linear-gradient(135deg,#2563eb,#3b82f6); display:flex; align-items:center; justify-content:center; box-shadow:0 8px 20px rgba(37,99,235,0.3);">
+                <i class="fas fa-lock" style="color:#ffffff; font-size:1.6rem;"></i>
+            </div>
+            <h2 style="font-family:'Plus Jakarta Sans',sans-serif; font-size:1.65rem; font-weight:800; color:#0f172a; margin-bottom:0.5rem; letter-spacing:-0.5px;">Sign In Required</h2>
+            <p style="color:#64748b; font-size:0.95rem; line-height:1.6; margin-bottom:2rem;">You need to sign in to access the AI College Predictor. Create a free account to get personalized cutoff analysis and college recommendations.</p>
+            
+            <div style="display:flex; flex-direction:column; gap:0.75rem; margin-bottom:2rem; text-align:left;">
+                <div style="display:flex; align-items:center; gap:12px; padding:0.7rem 1rem; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px;">
+                    <i class="fas fa-check-circle" style="color:#16a34a; font-size:0.95rem;"></i>
+                    <span style="font-size:0.88rem; font-weight:600; color:#15803d;">AI-powered college cutoff predictions</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:12px; padding:0.7rem 1rem; background:#eff6ff; border:1px solid #bfdbfe; border-radius:12px;">
+                    <i class="fas fa-check-circle" style="color:#2563eb; font-size:0.95rem;"></i>
+                    <span style="font-size:0.88rem; font-weight:600; color:#1d4ed8;">Personalized option form strategy</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:12px; padding:0.7rem 1rem; background:#faf5ff; border:1px solid #e9d5ff; border-radius:12px;">
+                    <i class="fas fa-check-circle" style="color:#7c3aed; font-size:0.95rem;"></i>
+                    <span style="font-size:0.88rem; font-weight:600; color:#6d28d9;">106K+ cutoff records from all CAP rounds</span>
+                </div>
+            </div>
 
-        <!-- Executive Professional Header -->
-        <header class="main-header" style="background:#ffffff; border-bottom:1px solid #e2e8f0; padding:12px 24px; box-shadow:0 2px 10px rgba(0,0,0,0.04);">
-            <div class="header-left" style="display:flex; align-items:center; gap:20px;">
-                <div class="brand-logo">
-                    <a href="index.html" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
-                        <span style="background:linear-gradient(135deg, #2563eb, #1d4ed8); color:#ffffff; font-family:'Plus Jakarta Sans',sans-serif; font-size:12px; font-weight:800; padding:3px 8px; border-radius:6px; text-transform:uppercase;">AIML</span>
-                        <span style="font-family:'Plus Jakarta Sans',sans-serif; font-size:18px; font-weight:800; color:#0f172a; letter-spacing:-0.5px;">rahulcounselling</span>
-                    </a>
-                </div>
+            <a href="login.html" style="display:inline-flex; align-items:center; justify-content:center; gap:10px; width:100%; padding:0.88rem; background:linear-gradient(135deg,#2563eb,#1d4ed8); color:#ffffff; border:none; border-radius:12px; font-size:1rem; font-weight:700; text-decoration:none; box-shadow:0 4px 14px rgba(37,99,235,0.3); transition:all 0.2s ease;" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 20px rgba(37,99,235,0.4)'" onmouseout="this.style.transform='none';this.style.boxShadow='0 4px 14px rgba(37,99,235,0.3)'">
+                <i class="fas fa-sign-in-alt"></i> Sign In to Continue
+            </a>
+            <p style="margin-top:1.25rem; font-size:0.88rem; color:#64748b;">Don't have an account? <a href="register.html" style="color:#2563eb; font-weight:700; text-decoration:none;">Create Account</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Auth gate check
+        (function() {
+            const userStr = localStorage.getItem("user") || sessionStorage.getItem("user");
+            const gate = document.getElementById("auth-gate");
+            const user = userStr ? JSON.parse(userStr) : null;
+            
+            if (!user) {
+                if (gate) gate.style.display = "flex";
+                document.body.style.overflow = "hidden";
+            } else {
+                if (gate) gate.style.display = "none";
+            }
+        })();
+    </script>
+
+    <!-- Executive Professional Navbar -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <a href="index.html" class="brand-link">
+                    <span class="brand-badge">AIML</span>
+                    <span class="brand-text">rahulcounselling</span>
+                </a>
             </div>
-            <div class="header-right" style="display:flex; align-items:center; gap:16px;">
-                <a href="index.html" style="text-decoration:none; color:#475569; font-weight:600; font-size:14px;" onmouseover="this.style.color='#2563eb'" onmouseout="this.style.color='#475569'">
-                    <i class="fa-solid fa-house"></i> Home
+            
+            <nav class="navbar-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="predictor.html" class="nav-link active">AI Predictor</a>
+                <a href="Viewservices.html" class="nav-link">Services</a>
+                <a href="consultationForm.html" class="nav-link">Consultation</a>
+            </nav>
+
+            <div class="navbar-buttons" id="authArea">
+                <a href="predictor.html" class="nav-btn predictor-cta-btn">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor
                 </a>
-                <a href="Viewservices.html" style="text-decoration:none; color:#475569; font-weight:600; font-size:14px;" onmouseover="this.style.color='#2563eb'" onmouseout="this.style.color='#475569'">
-                    Services
-                </a>
-                <a href="consultationForm.html" style="text-decoration:none; color:#475569; font-weight:600; font-size:14px;" onmouseover="this.style.color='#2563eb'" onmouseout="this.style.color='#475569'">
-                    Consultation
-                </a>
-                <div class="status-badge" style="background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px;">
-                    <span class="pulse-dot" style="width:8px; height:8px; background:#0284c7; border-radius:50%; display:inline-block;"></span>
-                    <span>106K Cutoffs Synced</span>
-                </div>
+                <a href="admin.html" id="adminLink" class="nav-btn hidden"><i class="fa-solid fa-user-shield"></i> Admin</a>
+                <a href="login.html" class="nav-btn login-btn">Login</a>
+                <a href="register.html" class="nav-btn signup-btn">Sign Up</a>
             </div>
-        </header>
+
+            <button type="button" class="mobile-hamburger-btn" id="mobileHamburgerBtn" aria-label="Open Mobile Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="app-layout" style="padding-top: 90px;">
 
         <!-- Main Body Grid -->
         <div class="main-body">
 
             <!-- Mobile Sidebar Backdrop Overlay -->
-            <div class="sidebar-overlay" id="sidebar-overlay"></div>
+            <div class="sidebar-overlay" id="sidebar-overlay" onclick="if(window.closeMobileSidebar){window.closeMobileSidebar();}else{document.getElementById('sidebar-panel')?.classList.remove('mobile-open');document.getElementById('sidebar-overlay')?.classList.remove('active');}"></div>
 
             <!-- Left Sidebar: Student Inputs -->
             <aside class="sidebar-panel" id="sidebar-panel">
@@ -63,9 +140,14 @@
                         <i class="fa-solid fa-sliders"></i>
                         <h2>Student Inputs</h2>
                     </div>
-                    <button type="button" class="mobile-close-btn" id="mobile-sidebar-close" title="Close Panel">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
+                    <div class="panel-header-actions">
+                        <button type="button" class="btn-cancel-header" id="btn-cancel-header" onclick="if(window.resetPredictorForm) window.resetPredictorForm();" title="Clear all input fields">
+                            <i class="fa-solid fa-rotate-left"></i> Reset
+                        </button>
+                        <button type="button" class="mobile-close-btn" id="mobile-sidebar-close" onclick="if(window.closeMobileSidebar){window.closeMobileSidebar(event);}const sp=document.getElementById('sidebar-panel');if(sp)sp.classList.remove('mobile-open');const so=document.getElementById('sidebar-overlay');if(so){so.classList.remove('active');so.style.display='none';}" title="Close Panel" aria-label="Close Panel">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <form id="predictor-form">
@@ -84,10 +166,10 @@
                         
                         <!-- Segmented Exam Toggle -->
                         <div class="exam-toggle-group" id="exam-toggle-group">
-                            <button type="button" class="exam-toggle-btn active" data-exam="MHT-CET">
+                            <button type="button" class="exam-toggle-btn active" data-exam="MHT-CET" onclick="if(window.setExamType) window.setExamType('MHT-CET', true)">
                                 <i class="fa-solid fa-graduation-cap"></i> MHT-CET (PCM)
                             </button>
-                            <button type="button" class="exam-toggle-btn" data-exam="JEE-Main">
+                            <button type="button" class="exam-toggle-btn" data-exam="JEE-Main" onclick="if(window.setExamType) window.setExamType('JEE-Main', true)">
                                 <i class="fa-solid fa-star"></i> JEE Main
                             </button>
                         </div>
@@ -242,9 +324,14 @@
                         </div>
                     </div>
 
-                    <button type="submit" id="btn-submit" class="submit-btn">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Option Form List
-                    </button>
+                    <div class="form-actions-row">
+                        <button type="button" id="btn-cancel-form" class="cancel-btn" onclick="if(window.resetPredictorForm) window.resetPredictorForm();">
+                            <i class="fa-solid fa-rotate-left"></i> Cancel / Reset
+                        </button>
+                        <button type="submit" id="btn-submit" class="submit-btn" onclick="if(window.closeMobileSidebar){window.closeMobileSidebar();}const sp=document.getElementById('sidebar-panel');if(sp)sp.classList.remove('mobile-open');const so=document.getElementById('sidebar-overlay');if(so){so.classList.remove('active');so.style.display='none';}">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Option Form List
+                        </button>
+                    </div>
                 </form>
             </aside>
 
@@ -591,6 +678,8 @@
     </div>
 
     <script src="predictor.js"></script>
+    <script src="scroll-reveal.js"></script>
+    <script src="auth-ui-sync.js"></script>
 </body>
 
 </html>
