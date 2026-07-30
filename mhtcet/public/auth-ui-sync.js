@@ -12,7 +12,7 @@ window.getBackendUrl = function(endpoint) {
     if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
         return ep;
     }
-    return "https://mhtcet-backend-ran6.onrender.com" + ep;
+    return "https://mhtcet-auth-backend.onrender.com" + ep;
 };
 
 // Instant Non-Blocking Logout Handler
