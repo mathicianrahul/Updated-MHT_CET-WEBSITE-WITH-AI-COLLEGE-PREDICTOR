@@ -254,21 +254,34 @@
 
             try {
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 10000);
+                const timeoutId = setTimeout(() => controller.abort(), 25000);
 
-                const apiUrl = typeof window.getBackendUrl === "function" ? window.getBackendUrl("/api/register") : "/api/register";
-                const res = await fetch(apiUrl, {
+                const getUrl = typeof window.getBackendUrl === "function" ? window.getBackendUrl : (p => p);
+                const payload = JSON.stringify({ fullName, fullname: fullName, email, phone, cetRollNumber, percentile, category, password });
+
+                let res = await fetch(getUrl("/api/register"), {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ fullName, fullname: fullName, email, phone, cetRollNumber, percentile, category, password }),
+                    body: payload,
                     credentials: "include",
                     signal: controller.signal
                 });
-                clearTimeout(timeoutId);
 
+                // Fallback to /api/signup if /api/register returns 404 on older deployed backend
+                if (res.status === 404) {
+                    res = await fetch(getUrl("/api/signup"), {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: payload,
+                        credentials: "include",
+                        signal: controller.signal
+                    });
+                }
+
+                clearTimeout(timeoutId);
                 const data = await res.json();
 
-                if (res.ok && data.success) {
+                if (res.ok && (data.success || data.user)) {
                     showAlert("Account created successfully! Redirecting to Sign In...", "success");
                     setTimeout(() => {
                         window.location.href = "login.html";
@@ -281,7 +294,9 @@
                 }
             } catch (err) {
                 console.error(err);
-                showAlert("Unable to connect to the server. Please make sure the backend is running and try again.", "error");
+                showAlert(err.name === "AbortError" 
+                    ? "Server is waking up (Render cold start). Please try again in 10 seconds."
+                    : "Unable to connect to the server. Please make sure the backend is running and try again.", "error");
                 submitBtn.disabled = false;
                 btnText.innerText = "Register Account";
                 btnIcon.className = "fas fa-user-plus";

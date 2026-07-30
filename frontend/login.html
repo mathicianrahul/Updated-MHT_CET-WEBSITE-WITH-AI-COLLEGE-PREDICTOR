@@ -205,7 +205,7 @@
 
             try {
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 10000);
+                const timeoutId = setTimeout(() => controller.abort(), 25000);
 
                 const apiUrl = typeof window.getBackendUrl === "function" ? window.getBackendUrl("/api/login") : "/api/login";
                 const res = await fetch(apiUrl, {
@@ -239,7 +239,9 @@
                 }
             } catch (err) {
                 console.error(err);
-                showAlert("Unable to connect to the server. Please make sure the backend is running and try again.", "error");
+                showAlert(err.name === "AbortError"
+                    ? "Server is waking up (Render cold start). Please try again in 10 seconds."
+                    : "Unable to connect to the server. Please make sure the backend is running and try again.", "error");
                 submitBtn.disabled = false;
                 btnText.innerText = "Sign In";
                 btnIcon.className = "fas fa-arrow-right";
