@@ -3,6 +3,7 @@ services:
   - type: web
     name: mhtcet-auth-backend
     env: node
+    plan: free
     rootDir: mhtcet/backend
     buildCommand: npm install
     startCommand: node server.js
@@ -22,6 +23,7 @@ services:
   - type: web
     name: mhtcet-predictor-backend
     env: python
+    plan: free
     rootDir: backend
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
