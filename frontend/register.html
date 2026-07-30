@@ -256,7 +256,13 @@
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 25000);
 
-                const getUrl = typeof window.getBackendUrl === "function" ? window.getBackendUrl : (p => p);
+                const getUrl = function(endpoint) {
+                    if (typeof window.getBackendUrl === "function") return window.getBackendUrl(endpoint);
+                    const ep = endpoint.startsWith("/") ? endpoint : "/" + endpoint;
+                    if (window.location.protocol === "file:") return "http://localhost:5000" + ep;
+                    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") return ep;
+                    return "https://mhtcet-auth-backend.onrender.com" + ep;
+                };
                 const payload = JSON.stringify({ fullName, fullname: fullName, email, phone, cetRollNumber, percentile, category, password });
 
                 let res = await fetch(getUrl("/api/register"), {
@@ -325,5 +331,6 @@
             } catch(e) {}
         })();
     </script>
+    <script src="auth-ui-sync.js"></script>
 </body>
 </html>
