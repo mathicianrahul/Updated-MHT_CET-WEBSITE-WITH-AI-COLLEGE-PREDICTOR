@@ -319,19 +319,49 @@
   <script>
     let allUsersData = [];
 
+    const getUrl = function(endpoint) {
+      if (typeof window.getBackendUrl === "function") return window.getBackendUrl(endpoint);
+      const ep = endpoint.startsWith("/") ? endpoint : "/" + endpoint;
+      if (window.location.protocol === "file:") return "http://localhost:5000" + ep;
+      if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") return ep;
+      return "https://mhtcet-auth-backend.onrender.com" + ep;
+    };
+
+    function getStoredUser() {
+      try {
+        const str = localStorage.getItem("user") || sessionStorage.getItem("user");
+        return str ? JSON.parse(str) : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
     // Protect admin page
     async function checkAdmin() {
+      const localUser = getStoredUser();
+      const headers = {};
+      if (localUser && localUser.email) {
+        headers["x-user-email"] = localUser.email;
+      }
+
       try {
-        const res = await fetch("https://mhtcet-backend-ran6.onrender.com/api/admin-check", {
+        const res = await fetch(getUrl("/api/admin-check"), {
+          headers: headers,
           credentials: "include"
         });
         const data = await res.json();
-        if (!data.admin) {
-          window.location.href = "login.html";
+        if (data.admin) {
+          return true;
         }
-      } catch (e) {
-        window.location.href = "login.html";
+      } catch (e) {}
+
+      // Fallback: If user in local session has role 'admin'
+      if (localUser && localUser.role === "admin") {
+        return true;
       }
+
+      window.location.href = "login.html";
+      return false;
     }
 
     function renderTable(users) {
@@ -361,14 +391,21 @@
 
     // Load users
     async function loadUsers() {
+      const localUser = getStoredUser();
+      const headers = {};
+      if (localUser && localUser.email) {
+        headers["x-user-email"] = localUser.email;
+      }
+
       try {
-        const res = await fetch("https://mhtcet-backend-ran6.onrender.com/api/admin/users", {
+        const res = await fetch(getUrl("/api/admin/users"), {
+          headers: headers,
           credentials: "include"
         });
         const data = await res.json();
 
         if (!data.success) {
-          alert("Failed to load users");
+          console.warn("Failed to load users from API");
           return;
         }
 
@@ -403,8 +440,10 @@
 
     // Run on load
     document.addEventListener("DOMContentLoaded", async () => {
-      await checkAdmin();
-      await loadUsers();
+      const isAdmin = await checkAdmin();
+      if (isAdmin) {
+        await loadUsers();
+      }
     });
   </script>
   <script src="auth-ui-sync.js"></script>

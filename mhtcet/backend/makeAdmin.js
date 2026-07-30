@@ -11,7 +11,17 @@ if (!targetEmail) {
   process.exit(1);
 }
 
-mongoose.connect(process.env.MONGO_URI || "mongodb://localhost:27017/cet_predictor")
+const connectDB = async () => {
+  const uri = process.env.MONGO_URI || "mongodb+srv://cet_databade:cet12345@cluster0.gj4ddxi.mongodb.net/cetDB?retryWrites=true&w=majority";
+  try {
+    await mongoose.connect(uri, { serverSelectionTimeoutMS: 5000 });
+  } catch (err) {
+    const directUri = "mongodb://cet_databade:cet12345@ac-qjmcang-shard-00-00.gj4ddxi.mongodb.net:27017,ac-qjmcang-shard-00-01.gj4ddxi.mongodb.net:27017,ac-qjmcang-shard-00-02.gj4ddxi.mongodb.net:27017/cetDB?ssl=true&replicaSet=atlas-3zcgzz-shard-0&authSource=admin&retryWrites=true&w=majority";
+    await mongoose.connect(directUri, { serverSelectionTimeoutMS: 8000 });
+  }
+};
+
+connectDB()
   .then(async () => {
     const user = await User.findOneAndUpdate(
       { email: targetEmail.toLowerCase().trim() },
@@ -32,6 +42,6 @@ mongoose.connect(process.env.MONGO_URI || "mongodb://localhost:27017/cet_predict
     mongoose.connection.close();
   })
   .catch((err) => {
-    console.error("Database connection error:", err);
+    console.error("Database connection error:", err.message);
     process.exit(1);
   });

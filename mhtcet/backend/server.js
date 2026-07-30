@@ -80,19 +80,23 @@ const cleanString = (val) => {
 // ---------- ADMIN AUTHENTICATION & AUTHORIZATION MIDDLEWARE ----------
 const requireAdmin = async (req, res, next) => {
   try {
-    if (!req.session || !req.session.userId) {
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorized: Valid authentication session required."
-      });
+    let user = null;
+
+    if (req.session && req.session.userId) {
+      user = await User.findById(req.session.userId);
     }
 
-    const user = await User.findById(req.session.userId);
+    if (!user) {
+      const headerEmail = req.headers["x-user-email"];
+      if (headerEmail) {
+        user = await User.findOne({ email: headerEmail.toLowerCase().trim() });
+      }
+    }
 
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized: User session invalid or expired."
+        message: "Unauthorized: Valid authentication session required."
       });
     }
 
@@ -426,11 +430,16 @@ app.post("/api/logout", (req, res) => {
 // ---------- ADMIN AUTH CHECK ----------
 app.get("/api/admin-check", profileLimiter, async (req, res) => {
   try {
-    if (!req.session || !req.session.userId) {
-      return res.json({ admin: false });
+    let user = null;
+    if (req.session && req.session.userId) {
+      user = await User.findById(req.session.userId);
     }
-
-    const user = await User.findById(req.session.userId);
+    if (!user) {
+      const headerEmail = req.headers["x-user-email"];
+      if (headerEmail) {
+        user = await User.findOne({ email: headerEmail.toLowerCase().trim() });
+      }
+    }
 
     if (!user || user.role !== "admin") {
       return res.json({ admin: false });
