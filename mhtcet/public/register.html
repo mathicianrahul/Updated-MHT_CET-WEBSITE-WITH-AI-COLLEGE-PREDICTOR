@@ -243,94 +243,45 @@
                 return;
             }
 
+            if (password.length < 6) {
+                showAlert("Password must be at least 6 characters long.", "error");
+                return;
+            }
+
             submitBtn.disabled = true;
             btnText.innerText = "Creating Account...";
             btnIcon.className = "fas fa-spinner fa-spin";
 
             try {
-                const apiUrls = [
-                    "http://localhost:5000/api/register",
-                    "http://127.0.0.1:5000/api/register",
-                    "https://mhtcet-backend-ran6.onrender.com/api/register",
-                    "https://mhtcet-backend-ran6.onrender.com/api/signup"
-                ];
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-                let data = null;
-                let responseOK = false;
+                const apiUrl = typeof window.getBackendUrl === "function" ? window.getBackendUrl("/api/register") : "/api/register";
+                const res = await fetch(apiUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ fullName, fullname: fullName, email, phone, cetRollNumber, percentile, category, password }),
+                    credentials: "include",
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
 
-                for (const url of apiUrls) {
-                    try {
-                        const isRemote = url.includes("onrender.com");
-                        if (isRemote) {
-                            btnText.innerText = "Connecting to server...";
-                        }
+                const data = await res.json();
 
-                        const controller = new AbortController();
-                        const timeoutId = setTimeout(() => controller.abort(), isRemote ? 8000 : 2500);
-
-                        const res = await fetch(url, {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ fullName, fullname: fullName, email, phone, cetRollNumber, percentile, category, password }),
-                            credentials: "include",
-                            signal: controller.signal
-                        });
-                        clearTimeout(timeoutId);
-
-                        data = await res.json();
-                        if (res.ok || data.success || data.user || data.message?.includes("success")) {
-                            responseOK = true;
-                            break;
-                        } else if (data.message || data.error) {
-                            showAlert(data.message || data.error, 'error');
-                            submitBtn.disabled = false;
-                            btnText.innerText = "Register Account";
-                            btnIcon.className = "fas fa-user-plus";
-                            return;
-                        }
-                    } catch (err) {
-                        console.warn("Attempt failed for", url, err.name === "AbortError" ? "Timeout" : err);
-                    }
-                }
-
-                const newUserObj = {
-                    fullname: fullName,
-                    fullName: fullName,
-                    email: email,
-                    phone: phone,
-                    cetRollNumber: cetRollNumber,
-                    percentile: percentile,
-                    category: category,
-                    createdAt: new Date().toISOString()
-                };
-
-                // Store in persistent registered_users map by email
-                try {
-                    const regMap = JSON.parse(localStorage.getItem("registered_users") || "{}");
-                    regMap[email.toLowerCase()] = newUserObj;
-                    localStorage.setItem("registered_users", JSON.stringify(regMap));
-                } catch(e) {}
-
-                if (responseOK && data) {
+                if (res.ok && data.success) {
                     showAlert("Account created successfully! Redirecting to Sign In...", "success");
-                    const mergedUser = data.user ? { ...newUserObj, ...data.user, fullname: fullName, fullName: fullName } : newUserObj;
-                    localStorage.setItem("user", JSON.stringify(mergedUser));
-                    sessionStorage.setItem("user", JSON.stringify(mergedUser));
                     setTimeout(() => {
                         window.location.href = "login.html";
                     }, 1200);
                 } else {
-                    showAlert("Account created (Offline Session)! Redirecting to Sign In...", "success");
-                    localStorage.setItem("user", JSON.stringify(newUserObj));
-                    sessionStorage.setItem("user", JSON.stringify(newUserObj));
-                    setTimeout(() => {
-                        window.location.href = "login.html";
-                    }, 1200);
+                    showAlert((data && data.message) || "Registration failed. Please try again.", "error");
+                    submitBtn.disabled = false;
+                    btnText.innerText = "Register Account";
+                    btnIcon.className = "fas fa-user-plus";
                 }
             } catch (err) {
                 console.error(err);
-                showAlert("An unexpected error occurred during registration. Please try again.", "error");
-            } finally {
+                showAlert("Unable to connect to the server. Please make sure the backend is running and try again.", "error");
                 submitBtn.disabled = false;
                 btnText.innerText = "Register Account";
                 btnIcon.className = "fas fa-user-plus";

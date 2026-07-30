@@ -37,12 +37,10 @@ def main():
                 node_proc = subprocess.Popen(
                     ["node", "server.js"],
                     cwd=node_backend_dir,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.STDOUT,
-                    text=True,
-                    bufsize=1
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL
                 )
-                time.sleep(1.5)
+                time.sleep(2.0)
                 if node_proc.poll() is None:
                     print("[+] Node.js Auth backend started successfully on http://localhost:5000 !")
                     processes.append(node_proc)
@@ -60,42 +58,34 @@ def main():
             fastapi_proc = subprocess.Popen(
                 [sys.executable, "-m", "uvicorn", "main:app", "--host", "127.0.0.1", "--port", "8000", "--reload"],
                 cwd=fastapi_backend_dir,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-                bufsize=1
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
             )
             time.sleep(2)
             if fastapi_proc.poll() is None:
                 print("[+] FastAPI Predictor backend started successfully on http://127.0.0.1:8000 !")
                 processes.append(fastapi_proc)
             else:
-                print("[-] FastAPI backend output:")
-                if fastapi_proc.stdout:
-                    print(fastapi_proc.stdout.read())
+                print("[-] FastAPI backend launch skipped or already running.")
         except Exception as e:
             print(f"[-] Error launching FastAPI server: {e}")
 
-    target_html = frontend_index if os.path.exists(frontend_index) else frontend_predictor
-    print(f"\n[+] Opening website: file:///{target_html} ...")
-    webbrowser.open(f"file:///{target_html}")
+    # Open frontend via the Node.js server (same-origin, no CORS issues)
+    frontend_url = "http://localhost:5000"
+    print(f"\n[+] Opening website: {frontend_url} ...")
+    webbrowser.open(frontend_url)
 
     print("\n" + "=" * 60)
     print("MHT-CET Predictor & Auth Portal is now LIVE!")
-    print("Auth Backend:      http://localhost:5000")
+    print("Auth + Frontend:   http://localhost:5000")
     print("Predictor Backend: http://127.0.0.1:8000")
-    print("Frontend URL:      file:///" + target_html.replace("\\", "/"))
     print("To stop servers, press Ctrl+C in this terminal window.")
     print("=" * 60 + "\n")
 
     if processes:
         try:
             while True:
-                time.sleep(1)
-                for proc in processes:
-                    if proc.poll() is not None:
-                        print("[-] One of the backend processes ended.")
-                        break
+                time.sleep(2)
         except KeyboardInterrupt:
             print("\n[-] Shutting down servers...")
         finally:

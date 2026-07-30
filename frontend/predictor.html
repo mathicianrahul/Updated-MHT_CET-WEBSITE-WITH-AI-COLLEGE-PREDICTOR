@@ -144,7 +144,7 @@
                         <button type="button" class="btn-cancel-header" id="btn-cancel-header" onclick="if(window.resetPredictorForm) window.resetPredictorForm();" title="Clear all input fields">
                             <i class="fa-solid fa-rotate-left"></i> Reset
                         </button>
-                        <button type="button" class="mobile-close-btn" id="mobile-sidebar-close" onclick="if(window.closeMobileSidebar){window.closeMobileSidebar(event);}const sp=document.getElementById('sidebar-panel');if(sp)sp.classList.remove('mobile-open');const so=document.getElementById('sidebar-overlay');if(so){so.classList.remove('active');so.style.display='none';}" title="Close Panel" aria-label="Close Panel">
+                        <button type="button" class="mobile-close-btn" id="mobile-sidebar-close" onclick="if(window.toggleStudentInputsPanel){window.toggleStudentInputsPanel(event);}" title="Close Panel" aria-label="Close Panel">
                             <i class="fa-solid fa-xmark"></i>
                         </button>
                     </div>
@@ -328,7 +328,7 @@
                         <button type="button" id="btn-cancel-form" class="cancel-btn" onclick="if(window.resetPredictorForm) window.resetPredictorForm();">
                             <i class="fa-solid fa-rotate-left"></i> Cancel / Reset
                         </button>
-                        <button type="submit" id="btn-submit" class="submit-btn" onclick="if(window.closeMobileSidebar){window.closeMobileSidebar();}const sp=document.getElementById('sidebar-panel');if(sp)sp.classList.remove('mobile-open');const so=document.getElementById('sidebar-overlay');if(so){so.classList.remove('active');so.style.display='none';}">
+                        <button type="submit" id="btn-submit" class="submit-btn">
                             <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Option Form List
                         </button>
                     </div>
@@ -338,11 +338,14 @@
             <!-- Right Main Area: Generated Preference Option List -->
             <main class="content-panel">
 
-                <div class="content-header">
+                <div class="content-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
                     <div class="header-title-wrap">
                         <i class="fa-solid fa-list-ol icon-purple"></i>
                         <h2>Generated Preference Option List</h2>
                     </div>
+                    <button type="button" id="btn-edit-inputs" class="export-btn" onclick="if(window.toggleStudentInputsPanel){window.toggleStudentInputsPanel(event);}" style="display:none; background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe; font-weight:700; padding:0.5rem 1rem; border-radius:10px; cursor:pointer; align-items:center; gap:8px;">
+                        <i class="fa-solid fa-pen-to-square"></i> Edit Inputs / Filters
+                    </button>
                 </div>
 
                 <!-- Export & CAP Option Form Action Buttons -->
@@ -661,6 +664,54 @@
         </div>
     </div>
 
+    <!-- CAP Option Form Preview Modal -->
+    <div class="modal-overlay" id="option-form-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); z-index:2000; align-items:center; justify-content:center;">
+        <div class="modal-card cap-preview-card" style="background:#ffffff; border-radius:20px; width:92%; max-width:850px; max-height:88vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.2);">
+            <div class="modal-header" style="padding:1.25rem 1.5rem; border-bottom:1px solid #e2e8f0; display:flex; align-items:center; justify-content:space-between;">
+                <div class="modal-title-wrap" style="display:flex; align-items:center; gap:12px;">
+                    <i class="fa-solid fa-file-invoice" style="color:var(--primary); font-size:1.5rem;"></i>
+                    <div>
+                        <h3 style="font-size:1.15rem; font-weight:800; color:#0f172a; margin:0;">CAP Option Form Preference List Preview</h3>
+                        <p class="modal-sub" style="font-size:0.82rem; color:#64748b; margin:0;">Review, reorder, or remove choice codes before printing official document.</p>
+                    </div>
+                </div>
+                <button type="button" class="modal-close" id="cap-modal-close" aria-label="Close Preview" style="background:none; border:none; font-size:1.4rem; color:#64748b; cursor:pointer;">&times;</button>
+            </div>
+            
+            <div class="modal-body" style="overflow-y:auto; flex:1; padding:1.25rem 1.5rem;">
+                <div class="cap-meta-summary" id="cap-preview-meta" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:1rem 1.25rem; margin-bottom:1.25rem; display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:10px; font-size:0.88rem;">
+                    <!-- Filled dynamically via JS -->
+                </div>
+                
+                <div class="table-view-wrap" style="border:1px solid #e2e8f0; border-radius:14px; max-height:360px; overflow:auto;">
+                    <table style="width:100%; border-collapse:collapse; font-size:0.88rem;" id="cap-preview-table">
+                        <thead>
+                            <tr style="background:#f1f5f9; color:#475569; text-align:left; font-size:0.8rem; text-transform:uppercase;">
+                                <th style="padding:0.75rem 0.6rem; text-align:center; width:55px;">Pref #</th>
+                                <th style="padding:0.75rem 0.6rem;">Choice Code</th>
+                                <th style="padding:0.75rem 0.6rem;">College & City</th>
+                                <th style="padding:0.75rem 0.6rem;">Branch Name</th>
+                                <th style="padding:0.75rem 0.6rem; text-align:center; width:130px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cap-preview-tbody">
+                            <!-- Filled dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; padding:1rem 1.5rem; border-top:1px solid #e2e8f0; background:#f8fafc;">
+                <button type="button" class="modal-action-btn secondary" id="cap-preview-btn-cancel" style="background:#fff; color:#475569; border:1px solid #cbd5e1; padding:0.6rem 1.2rem; border-radius:10px; font-weight:700; cursor:pointer;">Cancel</button>
+                <div style="display:flex; gap:10px;">
+                    <button type="button" class="modal-action-btn primary" id="cap-preview-btn-print" style="background:linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color:#fff; font-weight:700; border:none; padding:0.6rem 1.4rem; border-radius:10px; cursor:pointer; display:inline-flex; align-items:center; gap:8px;">
+                        <i class="fa-solid fa-print"></i> Print Official Document
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Notification Toast -->
     <div id="toast" class="toast-notification">Choice Code copied to clipboard!</div>
 
@@ -678,6 +729,50 @@
     </div>
 
     <script src="predictor.js"></script>
+    <script>
+        (function autoPrefillPredictor() {
+            const userStr = localStorage.getItem("user") || sessionStorage.getItem("user");
+            if (!userStr) return;
+            try {
+                let user = JSON.parse(userStr);
+                if (user && user.email) {
+                    try {
+                        const regMap = JSON.parse(localStorage.getItem("registered_users") || "{}");
+                        const regUser = regMap[user.email.toLowerCase().trim()];
+                        if (regUser) {
+                            user = { ...regUser, ...user };
+                        }
+                    } catch(e) {}
+                }
+                const nameInput = document.getElementById("student-name");
+                if (nameInput && (user.fullname || user.fullName)) {
+                    nameInput.value = user.fullname || user.fullName;
+                }
+                const percInput = document.getElementById("percentile-num");
+                const percRange = document.getElementById("percentile-range");
+                if (percInput && user.percentile !== undefined && user.percentile !== null && !isNaN(parseFloat(user.percentile))) {
+                    const pVal = parseFloat(user.percentile);
+                    percInput.value = pVal.toFixed(4);
+                    if (percRange) percRange.value = pVal.toFixed(2);
+                }
+                const catSelect = document.getElementById("category");
+                if (catSelect && user.category) {
+                    const catMap = {
+                        "OPEN": "Open", "OBC": "OBC", "SC": "SC", "ST": "ST",
+                        "NT": "NT1", "VJ": "VJ", "EWS": "EWS", "TFWS": "TFWS"
+                    };
+                    const targetCat = catMap[user.category.toUpperCase()] || user.category;
+                    for (let i = 0; i < catSelect.options.length; i++) {
+                        if (catSelect.options[i].value.toLowerCase() === targetCat.toLowerCase() ||
+                            catSelect.options[i].text.toLowerCase().includes(user.category.toLowerCase())) {
+                            catSelect.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            } catch(e) {}
+        })();
+    </script>
     <script src="scroll-reveal.js"></script>
     <script src="auth-ui-sync.js"></script>
 </body>

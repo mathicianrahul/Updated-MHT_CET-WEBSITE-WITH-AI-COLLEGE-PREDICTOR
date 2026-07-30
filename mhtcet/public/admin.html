@@ -397,12 +397,8 @@
     });
 
     // Logout
-    document.getElementById("logoutBtn").addEventListener("click", async () => {
-      await fetch("https://mhtcet-backend-ran6.onrender.com/api/logout", {
-        method: "POST",
-        credentials: "include"
-      });
-      window.location.href = "login.html";
+    document.getElementById("logoutBtn").addEventListener("click", (e) => {
+      window.handleGlobalLogout(e);
     });
 
     // Run on load

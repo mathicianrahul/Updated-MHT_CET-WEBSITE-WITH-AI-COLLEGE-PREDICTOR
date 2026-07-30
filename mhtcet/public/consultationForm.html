@@ -327,7 +327,16 @@
         const userStr = localStorage.getItem("user") || sessionStorage.getItem("user");
         if (!userStr) return;
         try {
-            const user = JSON.parse(userStr);
+            let user = JSON.parse(userStr);
+            if (user && user.email) {
+                try {
+                    const regMap = JSON.parse(localStorage.getItem("registered_users") || "{}");
+                    const regUser = regMap[user.email.toLowerCase().trim()];
+                    if (regUser) {
+                        user = { ...regUser, ...user };
+                    }
+                } catch(e) {}
+            }
             if (user.fullname || user.fullName) {
                 const nameInput = document.getElementById("fullName");
                 if (nameInput) nameInput.value = user.fullname || user.fullName;
@@ -336,9 +345,21 @@
                 const emailInput = document.getElementById("email");
                 if (emailInput) emailInput.value = user.email;
             }
-            if (user.phone) {
+            if (user.phone && user.phone !== "N/A") {
                 const phoneInput = document.getElementById("phone");
                 if (phoneInput) phoneInput.value = user.phone;
+            }
+            if (user.cetRollNumber) {
+                const rollInput = document.getElementById("cetRollNumber");
+                if (rollInput) rollInput.value = user.cetRollNumber;
+            }
+            if (user.category) {
+                const categoryInput = document.getElementById("category");
+                if (categoryInput) categoryInput.value = user.category;
+            }
+            if (user.percentile) {
+                const percInput = document.getElementById("percentile");
+                if (percInput) percInput.value = user.percentile;
             }
         } catch(e) {}
     })();

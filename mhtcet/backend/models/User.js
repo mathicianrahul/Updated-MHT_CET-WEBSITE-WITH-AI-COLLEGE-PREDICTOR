@@ -26,16 +26,19 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    percentile: {
+      type: Number,
+      default: null
+    },
     password: {
       type: String,
       required: true
     },
     role: {
         type: String,
-        enum: ["user", "admin"],
-        default: "user"
-}
-
+        enum: ["student", "admin"],
+        default: "student"
+    }
   },
   { timestamps: true }
 );

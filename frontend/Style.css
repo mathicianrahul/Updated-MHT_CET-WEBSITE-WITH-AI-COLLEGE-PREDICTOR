@@ -259,6 +259,26 @@ html, body {
     .navbar-menu {
         display: none;
     }
+    .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 2.2rem;
+    }
+    .hero-left, .hero-right {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    .hero-title {
+        font-size: clamp(1.65rem, 5.5vw, 2.5rem);
+        line-height: 1.25;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+    .hero-description {
+        max-width: 100%;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
 }
 
 /* ==========================================================================
@@ -579,7 +599,12 @@ html, body {
     display: flex;
     align-items: center;
     gap: 6px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    z-index: 2;
+    max-width: calc(100% - 28px);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .featured-caption-bar {
@@ -1860,41 +1885,79 @@ html, body {
     }
 
     .container {
-        padding: 0 1.1rem;
+        padding: 0 1rem;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .desktop-br {
+        display: none !important;
     }
 
     /* Hero Section Responsiveness */
     .hero-section {
-        padding: 2.2rem 0 1.8rem 0;
+        padding: 2rem 0 1.5rem 0;
+        width: 100%;
+        max-width: 100vw;
+        overflow-x: hidden;
+        box-sizing: border-box;
+    }
+
+    .hero-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.75rem !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .hero-left, .hero-right {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
 
     .hero-title {
-        font-size: clamp(1.75rem, 5.5vw, 2.35rem);
-        line-height: 1.25;
+        font-size: clamp(1.45rem, 5.2vw, 2.1rem);
+        line-height: 1.28;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        box-sizing: border-box;
+        width: 100%;
     }
 
     .hero-description {
-        font-size: 0.95rem;
+        font-size: 0.92rem;
         line-height: 1.6;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        box-sizing: border-box;
+        width: 100%;
     }
 
     .hero-action-row {
         flex-direction: column;
         gap: 0.75rem;
         width: 100%;
+        align-items: stretch;
     }
 
-    .btn-hero-primary, .btn-hero-secondary {
-        width: 100%;
-        justify-content: center;
-        padding: 0.85rem 1.25rem;
-        font-size: 0.95rem;
+    .btn-hero-primary, .btn-hero-secondary, .btn-pill-blue, #bookConsultationBtn {
+        width: 100% !important;
+        max-width: 100% !important;
+        justify-content: center !important;
+        padding: 0.85rem 1.25rem !important;
+        font-size: 0.95rem !important;
+        box-sizing: border-box !important;
     }
 
     .hero-social-proof {
         flex-wrap: wrap;
-        gap: 12px;
-        justify-content: center;
+        gap: 10px 14px;
+        justify-content: space-between;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .social-stat-divider {
@@ -1903,6 +1966,18 @@ html, body {
 
     .photo-viewport {
         height: 220px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .photo-badge-match {
+        max-width: calc(100% - 20px);
+        font-size: 0.72rem;
+        padding: 4px 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .featured-title {
@@ -2104,17 +2179,25 @@ html, body {
 
 /* --- Breakpoint: Android & Mobile Phones (<= 576px) --- */
 @media (max-width: 576px) {
+    .navbar-container {
+        padding: 0 0.85rem;
+    }
+
+    .brand-link {
+        gap: 6px;
+    }
+
     .brand-text {
-        font-size: 1.05rem;
+        font-size: 0.95rem;
     }
 
     .brand-badge {
-        font-size: 0.68rem;
-        padding: 2px 6px;
+        font-size: 0.65rem;
+        padding: 2px 5px;
     }
 
     .hero-title {
-        font-size: 1.68rem;
+        font-size: 1.65rem;
     }
 
     .hero-pill-badge {
@@ -2123,8 +2206,8 @@ html, body {
     }
 
     .avatar-stack .avatar-img {
-        width: 32px;
-        height: 32px;
+        width: 30px;
+        height: 30px;
     }
 
     .photo-viewport {
@@ -2155,21 +2238,36 @@ html, body {
     }
 
     .gallery-tag {
-        display: none; /* Keeps gallery cards compact on small mobile */
+        display: none;
     }
 
     .stats-grid {
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 10px !important;
+        gap: 8px !important;
     }
 
     .stat-item {
-        padding: 1.1rem 0.6rem;
-        min-height: 105px;
+        padding: 1rem 0.5rem;
+        min-height: 95px;
+        word-break: break-word;
     }
 
     .stat-number {
-        font-size: 1.65rem;
+        font-size: 1.5rem;
+    }
+
+    .stat-label {
+        font-size: 0.68rem;
+        word-break: break-word;
+    }
+
+    .contact-section .services-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+
+    .contact-card:nth-child(3) {
+        grid-column: span 1 !important;
     }
 
     .testimonial-glass-card {
@@ -2185,8 +2283,12 @@ html, body {
 
 /* --- Breakpoint: Extra Small Android Phones (<= 400px) --- */
 @media (max-width: 400px) {
+    .brand-text {
+        font-size: 0.88rem;
+    }
+
     .hero-title {
-        font-size: 1.5rem;
+        font-size: 1.45rem;
     }
 
     .photo-viewport {
@@ -2199,20 +2301,25 @@ html, body {
     }
 
     .mobile-nav-drawer {
-        width: 260px;
+        width: 82vw;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
     }
 
     .stat-item {
-        padding: 0.95rem 0.5rem;
-        min-height: 98px;
+        padding: 0.95rem 0.75rem;
+        min-height: auto;
     }
 
     .stat-number {
-        font-size: 1.45rem;
+        font-size: 1.55rem;
     }
 
     .stat-label {
-        font-size: 0.65rem;
+        font-size: 0.72rem;
     }
 }
 
@@ -2242,4 +2349,140 @@ html, body {
         transition: none !important;
     }
 }
+
+/* ==========================================================================
+   PHASE 3.1: GLOBAL RESPONSIVE FOUNDATION & MOBILE POLISH
+   ========================================================================== */
+
+/* 1. Navbar Scaling & Mobile Layout (320px - 425px) */
+.brand-link {
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: 0;
+}
+
+.brand-badge {
+    flex-shrink: 0;
+}
+
+.brand-text {
+    font-size: clamp(0.95rem, 4vw, 1.25rem);
+    white-space: nowrap;
+}
+
+@media (max-width: 425px) {
+    .navbar-container {
+        padding: 0 0.85rem;
+    }
+    .brand-link {
+        gap: 6px;
+    }
+    .brand-badge {
+        font-size: 0.7rem;
+        padding: 2px 6px;
+    }
+    .brand-text {
+        font-size: clamp(0.88rem, 3.8vw, 1.1rem);
+    }
+}
+
+@media (max-width: 360px) {
+    .navbar-container {
+        padding: 0 0.5rem;
+    }
+    .brand-text {
+        font-size: 0.85rem;
+    }
+}
+
+/* 2. Global Long Text Overflow Protection */
+.break-word,
+.detail-value,
+.profile-email,
+.user-email,
+.college-name,
+.student-name,
+.summary-val,
+.detail-label {
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+    min-width: 0;
+    flex-shrink: 1;
+}
+
+/* 3. Fluid Responsive Typography */
+h1, .hero-title {
+    font-size: clamp(1.75rem, 5vw, 3rem);
+}
+
+h2, .section-title {
+    font-size: clamp(1.35rem, 4vw, 2.25rem);
+}
+
+h3 {
+    font-size: clamp(1.1rem, 3.2vw, 1.5rem);
+}
+
+/* 4. Mobile Touch Targets (Min 44x44px Area) */
+@media (max-width: 768px) {
+    button,
+    .nav-btn,
+    .mobile-nav-link,
+    .mobile-action-btn,
+    select,
+    input[type="button"],
+    input[type="submit"],
+    input[type="reset"] {
+        min-height: 44px;
+    }
+
+    .mobile-hamburger-btn,
+    .mobile-drawer-close {
+        min-width: 44px;
+        min-height: 44px;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+}
+
+/* 5. Safe Area Insets (iOS & Android Gesture Bars) */
+.navbar {
+    padding-top: max(0.8rem, env(safe-area-inset-top));
+    padding-left: max(0rem, env(safe-area-inset-left));
+    padding-right: max(0rem, env(safe-area-inset-right));
+}
+
+body {
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+}
+
+.mobile-sticky-bar,
+.mobile-nav-drawer {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+}
+
+/* 6. Prevent Horizontal Scroll (Root Causes) */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+img, video, canvas, svg {
+    max-width: 100%;
+    height: auto;
+}
+
+.container, .main-wrapper, .hero-section, .auth-container, .profile-container, .admin-container {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.table-card, .table-wrapper, .table-view-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+}
+
 

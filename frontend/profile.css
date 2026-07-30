@@ -272,12 +272,17 @@ body.auth-body {
     .profile-header {
         flex-direction: column;
         text-align: center;
-        padding: 2rem 1.5rem;
+        padding: 2rem 1.25rem;
     }
     .details-grid {
         grid-template-columns: 1fr;
+        gap: 1rem;
     }
     .profile-card {
         gap: 1.25rem;
+    }
+    .detail-value, .profile-email, #profileName {
+        overflow-wrap: anywhere !important;
+        word-break: break-word !important;
     }
 }

@@ -234,40 +234,48 @@ if (categorySelect) {
 // Load Metadata
 async function fetchMetadata() {
     try {
-        const response = await fetch(`${API_BASE}/metadata`);
-        if (!response.ok) throw new Error("Metadata fetch failed");
-        metadata = await response.json();
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
+        const response = await fetch(`${API_BASE}/metadata`, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        if (response.ok) {
+            const remoteData = await response.json();
+            if (remoteData && remoteData.cities && remoteData.cities.length > 0) {
+                metadata = remoteData;
+                populateDropdowns();
+                renderCityCheckboxes();
+                renderBranchCheckboxes();
+            }
+        }
     } catch (e) {
-        console.warn("Using fallback metadata", e);
-        metadata = {
-            cities: ["Pune", "Mumbai", "Navi Mumbai", "Thane", "Pimpri-Chinchwad", "Nashik", "Nagpur", "Aurangabad", "Kolhapur", "Solapur", "Sangli", "Jalgaon", "Amravati", "Dhule", "Shirpur", "Nanded", "Latur", "Satara", "Ratnagiri", "Ahmednagar", "Akola", "Buldhana", "Yavatmal", "Chandrapur"],
-            universities: ["Savitribai Phule Pune University", "Mumbai University", "Kavayitri Bahinabai Chaudhari North Maharashtra University, Jalgaon", "Sant Gadge Baba Amravati University", "Rashtrasant Tukadoji Maharaj Nagpur University", "Dr. Babasaheb Ambedkar Marathwada University", "Shivaji University", "Punyashlok Ahilyadevi Holkar Solapur University", "Swami Ramanand Teerth Marathwada University, Nanded", "Gondwana University"],
-            branches: ["Computer Engineering", "Artificial Intelligence And Machine Learning", "Artificial Intelligence And Data Science", "Information Technology", "Electronics And Telecommunication Engg", "Mechanical Engineering", "Civil Engineering", "Electrical Engineering"],
-            categories: ["Open", "OBC", "SC", "ST", "VJ", "NT1", "NT2", "NT3", "SEBC", "EWS", "TFWS", "All India (AI / JEE)"],
-            cap_rounds: ["CAP Round 1", "CAP Round 2", "CAP Round 3", "CAP Round 4", "All Rounds"]
-        };
+        console.warn("Using default client metadata", e);
     }
-    
-    populateDropdowns();
-    initCities();
-    initBranches();
-    initPrioritySort();
 }
 
 function populateDropdowns() {
-    categorySelect.innerHTML = '<option value="" disabled selected>-- Select Your Category --</option>';
-    metadata.categories.forEach(c => {
-        const opt = document.createElement("option");
-        opt.value = c; opt.textContent = c;
-        categorySelect.appendChild(opt);
-    });
+    if (!metadata) return;
 
-    homeUniversitySelect.innerHTML = '<option value="" disabled selected>-- Select Home University --</option>';
-    metadata.universities.forEach(u => {
-        const opt = document.createElement("option");
-        opt.value = u; opt.textContent = u;
-        homeUniversitySelect.appendChild(opt);
-    });
+    if (categorySelect && metadata.categories && metadata.categories.length > 0) {
+        const currentVal = categorySelect.value;
+        categorySelect.innerHTML = '<option value="" disabled selected>-- Select Your Category --</option>';
+        metadata.categories.forEach(c => {
+            const opt = document.createElement("option");
+            opt.value = c; opt.textContent = c;
+            if (c === currentVal) opt.selected = true;
+            categorySelect.appendChild(opt);
+        });
+    }
+
+    if (homeUniversitySelect && metadata.universities && metadata.universities.length > 0) {
+        const currentVal = homeUniversitySelect.value;
+        homeUniversitySelect.innerHTML = '<option value="" disabled selected>-- Select Home University --</option>';
+        metadata.universities.forEach(u => {
+            const opt = document.createElement("option");
+            opt.value = u; opt.textContent = u;
+            if (u === currentVal) opt.selected = true;
+            homeUniversitySelect.appendChild(opt);
+        });
+    }
 
     if (capRoundSelect && metadata.cap_rounds && metadata.cap_rounds.length > 0) {
         const currentVal = capRoundSelect.value || "CAP Round 1";
@@ -672,10 +680,17 @@ predictorForm.addEventListener("submit", async (e) => {
         document.body.style.overflow = "";
     }
 
-    const contentPanel = document.querySelector(".content-panel") || document.getElementById("results-container");
-    if (contentPanel) {
-        contentPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+    // Automatically close any open mobile filter/navigation drawer
+    if (typeof window.closeMobileSidebar === "function") {
+        window.closeMobileSidebar();
     }
+    const mobileNavDrawer = document.getElementById("mobileNavDrawer");
+    const mobileNavBackdrop = document.getElementById("mobileNavBackdrop");
+    if (mobileNavDrawer) mobileNavDrawer.classList.remove("active");
+    if (mobileNavBackdrop) mobileNavBackdrop.classList.remove("active");
+    document.body.style.overflow = "";
+
+    const contentPanel = document.querySelector(".content-panel") || document.getElementById("results-container");
 
     resultsPlaceholder.style.display = "none";
     resultsList.style.display = "none";
@@ -699,17 +714,24 @@ predictorForm.addEventListener("submit", async (e) => {
         is_defense: isDefenseCheckbox ? isDefenseCheckbox.checked : false,
         sort_by: selectedSortBy
     };
+    window.lastPredictorPayload = payload;
 
     let generatedResults = [];
+
+    // 10-Second AbortController Timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
 
     try {
         const res = await fetch(`${API_BASE}/predict`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(payload),
+            signal: controller.signal
         });
+        clearTimeout(timeoutId);
 
-        if (!res.ok) throw new Error("API Predict Error");
+        if (!res.ok) throw new Error("Backend predictor returned status " + res.status);
         const resData = await res.json();
 
         if (Array.isArray(resData)) {
@@ -717,21 +739,54 @@ predictorForm.addEventListener("submit", async (e) => {
         } else if (resData && resData.results) {
             generatedResults = resData.results;
         } else {
-            generatedResults = generateFallbackColleges(payload);
+            throw new Error("Invalid response format from predictor API");
         }
     } catch (err) {
-        console.warn("Backend API unreachable, using client-side prediction engine", err);
-        generatedResults = generateFallbackColleges(payload);
+        clearTimeout(timeoutId);
+        console.warn("Backend API unreachable:", err);
+        resultsLoader.style.display = "none";
+        
+        // Show prominent warning banner with Retry and Explicit Demo Data options
+        const isTimeout = err.name === "AbortError";
+        const errorMsg = isTimeout 
+            ? "The real-time prediction service request timed out after 10 seconds." 
+            : "Could not connect to the real-time prediction engine service.";
+
+        resultsPlaceholder.innerHTML = `
+            <div class="api-error-banner" style="background:#fef2f2; border:1px solid #fecaca; border-radius:16px; padding:2.5rem 1.5rem; text-align:center; max-width:640px; margin:2rem auto;">
+                <i class="fa-solid fa-triangle-exclamation" style="font-size:2.8rem; color:#dc2626; margin-bottom:1rem; display:block;"></i>
+                <h3 style="color:#991b1b; font-size:1.3rem; font-weight:800; margin-bottom:0.6rem;">Prediction Service Unavailable</h3>
+                <p style="color:#7f1d1d; font-size:0.95rem; margin-bottom:1.5rem; line-height:1.5;">${errorMsg}</p>
+                <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+                    <button type="button" onclick="document.getElementById('predictor-form').dispatchEvent(new Event('submit'))" style="background:#dc2626; color:#fff; padding:0.65rem 1.3rem; border-radius:10px; font-weight:700; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:8px;">
+                        <i class="fa-solid fa-rotate-right"></i> Retry Connection
+                    </button>
+                    <button type="button" onclick="window.loadDemoDataExplicitly()" style="background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe; padding:0.65rem 1.3rem; border-radius:10px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:8px;">
+                        <i class="fa-solid fa-flask"></i> Use Demo Data
+                    </button>
+                </div>
+            </div>
+        `;
+        resultsPlaceholder.style.display = "block";
+        return;
     }
 
+    window.isDemoData = false;
     allResultsData = generatedResults;
     currentMetrics = calculateMetricsFromList(allResultsData);
-
     resultsLoader.style.display = "none";
 
-    if (allResultsData.length === 0) {
-        allResultsData = generateFallbackColleges(payload);
-        currentMetrics = calculateMetricsFromList(allResultsData);
+    // Automatically collapse input panel upon successful prediction
+    const mainBody = document.querySelector(".main-body");
+    const editBtn = document.getElementById("btn-edit-inputs");
+    if (sidebarPanel) {
+        sidebarPanel.classList.add("panel-collapsed");
+    }
+    if (mainBody) {
+        mainBody.classList.add("sidebar-collapsed");
+    }
+    if (editBtn) {
+        editBtn.style.display = "inline-flex";
     }
 
     currentPage = 1;
@@ -742,16 +797,89 @@ predictorForm.addEventListener("submit", async (e) => {
     if (btnCopyAllCodes) btnCopyAllCodes.disabled = false;
     if (btnPrintForm) btnPrintForm.disabled = false;
 
-    // Ensure Student Inputs drawer is closed and scroll to results panel
-    if (window.closeMobileSidebar) {
-        window.closeMobileSidebar();
-    }
     if (contentPanel) {
         setTimeout(() => {
             contentPanel.scrollIntoView({ behavior: "smooth", block: "start" });
         }, 100);
     }
 });
+
+// Toggle Student Inputs Panel (Collapse / Expand with validation & smooth scroll)
+window.toggleStudentInputsPanel = function(e) {
+    if (e && e.preventDefault) e.preventDefault();
+
+    const sidebarPanel = document.getElementById("sidebar-panel");
+    const sidebarOverlay = document.getElementById("sidebar-overlay");
+    const mainBody = document.querySelector(".main-body");
+    const editBtn = document.getElementById("btn-edit-inputs");
+    const contentPanel = document.querySelector(".content-panel") || document.getElementById("results-container");
+
+    if (!sidebarPanel) return;
+
+    const isCollapsed = sidebarPanel.classList.contains("panel-collapsed");
+    const hasResults = allResultsData && allResultsData.length > 0;
+
+    if (!isCollapsed) {
+        // Attempting to COLLAPSE / HIDE panel
+        if (!hasResults) {
+            if (typeof showToast === "function") {
+                showToast("Generate a college list before hiding the input panel.");
+            }
+            return;
+        }
+
+        sidebarPanel.classList.add("panel-collapsed");
+        if (mainBody) mainBody.classList.add("sidebar-collapsed");
+        if (sidebarOverlay) {
+            sidebarOverlay.classList.remove("active");
+            sidebarOverlay.style.display = "none";
+        }
+        if (editBtn) editBtn.style.display = "inline-flex";
+
+        if (contentPanel) {
+            contentPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+    } else {
+        // Attempting to EXPAND / REOPEN panel
+        sidebarPanel.classList.remove("panel-collapsed");
+        if (mainBody) mainBody.classList.remove("sidebar-collapsed");
+        if (editBtn) editBtn.style.display = "none";
+
+        sidebarPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+
+        const firstInput = document.getElementById("student-name");
+        if (firstInput) {
+            setTimeout(() => firstInput.focus(), 300);
+        }
+    }
+};
+
+// Explicit Demo Data Loader
+window.loadDemoDataExplicitly = function() {
+    window.isDemoData = true;
+    const payload = window.lastPredictorPayload || {};
+    allResultsData = generateFallbackColleges(payload);
+    currentMetrics = calculateMetricsFromList(allResultsData);
+
+    if (resultsPlaceholder) resultsPlaceholder.style.display = "none";
+    if (resultsLoader) resultsLoader.style.display = "none";
+
+    const sidebarPanel = document.getElementById("sidebar-panel");
+    const editBtn = document.getElementById("btn-edit-inputs");
+    if (sidebarPanel) sidebarPanel.classList.add("panel-collapsed");
+    if (editBtn) editBtn.style.display = "inline-flex";
+
+    currentPage = 1;
+    updateMetricsUI();
+    renderResultsView();
+
+    if (btnExportCsv) btnExportCsv.disabled = false;
+    if (btnExportXlsx) btnExportXlsx.disabled = false;
+    if (btnCopyAllCodes) btnCopyAllCodes.disabled = false;
+    if (btnPrintForm) btnPrintForm.disabled = false;
+
+    showToast("Loaded simulated demo college data.");
+};
 
 function updateMetricsUI() {
     const foundCount = currentMetrics.colleges_found || 0;
@@ -1524,20 +1652,176 @@ function initResultsFeedSortable() {
     }
 }
 
+// Robust Clipboard Copy Function with Fallback
+function copyToClipboard(text, successMsg) {
+    if (!text) return;
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+            showToast(successMsg || "Copied to clipboard!");
+        }).catch(() => {
+            fallbackCopyText(text, successMsg);
+        });
+    } else {
+        fallbackCopyText(text, successMsg);
+    }
+}
+
+function fallbackCopyText(text, successMsg) {
+    try {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-9999px";
+        textArea.style.top = "-9999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        const successful = document.execCommand("copy");
+        document.body.removeChild(textArea);
+        if (successful) {
+            showToast(successMsg || "Copied to clipboard!");
+        } else {
+            showToast("Failed to copy. Please select manually.");
+        }
+    } catch (err) {
+        showToast("Failed to copy text.");
+    }
+}
+window.copyToClipboard = copyToClipboard;
+
 // Copy All Choice Codes
 if (btnCopyAllCodes) {
     btnCopyAllCodes.addEventListener("click", () => {
         if (allResultsData.length === 0) return;
         const codesList = allResultsData.map(col => formatIntCode(col.branch_code || col.choice_code || (col.college_code + "000"))).join("\n");
-        navigator.clipboard.writeText(codesList);
-        showToast(`Copied ${allResultsData.length} Branch Choice Codes in preference sequence!`);
+        copyToClipboard(codesList, `Copied ${allResultsData.length} Branch Choice Codes in preference sequence!`);
     });
 }
 
-// Print Official CAP Option Form
+// Debounced Search Listener (250ms)
+let searchDebounceTimeout = null;
+if (resultSearch) {
+    resultSearch.addEventListener("input", () => {
+        clearTimeout(searchDebounceTimeout);
+        searchDebounceTimeout = setTimeout(() => {
+            currentPage = 1;
+            renderResultsView();
+        }, 250);
+    });
+}
+
+// CAP Option Form Preview Modal Logic
+function openCapPreviewModal() {
+    if (!allResultsData || allResultsData.length === 0) {
+        showToast("No colleges available to generate preference list.");
+        return;
+    }
+    const modal = document.getElementById("option-form-modal-overlay");
+    if (!modal) return;
+
+    renderCapPreviewMeta();
+    renderCapPreviewTable();
+
+    modal.style.display = "flex";
+}
+
+function closeCapPreviewModal() {
+    const modal = document.getElementById("option-form-modal-overlay");
+    if (modal) modal.style.display = "none";
+}
+
+function renderCapPreviewMeta() {
+    const metaContainer = document.getElementById("cap-preview-meta");
+    if (!metaContainer) return;
+
+    const studentName = studentNameInput ? (studentNameInput.value.trim() || "Student") : "Student";
+    const candidatePct = percentileNum ? (percentileNum.value || "N/A") : "N/A";
+    const candidateCat = categorySelect ? (categorySelect.value || "OPEN") : "OPEN";
+    const candidateExam = percentileTypeSelect ? percentileTypeSelect.value : "MHT-CET";
+    const capRound = capRoundSelect ? (capRoundSelect.value || "CAP Round 1") : "CAP Round 1";
+
+    metaContainer.innerHTML = `
+        <div><strong style="color:#64748b; font-size:0.75rem; text-transform:uppercase; display:block;">Candidate Name</strong><span style="font-weight:700; color:#0f172a;">${studentName}</span></div>
+        <div><strong style="color:#64748b; font-size:0.75rem; text-transform:uppercase; display:block;">Percentile Score</strong><span style="font-weight:700; color:#2563eb;">${candidatePct} (${candidateExam})</span></div>
+        <div><strong style="color:#64748b; font-size:0.75rem; text-transform:uppercase; display:block;">Category / Round</strong><span style="font-weight:700; color:#0f172a;">${candidateCat} | ${capRound}</span></div>
+        <div><strong style="color:#64748b; font-size:0.75rem; text-transform:uppercase; display:block;">Total Preferences</strong><span style="font-weight:800; color:#059669;">${allResultsData.length} Selected</span></div>
+    `;
+}
+
+function renderCapPreviewTable() {
+    const tbody = document.getElementById("cap-preview-tbody");
+    if (!tbody) return;
+
+    if (allResultsData.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:2rem; color:#64748b;">No colleges in preference list.</td></tr>`;
+        return;
+    }
+
+    let html = "";
+    allResultsData.forEach((col, idx) => {
+        const collegeCode = formatIntCode(col.college_code);
+        const branchChoiceCode = formatIntCode(col.branch_code || col.choice_code || (collegeCode + "000"));
+        html += `
+            <tr style="border-bottom:1px solid #f1f5f9;">
+                <td style="padding:0.6rem 0.5rem; text-align:center; font-weight:700; color:#2563eb;">${idx + 1}</td>
+                <td style="padding:0.6rem 0.5rem; font-family:monospace; font-weight:700; color:#0f172a;">${branchChoiceCode}</td>
+                <td style="padding:0.6rem 0.5rem;"><div style="font-weight:700; color:#0f172a;">${col.college_name || ''}</div><div style="font-size:0.78rem; color:#64748b;">${col.city || ''}</div></td>
+                <td style="padding:0.6rem 0.5rem; font-weight:600; color:#334155;">${col.branch_name || ''}</td>
+                <td style="padding:0.6rem 0.5rem; text-align:center;">
+                    <div style="display:inline-flex; gap:4px;">
+                        <button type="button" onclick="window.moveCapPreviewItem(${idx}, -1)" ${idx === 0 ? 'disabled style="opacity:0.3; cursor:not-allowed;"' : ''} style="background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe; border-radius:6px; padding:3px 8px; font-weight:700; cursor:pointer;" title="Move Up">&uarr;</button>
+                        <button type="button" onclick="window.moveCapPreviewItem(${idx}, 1)" ${idx === allResultsData.length - 1 ? 'disabled style="opacity:0.3; cursor:not-allowed;"' : ''} style="background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe; border-radius:6px; padding:3px 8px; font-weight:700; cursor:pointer;" title="Move Down">&darr;</button>
+                        <button type="button" onclick="window.removeCapPreviewItem(${idx})" style="background:#fef2f2; color:#dc2626; border:1px solid #fecaca; border-radius:6px; padding:3px 8px; font-weight:700; cursor:pointer;" title="Remove Preference">&times;</button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    });
+    tbody.innerHTML = html;
+}
+
+window.moveCapPreviewItem = function(index, direction) {
+    const targetIdx = index + direction;
+    if (targetIdx < 0 || targetIdx >= allResultsData.length) return;
+    const moved = allResultsData.splice(index, 1)[0];
+    allResultsData.splice(targetIdx, 0, moved);
+    renderCapPreviewMeta();
+    renderCapPreviewTable();
+    renderResultsView();
+};
+
+window.removeCapPreviewItem = function(index) {
+    if (index < 0 || index >= allResultsData.length) return;
+    allResultsData.splice(index, 1);
+    renderCapPreviewMeta();
+    renderCapPreviewTable();
+    renderResultsView();
+    if (typeof updateMetricsUI === "function") updateMetricsUI();
+};
+
+// Modal Controls Binding
+const capModalClose = document.getElementById("cap-modal-close");
+const capModalCancel = document.getElementById("cap-preview-btn-cancel");
+const capModalPrint = document.getElementById("cap-preview-btn-print");
+
+if (capModalClose) capModalClose.onclick = closeCapPreviewModal;
+if (capModalCancel) capModalCancel.onclick = closeCapPreviewModal;
+if (capModalPrint) {
+    capModalPrint.onclick = () => {
+        closeCapPreviewModal();
+        triggerCapDocumentPrint();
+    };
+}
+
 if (btnPrintForm) {
     btnPrintForm.addEventListener("click", () => {
-        if (allResultsData.length === 0) return;
+        openCapPreviewModal();
+    });
+}
+
+// Print Official CAP Option Form Document Generator
+function triggerCapDocumentPrint() {
+    if (!allResultsData || allResultsData.length === 0) return;
 
         const studentName = studentNameInput ? (studentNameInput.value.trim() || "N/A") : "N/A";
         const candidatePct = percentileNum.value;
@@ -2010,7 +2294,6 @@ if (btnPrintForm) {
 
         printWin.document.write(printHtml);
         printWin.document.close();
-    });
 }
 
 // Global Standalone Drawer Controls
@@ -2021,7 +2304,10 @@ function closeMobileSidebar(e) {
     const btnInputs = document.getElementById("mobile-btn-inputs");
     const btnResults = document.getElementById("mobile-btn-results");
 
-    if (sidebarPanel) sidebarPanel.classList.remove("mobile-open");
+    if (sidebarPanel) {
+        sidebarPanel.classList.remove("mobile-open");
+        sidebarPanel.classList.add("panel-collapsed");
+    }
     if (sidebarOverlay) {
         sidebarOverlay.classList.remove("active");
         sidebarOverlay.style.display = "none";
@@ -2038,7 +2324,10 @@ function openMobileSidebar(e) {
     const btnInputs = document.getElementById("mobile-btn-inputs");
     const btnResults = document.getElementById("mobile-btn-results");
 
-    if (sidebarPanel) sidebarPanel.classList.add("mobile-open");
+    if (sidebarPanel) {
+        sidebarPanel.classList.remove("panel-collapsed");
+        sidebarPanel.classList.add("mobile-open");
+    }
     if (sidebarOverlay) {
         sidebarOverlay.style.display = "block";
         sidebarOverlay.classList.add("active");
@@ -2143,11 +2432,20 @@ function sortResultsData(orderArray) {
         return 999;
     }
 
+    function getCleanNumericCutoff(col) {
+        if (!col) return -1;
+        const val = col.closing_cutoff !== undefined ? col.closing_cutoff : (col.cutoff_percentile !== undefined ? col.cutoff_percentile : null);
+        if (val === null || val === undefined || val === "" || isNaN(Number(val))) {
+            return -1;
+        }
+        return Number(val);
+    }
+
     allResultsData.sort((a, b) => {
         for (const criteria of orderArray) {
             if (criteria === "cutoff") {
-                const valA = a.closing_cutoff !== undefined ? a.closing_cutoff : (a.cutoff_percentile || 0);
-                const valB = b.closing_cutoff !== undefined ? b.closing_cutoff : (b.cutoff_percentile || 0);
+                const valA = getCleanNumericCutoff(a);
+                const valB = getCleanNumericCutoff(b);
                 if (valB !== valA) return valB - valA;
             } else if (criteria === "city") {
                 const idxA = getCityIdx(a);
@@ -2159,7 +2457,7 @@ function sortResultsData(orderArray) {
                 if (idxA !== idxB) return idxA - idxB;
             }
         }
-        return 0;
+        return (a.college_name || "").localeCompare(b.college_name || "");
     });
 }
 
@@ -2309,6 +2607,7 @@ window.resetPredictorForm = function() {
 
     if (citySearch) citySearch.value = "";
     if (branchSearch) branchSearch.value = "";
+    if (resultSearch) resultSearch.value = "";
 
     activeCitiesOrder = [];
     renderCityCheckboxes();
@@ -2324,8 +2623,19 @@ window.resetPredictorForm = function() {
         else p.classList.remove("active");
     });
 
+    currentMetricFilter = null;
+    const cards = document.querySelectorAll("#metrics-grid .metric-card");
+    cards.forEach(c => c.style.outline = "");
+
+    currentPage = 1;
+
+    if (allResultsData && allResultsData.length > 0) {
+        if (typeof updateMetricsUI === "function") updateMetricsUI();
+        if (typeof renderResultsView === "function") renderResultsView();
+    }
+
     if (typeof showToast === "function") {
-        showToast("Student Inputs cleared successfully!");
+        showToast("All filters and inputs cleared!");
     }
 
     if (typeof window.closeMobileSidebar === "function") {
@@ -2599,8 +2909,10 @@ function initAntigravityCanvas() {
     populateDropdowns();
     initCities();
     initBranches();
+    initPrioritySort();
     fetchMetadata();
     setupMobileNav();
     setupCursorGlow();
     initAntigravityCanvas();
 })();
+

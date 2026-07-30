@@ -203,112 +203,47 @@
             btnText.innerText = "Signing in...";
             btnIcon.className = "fas fa-spinner fa-spin";
 
-            let data = null;
-            let responseOK = false;
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-            // Prioritize local server first (instant response), then online Render server
-            const apiUrls = [
-                "http://localhost:5000/api/login",
-                "http://127.0.0.1:5000/api/login",
-                "https://mhtcet-backend-ran6.onrender.com/api/login"
-            ];
+                const apiUrl = typeof window.getBackendUrl === "function" ? window.getBackendUrl("/api/login") : "/api/login";
+                const res = await fetch(apiUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password }),
+                    credentials: "include",
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
 
-            for (const url of apiUrls) {
-                try {
-                    const isRemote = url.includes("onrender.com");
-                    if (isRemote) {
-                        btnText.innerText = "Connecting to server...";
+                const data = await res.json();
+
+                if (res.ok && data.success && data.user) {
+                    // Only store server-verified user data
+                    if (rememberMe) {
+                        localStorage.setItem("user", JSON.stringify(data.user));
+                    } else {
+                        sessionStorage.setItem("user", JSON.stringify(data.user));
                     }
 
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), isRemote ? 8000 : 2500);
-
-                    const res = await fetch(url, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ email, password }),
-                        credentials: "include",
-                        signal: controller.signal
-                    });
-                    clearTimeout(timeoutId);
-
-                    data = await res.json();
-                    if (res.ok || data.success || data.message === "Login successful" || data.user) {
-                        responseOK = true;
-                        break;
-                    } else if (data.message || data.error) {
-                        showAlert(data.message || data.error, 'error');
-                        submitBtn.disabled = false;
-                        btnText.innerText = "Sign In";
-                        btnIcon.className = "fas fa-arrow-right";
-                        return;
-                    }
-                } catch (err) {
-                    console.warn("Attempt failed for", url, err.name === "AbortError" ? "Timeout" : err);
-                }
-            }
-
-            // Check if user name was saved during account registration
-            function getRegisteredStudent(userEmail) {
-                try {
-                    const regMap = JSON.parse(localStorage.getItem("registered_users") || "{}");
-                    if (regMap[userEmail.toLowerCase()]) {
-                        return regMap[userEmail.toLowerCase()];
-                    }
-                    const cur = JSON.parse(localStorage.getItem("user") || sessionStorage.getItem("user") || "null");
-                    if (cur && cur.email && cur.email.toLowerCase() === userEmail.toLowerCase()) {
-                        return cur;
-                    }
-                } catch(e) {}
-                return null;
-            }
-
-            const regUser = getRegisteredStudent(email);
-            const formattedName = email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-            const studentName = (data && data.user && (data.user.fullname || data.user.fullName))
-                || (regUser && (regUser.fullname || regUser.fullName))
-                || formattedName;
-
-            const finalUserData = {
-                ...(regUser || {}),
-                ...(data && data.user ? data.user : {}),
-                fullname: studentName,
-                fullName: studentName,
-                email: email
-            };
-
-            if (responseOK && data) {
-                showAlert("Sign in successful! Redirecting...", "success");
-                if (rememberMe) {
-                    localStorage.setItem("user", JSON.stringify(finalUserData));
+                    showAlert("Sign in successful! Redirecting...", "success");
+                    setTimeout(() => {
+                        window.location.href = "profile.html";
+                    }, 500);
                 } else {
-                    sessionStorage.setItem("user", JSON.stringify(finalUserData));
+                    showAlert((data && data.message) || "Invalid email or password.", "error");
+                    submitBtn.disabled = false;
+                    btnText.innerText = "Sign In";
+                    btnIcon.className = "fas fa-arrow-right";
                 }
-                setTimeout(() => {
-                    window.location.href = "profile.html";
-                }, 1000);
-            } else {
-                showAlert("Signed in successfully (Offline Session). Redirecting...", "success");
-                const fallbackUser = {
-                    phone: "N/A",
-                    cetRollNumber: "EN26" + Math.floor(100000 + Math.random() * 900000),
-                    category: "OPEN",
-                    createdAt: new Date().toISOString(),
-                    ...finalUserData
-                };
-                if (rememberMe) {
-                    localStorage.setItem("user", JSON.stringify(fallbackUser));
-                } else {
-                    sessionStorage.setItem("user", JSON.stringify(fallbackUser));
-                }
-                setTimeout(() => {
-                    window.location.href = "profile.html";
-                }, 1000);
+            } catch (err) {
+                console.error(err);
+                showAlert("Unable to connect to the server. Please make sure the backend is running and try again.", "error");
+                submitBtn.disabled = false;
+                btnText.innerText = "Sign In";
+                btnIcon.className = "fas fa-arrow-right";
             }
-
-            submitBtn.disabled = false;
-            btnText.innerText = "Sign In";
-            btnIcon.className = "fas fa-arrow-right";
         });
     </script>
     <script>

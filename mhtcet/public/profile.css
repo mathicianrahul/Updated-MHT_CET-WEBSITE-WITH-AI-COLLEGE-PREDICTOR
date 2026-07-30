@@ -2,11 +2,7 @@
    STUDENT PROFILE PAGE - EXECUTIVE CLEAN DESIGN
    ========================================================================== */
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body.auth-body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -18,12 +14,10 @@ body.auth-body {
 }
 
 .navbar {
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(255,255,255,0.85);
     backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    border-bottom: 1px solid rgba(226,232,240,0.8);
+    position: sticky; top: 0; z-index: 100;
 }
 
 .logout-btn {
@@ -33,7 +27,6 @@ body.auth-body {
     font-weight: 600 !important;
     cursor: pointer;
 }
-
 .logout-btn:hover {
     background: #fee2e2 !important;
 }
@@ -63,7 +56,7 @@ body.auth-body {
     border: 1px solid #e2e8f0;
     border-radius: 20px;
     padding: 2rem 2.25rem;
-    box-shadow: 0 8px 25px -8px rgba(15, 23, 42, 0.06);
+    box-shadow: 0 8px 25px -8px rgba(15,23,42,0.06);
 }
 
 .avatar-circle {
@@ -79,7 +72,7 @@ body.auth-body {
     font-size: 1.55rem;
     font-weight: 800;
     flex-shrink: 0;
-    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 4px 14px rgba(37,99,235,0.3);
 }
 
 .profile-header-info h1 {
@@ -116,7 +109,7 @@ body.auth-body {
     border: 1px solid #e2e8f0;
     border-radius: 20px;
     padding: 2rem 2.25rem;
-    box-shadow: 0 8px 25px -8px rgba(15, 23, 42, 0.06);
+    box-shadow: 0 8px 25px -8px rgba(15,23,42,0.06);
 }
 
 .section-title {
@@ -175,7 +168,7 @@ body.auth-body {
     border: 1px solid #e2e8f0;
     border-radius: 20px;
     padding: 2rem 2.25rem;
-    box-shadow: 0 8px 25px -8px rgba(15, 23, 42, 0.06);
+    box-shadow: 0 8px 25px -8px rgba(15,23,42,0.06);
 }
 
 .actions-grid {
@@ -279,14 +272,17 @@ body.auth-body {
     .profile-header {
         flex-direction: column;
         text-align: center;
-        padding: 2rem 1.5rem;
+        padding: 2rem 1.25rem;
     }
-
     .details-grid {
         grid-template-columns: 1fr;
+        gap: 1rem;
     }
-
     .profile-card {
         gap: 1.25rem;
+    }
+    .detail-value, .profile-email, #profileName {
+        overflow-wrap: anywhere !important;
+        word-break: break-word !important;
     }
 }

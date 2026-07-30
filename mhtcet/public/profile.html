@@ -57,7 +57,7 @@
                 <a href="predictor.html" class="nav-btn predictor-cta-btn">
                     <i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor
                 </a>
-                <button class="nav-btn logout-btn" id="logoutBtn" onclick="handleLogout()">
+                <button class="nav-btn logout-btn" id="logoutBtn" onclick="window.handleGlobalLogout(event)">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </button>
             </div>
@@ -87,7 +87,7 @@
 
             <!-- Profile Details Grid -->
             <div class="profile-details">
-                <div style="display:flex; justify-style:space-between; align-items:center; margin-bottom:1.25rem; flex-wrap:wrap; gap:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; flex-wrap:wrap; gap:10px;">
                     <h3 class="section-title" style="margin-bottom:0;"><i class="fas fa-id-card"></i> Student Details</h3>
                     <button id="editBtn" onclick="toggleEditModal()" style="background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe; border-radius:10px; padding:0.45rem 0.95rem; font-weight:700; font-size:0.85rem; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
                         <i class="fas fa-pen-to-square"></i> Edit Details
@@ -192,7 +192,7 @@
 
             <!-- Logout Section -->
             <div class="profile-logout-section">
-                <button class="logout-action-btn" onclick="handleLogout()">
+                <button class="logout-action-btn" onclick="window.handleGlobalLogout(event)">
                     <i class="fas fa-sign-out-alt"></i> Sign Out
                 </button>
             </div>
@@ -207,23 +207,25 @@
                 try { userData = JSON.parse(localStr); } catch (e) {}
             }
 
-            if (userData && userData.email) {
-                try {
-                    const regMap = JSON.parse(localStorage.getItem("registered_users") || "{}");
-                    const regUser = regMap[userData.email.toLowerCase()];
-                    if (regUser) {
-                        userData = { ...regUser, ...userData };
-                    }
-                } catch(e) {}
-            }
-
-            // Sync with backend API if available
+            // Fetch current user from backend
             try {
-                const res = await fetch("http://localhost:5000/api/current-user", { credentials: "include" });
+                const controller = new AbortController();
+                const tid = setTimeout(() => controller.abort(), 5000);
+                const apiUrl = typeof window.getBackendUrl === "function" ? window.getBackendUrl("/api/current-user") : "/api/current-user";
+                const res = await fetch(apiUrl, { credentials: "include", signal: controller.signal });
+                clearTimeout(tid);
                 const data = await res.json();
                 if (data && data.loggedIn && data.user) {
-                    userData = { ...userData, ...data.user };
+                    userData = {
+                        ...(userData || {}),
+                        ...data.user,
+                        phone: (data.user.phone && data.user.phone !== "N/A") ? data.user.phone : (userData?.phone || "N/A"),
+                        cetRollNumber: data.user.cetRollNumber || userData?.cetRollNumber || "-",
+                        category: data.user.category || userData?.category || "OPEN",
+                        percentile: data.user.percentile !== undefined ? data.user.percentile : userData?.percentile
+                    };
                     localStorage.setItem("user", JSON.stringify(userData));
+                    sessionStorage.setItem("user", JSON.stringify(userData));
                 }
             } catch(e) {}
 
@@ -234,7 +236,7 @@
 
             const name = userData.fullname || userData.fullName || (userData.email ? userData.email.split('@')[0] : "Student");
             const email = userData.email || "-";
-            const phone = userData.phone || "-";
+            const phone = (userData.phone && userData.phone !== "N/A") ? userData.phone : "-";
             const roll = userData.cetRollNumber || userData.rollNumber || "-";
             const category = userData.category || "-";
             const createdAt = userData.createdAt
@@ -300,18 +302,6 @@
             localStorage.setItem("user", JSON.stringify(userData));
             sessionStorage.setItem("user", JSON.stringify(userData));
 
-            // Also update registered_users map
-            if (userData.email) {
-                try {
-                    const regMap = JSON.parse(localStorage.getItem("registered_users") || "{}");
-                    regMap[userData.email.toLowerCase()] = {
-                        ...(regMap[userData.email.toLowerCase()] || {}),
-                        ...userData
-                    };
-                    localStorage.setItem("registered_users", JSON.stringify(regMap));
-                } catch(e) {}
-            }
-
             toggleEditModal();
             loadProfile();
 
@@ -319,18 +309,15 @@
             if (typeof window.globalAuthUISync === "function") window.globalAuthUISync();
         }
 
-        async function handleLogout() {
-            try {
-                await fetch("https://mhtcet-backend-ran6.onrender.com/api/logout", {
-                    method: "POST",
-                    credentials: "include"
-                });
-            } catch (e) {
-                console.warn("Logout API call failed:", e);
+        async function handleLogout(e) {
+            if (typeof window.handleGlobalLogout === "function") {
+                await window.handleGlobalLogout(e);
+            } else {
+                localStorage.removeItem("user");
+                localStorage.removeItem("token");
+                sessionStorage.clear();
+                window.location.href = "login.html";
             }
-            localStorage.removeItem("user");
-            sessionStorage.removeItem("user");
-            window.location.href = "login.html";
         }
 
         loadProfile();

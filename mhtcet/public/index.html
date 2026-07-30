@@ -86,7 +86,7 @@
                     </div>
                     <h1 class="hero-title">
                         MHT-CET Admission is complex.
-                        <br>
+                        <br class="desktop-br">
                         Go from <span class="title-highlight-green">confused</span> to <span class="title-highlight">admitted</span>.
                     </h1>
                     <p class="hero-description">
@@ -556,16 +556,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       authArea.innerHTML = `
         <a href="predictor.html" class="nav-btn signup-btn"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Predictor</a>
         <span class="nav-user">Hi, ${data.user.fullname}</span>
-        <button class="nav-btn logout-btn" id="logoutBtn">Logout</button>
+        <button class="nav-btn logout-btn" id="logoutBtn" onclick="window.handleGlobalLogout(event)">Logout</button>
       `;
-
-      document.getElementById("logoutBtn").addEventListener("click", async () => {
-        await fetch("https://mhtcet-backend-ran6.onrender.com/api/logout", {
-          method: "POST",
-          credentials: "include"
-        });
-        window.location.href = "index.html";
-      });
     }
   } catch (err) {
     console.error("Navbar auth error:", err);
