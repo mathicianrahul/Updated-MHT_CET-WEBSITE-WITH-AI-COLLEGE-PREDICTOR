@@ -122,6 +122,8 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
       "http://localhost:3000",
       "http://localhost:5173",
       "http://localhost:8080",
+      "http://localhost:5000",
+      "https://aimlrahul.netlify.app",
       "https://aimlrahulcounselling.netlify.app"
     ];
 
