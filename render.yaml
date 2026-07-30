@@ -12,7 +12,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: MONGO_URI
-        value: mongodb+srv://cet_databade:cet12345@cluster0.gj4ddxi.mongodb.net/cetDB?retryWrites=true&w=majority
+        sync: false
       - key: SESSION_SECRET
         value: e98f7a23c4b109867d5e4f3a2b10984756291a83b2c1d0e9f8a7b6c5d4e3f2a1
       - key: ALLOWED_ORIGINS
