@@ -543,7 +543,14 @@ document.getElementById("scheduleConsultationBtn")
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    const res = await fetch("https://mhtcet-backend-ran6.onrender.com/api/current-user", {
+    const getAuthUrl = function(endpoint) {
+      if (typeof window.getBackendUrl === "function") return window.getBackendUrl(endpoint);
+      const ep = endpoint.startsWith("/") ? endpoint : "/" + endpoint;
+      if (window.location.protocol === "file:") return "http://localhost:5000" + ep;
+      if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") return ep;
+      return "https://mhtcet-backend-ran6.onrender.com" + ep;
+    };
+    const res = await fetch(getAuthUrl("/api/current-user"), {
       credentials: "include"
     });
 
@@ -564,7 +571,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-fetch("https://mhtcet-backend-ran6.onrender.com/api/current-user", {
+const getIndexAuthUrl = function(endpoint) {
+  if (typeof window.getBackendUrl === "function") return window.getBackendUrl(endpoint);
+  const ep = endpoint.startsWith("/") ? endpoint : "/" + endpoint;
+  if (window.location.protocol === "file:") return "http://localhost:5000" + ep;
+  if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") return ep;
+  return "https://mhtcet-backend-ran6.onrender.com" + ep;
+};
+
+fetch(getIndexAuthUrl("/api/current-user"), {
   credentials: "include"
 })
 .then(res => res.json())

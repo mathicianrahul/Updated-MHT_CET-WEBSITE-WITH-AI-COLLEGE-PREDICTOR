@@ -10,6 +10,9 @@ window.getBackendUrl = function(endpoint) {
         return "http://localhost:5000" + ep;
     }
     if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+        if (window.location.port && window.location.port !== "5000") {
+            return "http://localhost:5000" + ep;
+        }
         return ep;
     }
     return "https://mhtcet-auth-backend.onrender.com" + ep;

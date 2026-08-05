@@ -13,6 +13,14 @@ def is_port_active(url):
     except Exception:
         return False
 
+def kill_port(port):
+    try:
+        if sys.platform == "win32":
+            cmd = f'for /f "tokens=5" %a in (\'netstat -aon ^| findstr :{port} ^| findstr LISTENING\') do taskkill /f /pid %a'
+            subprocess.run(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except Exception:
+        pass
+
 def main():
     print("=" * 60)
     print("      MHT-CET Engineering College Predictor & CAP Portal")
@@ -26,6 +34,11 @@ def main():
     frontend_predictor = os.path.join(base_dir, "frontend", "predictor.html") if os.path.exists(os.path.join(base_dir, "frontend", "predictor.html")) else os.path.join(base_dir, "mhtcet", "public", "predictor.html")
 
     processes = []
+
+    # Clean up stale processes on ports 5000 and 8000
+    kill_port(5000)
+    kill_port(8000)
+    time.sleep(1.0)
 
     # 1. Start Node.js Auth Backend (Port 5000)
     if os.path.exists(node_backend_dir):

@@ -439,7 +439,13 @@
             body: JSON.stringify(web3Payload)
         }).catch(() => {});
 
-        fetch("http://localhost:5000/api/consultation", {
+        const consultUrl = typeof window.getBackendUrl === "function" 
+            ? window.getBackendUrl("/api/consultation") 
+            : (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:" 
+                ? "http://localhost:5000/api/consultation" 
+                : "https://mhtcet-backend-ran6.onrender.com/api/consultation");
+
+        fetch(consultUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(formProps)

@@ -211,8 +211,20 @@
             try {
                 const controller = new AbortController();
                 const tid = setTimeout(() => controller.abort(), 5000);
-                const apiUrl = typeof window.getBackendUrl === "function" ? window.getBackendUrl("/api/current-user") : "/api/current-user";
-                const res = await fetch(apiUrl, { credentials: "include", signal: controller.signal });
+                const getUrl = function(endpoint) {
+                    if (typeof window.getBackendUrl === "function") return window.getBackendUrl(endpoint);
+                    const ep = endpoint.startsWith("/") ? endpoint : "/" + endpoint;
+                    if (window.location.protocol === "file:") return "http://localhost:5000" + ep;
+                    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+                        if (window.location.port && window.location.port !== "5000") return "http://localhost:5000" + ep;
+                        return ep;
+                    }
+                    return "https://mhtcet-auth-backend.onrender.com" + ep;
+                };
+                const fetchOpts = { signal: controller.signal };
+                if (window.location.protocol !== "file:") fetchOpts.credentials = "include";
+
+                const res = await fetch(getUrl("/api/current-user"), fetchOpts);
                 clearTimeout(tid);
                 const data = await res.json();
                 if (data && data.loggedIn && data.user) {
