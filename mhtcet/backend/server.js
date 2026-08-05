@@ -15,9 +15,75 @@ const express = require("express");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const cors = require("cors");
+const nodemailer = require("nodemailer");
 const { OAuth2Client } = require("google-auth-library");
 
 const app = express();
+
+// ---------- EMAIL TRANSPORTER SETUP ----------
+const createEmailTransporter = () => {
+  if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+    return nodemailer.createTransport({
+      service: process.env.EMAIL_SERVICE || "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
+    });
+  } else if (process.env.SMTP_HOST) {
+    return nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT || "587"),
+      secure: process.env.SMTP_SECURE === "true",
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
+      }
+    });
+  }
+  return null;
+};
+
+const sendOtpEmail = async (toEmail, otpCode) => {
+  const transporter = createEmailTransporter();
+  if (!transporter) {
+    console.warn(`[EMAIL NOTICE] EMAIL_USER and EMAIL_PASS not set in .env. Real email to ${toEmail} skipped. (OTP Code: ${otpCode})`);
+    return false;
+  }
+
+  const mailOptions = {
+    from: `"AIML Rahul Counselling" <${process.env.EMAIL_USER || process.env.SMTP_USER}>`,
+    to: toEmail,
+    subject: `Your Verification Code: ${otpCode} - AIML Rahul Counselling`,
+    html: `
+      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 550px; margin: 0 auto; padding: 24px; border: 1px solid #e2e8f0; border-radius: 16px; background-color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+        <div style="text-align: center; padding-bottom: 20px; border-bottom: 1px solid #f1f5f9;">
+          <h2 style="color: #2563eb; margin: 0; font-size: 22px; font-weight: 800;">AIML Rahul Counselling</h2>
+          <p style="color: #64748b; font-size: 13px; margin-top: 4px;">MHT-CET Admission Portal Verification</p>
+        </div>
+        <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 24px; text-align: center; margin: 24px 0;">
+          <h3 style="color: #1e293b; font-size: 16px; font-weight: 700; margin-bottom: 12px;">Your Email Verification Code</h3>
+          <div style="font-size: 34px; font-weight: 800; letter-spacing: 8px; color: #2563eb; background: #ffffff; padding: 12px; border-radius: 8px; border: 1px dashed #3b82f6; display: inline-block; margin: 10px 0;">
+            ${otpCode}
+          </div>
+          <p style="color: #475569; font-size: 13px; margin-top: 12px;">This code is valid for 10 minutes. Please enter it on the website to complete your registration.</p>
+        </div>
+        <p style="color: #94a3b8; font-size: 12px; text-align: center; margin-top: 20px;">
+          If you did not create an account on AIML Rahul Counselling, please ignore this email.
+        </p>
+      </div>
+    `
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`[EMAIL SENT SUCCESS] Code sent to ${toEmail}. MessageId: ${info.messageId}`);
+    return true;
+  } catch (err) {
+    console.error(`[EMAIL ERROR] Failed to send email to ${toEmail}:`, err.message);
+    return false;
+  }
+};
 
 // ---------- CORS CONFIGURATION ----------
 const allowedOrigins = [
@@ -329,13 +395,13 @@ const handleSignup = async (req, res) => {
     }
 
     console.log(`[VERIFICATION OTP GENERATED] Email: ${normalizedEmail} | Code: ${otpCode}`);
+    sendOtpEmail(normalizedEmail, otpCode).catch(e => console.error("Async email error:", e.message));
 
     res.status(201).json({
       success: true,
       requireOtp: true,
       email: normalizedEmail,
-      message: `Account created! Please enter the 6-digit verification code. (Demo Code: ${otpCode})`,
-      otpDemoCode: otpCode,
+      message: "Account created! Please enter the 6-digit verification code sent to your email.",
       user: {
         fullname: newUser.fullname,
         email: newUser.email,
@@ -463,7 +529,8 @@ app.post("/api/resend-otp", signupLimiter, async (req, res) => {
     }
 
     console.log(`[OTP RESENT] Email: ${email} | Verification Code: ${newOtp}`);
-    res.json({ success: true, message: `New OTP code generated for ${email}. (Demo Code: ${newOtp})` });
+    sendOtpEmail(email, newOtp).catch(e => console.error("Async email error:", e.message));
+    res.json({ success: true, message: `A new verification code has been sent to ${email}.` });
 
   } catch (err) {
     res.status(500).json({ success: false, message: "Server error while resending OTP." });
@@ -532,12 +599,12 @@ app.post("/api/login", loginLimiter, async (req, res) => {
         inMemoryUserStore.set(normalizedEmail, user);
       }
       console.log(`[UNVERIFIED LOGIN ATTEMPT] Email: ${normalizedEmail} | Verification Code: ${newOtp}`);
+      sendOtpEmail(normalizedEmail, newOtp).catch(e => console.error("Async email error:", e.message));
       return res.status(403).json({
         success: false,
         requireOtp: true,
         email: normalizedEmail,
-        message: `Please verify your email address before signing in. (Demo OTP Code: ${newOtp})`,
-        otpDemoCode: newOtp
+        message: "Please verify your email address before signing in. A new 6-digit verification code has been sent."
       });
     }
 

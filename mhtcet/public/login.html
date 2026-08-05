@@ -288,11 +288,9 @@
                     currentOtpEmail = data.email || email;
                     document.getElementById("loginForm").style.display = "none";
                     document.getElementById("otpSection").style.display = "block";
-                    document.getElementById("otpNotice").innerText = data.message || `Enter the 6-digit OTP code sent to ${currentOtpEmail}`;
-                    if (data.otpDemoCode) {
-                        document.getElementById("otpInput").value = data.otpDemoCode;
-                    }
-                    showAlert("Unverified email. Please enter the 6-digit verification code below.", "error");
+                    document.getElementById("otpNotice").innerText = `Enter the 6-digit OTP code sent to ${currentOtpEmail}`;
+                    document.getElementById("otpInput").value = "";
+                    showAlert("Unverified email. Please enter the 6-digit verification code sent to your email.", "error");
                 } else {
                     showAlert((data && data.message) || "Invalid email or password.", "error");
                     submitBtn.disabled = false;
