@@ -627,7 +627,7 @@ app.post("/api/login", loginLimiter, async (req, res) => {
       }
       console.log(`[UNVERIFIED LOGIN ATTEMPT] Email: ${normalizedEmail} | Verification Code: ${newOtp}`);
       sendOtpEmail(normalizedEmail, newOtp).catch(e => console.error("Async email error:", e.message));
-      return res.status(403).json({
+      return res.status(200).json({
         success: false,
         requireOtp: true,
         email: normalizedEmail,
