@@ -15,90 +15,24 @@ const express = require("express");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const cors = require("cors");
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 const { OAuth2Client } = require("google-auth-library");
 
 const app = express();
 
-let etherealTransporter = null;
-
-// Startup diagnostics — visible in Render logs
-console.log("[SMTP CONFIG CHECK] EMAIL_USER:", process.env.EMAIL_USER ? process.env.EMAIL_USER.trim() : "NOT SET");
-console.log("[SMTP CONFIG CHECK] EMAIL_PASS:", process.env.EMAIL_PASS ? `SET (${process.env.EMAIL_PASS.replace(/\s+/g,"").length} chars)` : "NOT SET");
-console.log("[SMTP CONFIG CHECK] SMTP_HOST:", process.env.SMTP_HOST || "smtp.gmail.com (default)");
-console.log("[SMTP CONFIG CHECK] SMTP_PORT:", process.env.SMTP_PORT || "587 (default)");
-
-const getTransporter = async () => {
-  const emailUser = process.env.EMAIL_USER;
-  const emailPass = process.env.EMAIL_PASS;
-  const smtpHost = process.env.SMTP_HOST || "smtp.gmail.com";
-  const smtpPort = parseInt(process.env.SMTP_PORT || "587");
-  const smtpSecure = process.env.SMTP_SECURE === "true" ? true : false;
-
-  const isPlaceholder = !emailUser || !emailPass ||
-                        emailUser.includes("your-email") ||
-                        emailPass.includes("xxxx") ||
-                        emailPass.includes("your-gmail-app");
-
-  if (isPlaceholder) {
-    console.warn("[SMTP WARNING] Credentials missing or placeholder — falling back to Ethereal test account.");
-  }
-
-  if (!isPlaceholder) {
-    const cleanPass = emailPass.replace(/\s+/g, "");
-    const transport = nodemailer.createTransport({
-      host: smtpHost,
-      port: smtpPort,
-      secure: smtpSecure,
-      auth: {
-        user: emailUser.trim(),
-        pass: cleanPass
-      }
-    });
-    // Verify connection on first use
-    try {
-      await transport.verify();
-      console.log("[SMTP VERIFY] Connection to Gmail SMTP successful ✓");
-    } catch (verifyErr) {
-      console.error("[SMTP VERIFY FAILED]", verifyErr.message);
-    }
-    return transport;
-  }
-
-  // Fallback to Ethereal SMTP test account
-  if (!etherealTransporter) {
-    try {
-      const testAccount = await nodemailer.createTestAccount();
-      etherealTransporter = nodemailer.createTransport({
-        host: "smtp.ethereal.email",
-        port: 587,
-        secure: false,
-        auth: {
-          user: testAccount.user,
-          pass: testAccount.pass
-        }
-      });
-      etherealTransporter._etherealUser = testAccount.user;
-      console.log(`[ETHEREAL MAIL INITIALIZED] Temporary test inbox: ${testAccount.user}`);
-    } catch (err) {
-      console.warn("[ETHEREAL MAIL NOTICE] Failed to create test account:", err.message);
-    }
-  }
-  return etherealTransporter;
-};
+// Resend API client (HTTP-based — works on Render, no SMTP port blocking)
+const resendApiKey = process.env.RESEND_API_KEY;
+console.log("[RESEND CONFIG] API Key:", resendApiKey ? `SET (${resendApiKey.length} chars)` : "NOT SET");
 
 const sendOtpEmail = async (toEmail, otpCode) => {
+  if (!resendApiKey) {
+    console.warn(`[EMAIL NOTICE] RESEND_API_KEY not set. OTP for ${toEmail}: ${otpCode}`);
+    return false;
+  }
   try {
-    const transporter = await getTransporter();
-    if (!transporter) {
-      console.warn(`[EMAIL NOTICE] Real email to ${toEmail} skipped. (OTP Code: ${otpCode})`);
-      return false;
-    }
-
-    const senderEmail = transporter._etherealUser || (process.env.EMAIL_USER ? process.env.EMAIL_USER.trim() : "noreply@aimlrahulcounselling.com");
-
-    const mailOptions = {
-      from: `"AIML Rahul Counselling" <${senderEmail}>`,
+    const resend = new Resend(resendApiKey);
+    const { data, error } = await resend.emails.send({
+      from: "AIML Rahul Counselling <onboarding@resend.dev>",
       to: toEmail,
       subject: `Your Verification Code: ${otpCode} - AIML Rahul Counselling`,
       text: `Welcome to AIML Rahul Counselling!\n\nYour 6-Digit Email Verification Code is: ${otpCode}\n\nThis code is valid for 10 minutes. Please enter it on the website to complete your registration.`,
@@ -120,18 +54,15 @@ const sendOtpEmail = async (toEmail, otpCode) => {
           </p>
         </div>
       `
-    };
-
-    const info = await transporter.sendMail(mailOptions);
-    console.log(`[EMAIL SENT SUCCESS] Code sent to ${toEmail}. MessageId: ${info.messageId}`);
-    
-    const previewUrl = nodemailer.getTestMessageUrl(info);
-    if (previewUrl) {
-      console.log(`[ETHEREAL INBOX PREVIEW URL] View sent email online here: ${previewUrl}`);
+    });
+    if (error) {
+      console.error(`[RESEND ERROR] Failed to send to ${toEmail}:`, error.message || JSON.stringify(error));
+      return false;
     }
+    console.log(`[RESEND SUCCESS] OTP email sent to ${toEmail}. ID: ${data.id}`);
     return true;
   } catch (err) {
-    console.error(`[EMAIL ERROR] Failed to send email to ${toEmail}:`, err.message);
+    console.error(`[RESEND EXCEPTION] ${toEmail}:`, err.message);
     return false;
   }
 };
