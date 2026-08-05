@@ -35,7 +35,7 @@ const sendOtpEmail = async (toEmail, otpCode) => {
     apiKey.apiKey = brevoApiKey;
 
     const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
-    sendSmtpEmail.sender = { name: "AIML Rahul Counselling", email: "rgirase312@gmail.com" };
+    sendSmtpEmail.sender = { name: "AIML Rahul Counselling", email: "rgirase313@gmail.com" };
     sendSmtpEmail.to = [{ email: toEmail }];
     sendSmtpEmail.subject = `Your Verification Code: ${otpCode} - AIML Rahul Counselling`;
     sendSmtpEmail.textContent = `Welcome to AIML Rahul Counselling!\n\nYour 6-Digit Email Verification Code is: ${otpCode}\n\nThis code is valid for 10 minutes.`;
