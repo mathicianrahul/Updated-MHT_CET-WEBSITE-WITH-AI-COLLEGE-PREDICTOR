@@ -25,15 +25,21 @@ let etherealTransporter = null;
 const getTransporter = async () => {
   const emailUser = process.env.EMAIL_USER;
   const emailPass = process.env.EMAIL_PASS;
-  
-  const isPlaceholder = !emailUser || !emailPass || 
-                        emailUser.includes("your-email") || 
+  const smtpHost = process.env.SMTP_HOST || "smtp.gmail.com";
+  const smtpPort = parseInt(process.env.SMTP_PORT || "587");
+  const smtpSecure = process.env.SMTP_SECURE === "true" ? true : false;
+
+  const isPlaceholder = !emailUser || !emailPass ||
+                        emailUser.includes("your-email") ||
+                        emailPass.includes("xxxx") ||
                         emailPass.includes("your-gmail-app");
 
   if (!isPlaceholder) {
-    const cleanPass = emailPass ? emailPass.replace(/\s+/g, "") : "";
+    const cleanPass = emailPass.replace(/\s+/g, "");
     return nodemailer.createTransport({
-      service: process.env.EMAIL_SERVICE || "gmail",
+      host: smtpHost,
+      port: smtpPort,
+      secure: smtpSecure,
       auth: {
         user: emailUser.trim(),
         pass: cleanPass
@@ -41,7 +47,7 @@ const getTransporter = async () => {
     });
   }
 
-  // Fallback to Ethereal SMTP test account for instant real email delivery preview
+  // Fallback to Ethereal SMTP test account
   if (!etherealTransporter) {
     try {
       const testAccount = await nodemailer.createTestAccount();
@@ -55,7 +61,7 @@ const getTransporter = async () => {
         }
       });
       etherealTransporter._etherealUser = testAccount.user;
-      console.log(`[ETHEREAL MAIL INITIALIZED] Temporary test inbox created: ${testAccount.user}`);
+      console.log(`[ETHEREAL MAIL INITIALIZED] Temporary test inbox: ${testAccount.user}`);
     } catch (err) {
       console.warn("[ETHEREAL MAIL NOTICE] Failed to create test account:", err.message);
     }
