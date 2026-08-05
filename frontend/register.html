@@ -212,6 +212,25 @@
                         <p>Already have an account? <a href="login.html" class="switch-auth-link">Sign In</a></p>
                     </div>
                 </form>
+
+                <div id="otpSection" style="display: none; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 14px; padding: 1.5rem; margin-top: 1rem; text-align: center;">
+                    <div style="width: 48px; height: 48px; border-radius: 50%; background: #dbeafe; color: #2563eb; display: inline-flex; align-items: center; justify-content: center; font-size: 1.25rem; margin-bottom: 0.75rem;">
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
+                    <h3 style="color: #1e293b; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.35rem;">Verify Your Email</h3>
+                    <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 1.25rem;" id="otpNotice">Enter the 6-digit OTP code sent to your email.</p>
+                    <div style="display: flex; justify-content: center; margin-bottom: 1.25rem;">
+                        <input type="text" id="otpInput" maxlength="6" placeholder="123456" style="width: 180px; padding: 0.75rem; border: 2px solid #3b82f6; border-radius: 10px; text-align: center; font-size: 1.4rem; font-weight: 800; letter-spacing: 6px; color: #1e293b; background: #ffffff;">
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <button type="button" onclick="submitOtpVerification()" style="width: 100%; padding: 0.75rem; background: #2563eb; color: #ffffff; border: none; border-radius: 10px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(37,99,235,0.2);">
+                            Verify Email & Continue <i class="fas fa-arrow-right" style="margin-left: 6px;"></i>
+                        </button>
+                        <button type="button" onclick="resendOtpCode()" style="width: 100%; padding: 0.6rem; background: transparent; color: #64748b; border: 1px solid #cbd5e1; border-radius: 10px; font-weight: 600; font-size: 0.85rem; cursor: pointer;">
+                            <i class="fas fa-rotate-right"></i> Resend Verification Code
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -312,7 +331,16 @@
                 clearTimeout(timeoutId);
                 const data = await res.json();
 
-                if (res.ok && (data.success || data.user)) {
+                if (res.ok && data.requireOtp) {
+                    currentOtpEmail = data.email || email;
+                    document.getElementById("registerForm").style.display = "none";
+                    document.getElementById("otpSection").style.display = "block";
+                    document.getElementById("otpNotice").innerText = data.message || `Enter the 6-digit OTP code sent to ${currentOtpEmail}`;
+                    if (data.otpDemoCode) {
+                        document.getElementById("otpInput").value = data.otpDemoCode;
+                    }
+                    showAlert("Verification code generated! Please enter the 6-digit OTP below.", "success");
+                } else if (res.ok && (data.success || data.user)) {
                     showAlert("Account created successfully! Redirecting to Sign In...", "success");
                     setTimeout(() => {
                         window.location.href = "login.html";
@@ -494,6 +522,87 @@
                 sessionStorage.setItem("user", JSON.stringify(fallbackUser));
                 showAlert("Google Authentication successful! Redirecting...", "success");
                 setTimeout(() => { window.location.href = "profile.html"; }, 500);
+            }
+        }
+
+        let currentOtpEmail = "";
+
+        async function submitOtpVerification() {
+            const otpVal = document.getElementById("otpInput").value.trim();
+            if (!otpVal || otpVal.length !== 6) {
+                showAlert("Please enter a valid 6-digit OTP code.", "error");
+                return;
+            }
+
+            hideAlert();
+            showAlert("Verifying OTP...", "success");
+
+            try {
+                const getUrl = function(endpoint) {
+                    if (typeof window.getBackendUrl === "function") return window.getBackendUrl(endpoint);
+                    const ep = endpoint.startsWith("/") ? endpoint : "/" + endpoint;
+                    if (window.location.protocol === "file:") return "http://localhost:5000" + ep;
+                    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+                        if (window.location.port && window.location.port !== "5000") return "http://localhost:5000" + ep;
+                        return ep;
+                    }
+                    return "https://mhtcet-auth-backend.onrender.com" + ep;
+                };
+
+                const fetchOpts = {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email: currentOtpEmail, otp: otpVal })
+                };
+                if (window.location.protocol !== "file:") fetchOpts.credentials = "include";
+
+                const res = await fetch(getUrl("/api/verify-otp"), fetchOpts);
+                const data = await res.json();
+
+                if (res.ok && data.success && data.user) {
+                    localStorage.setItem("user", JSON.stringify(data.user));
+                    sessionStorage.setItem("user", JSON.stringify(data.user));
+                    showAlert("Email verified successfully! Redirecting to Profile...", "success");
+                    setTimeout(() => {
+                        window.location.href = "profile.html";
+                    }, 600);
+                } else {
+                    showAlert((data && data.message) || "Invalid OTP code. Please try again.", "error");
+                }
+            } catch (err) {
+                showAlert("Error verifying OTP code. Please try again.", "error");
+            }
+        }
+
+        async function resendOtpCode() {
+            if (!currentOtpEmail) return;
+            hideAlert();
+            showAlert("Resending OTP code...", "success");
+            try {
+                const getUrl = function(endpoint) {
+                    if (typeof window.getBackendUrl === "function") return window.getBackendUrl(endpoint);
+                    const ep = endpoint.startsWith("/") ? endpoint : "/" + endpoint;
+                    if (window.location.protocol === "file:") return "http://localhost:5000" + ep;
+                    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+                        if (window.location.port && window.location.port !== "5000") return "http://localhost:5000" + ep;
+                        return ep;
+                    }
+                    return "https://mhtcet-auth-backend.onrender.com" + ep;
+                };
+
+                const res = await fetch(getUrl("/api/resend-otp"), {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email: currentOtpEmail })
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    showAlert(data.message || "New OTP code sent!", "success");
+                } else {
+                    showAlert((data && data.message) || "Failed to resend OTP.", "error");
+                }
+            } catch(e) {
+                showAlert("Unable to connect to server.", "error");
             }
         }
 

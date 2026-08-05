@@ -14,30 +14,56 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true
     },
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true,
+      default: null
+    },
+    authProvider: {
+      type: [String],
+      default: ["local"]
+    },
+    profilePicture: {
+      type: String,
+      default: ""
+    },
+    isVerified: {
+      type: Boolean,
+      default: false
+    },
+    otpCode: {
+      type: String,
+      default: null
+    },
+    otpExpires: {
+      type: Date,
+      default: null
+    },
     phone: {
       type: String,
-      required: true
+      default: "N/A"
     },
     cetRollNumber: {
       type: String,
-      required: true
+      default: "N/A"
     },
     category: {
       type: String,
-      required: true
+      default: "OPEN"
     },
     percentile: {
       type: Number,
-      default: null
+      default: 0
     },
     password: {
       type: String,
-      required: true
+      required: false
     },
     role: {
-        type: String,
-        enum: ["student", "admin"],
-        default: "student"
+      type: String,
+      enum: ["student", "admin"],
+      default: "student"
     }
   },
   { timestamps: true }

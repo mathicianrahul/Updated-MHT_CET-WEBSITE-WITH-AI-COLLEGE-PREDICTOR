@@ -278,8 +278,11 @@ const handleSignup = async (req, res) => {
       });
     }
 
-    // Hash password
+    // Hash password & generate 6-digit verification OTP
     const hashedPassword = await bcrypt.hash(password, 10);
+    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
     let newUser = null;
 
     if (mongoose.connection.readyState === 1) {
@@ -292,6 +295,10 @@ const handleSignup = async (req, res) => {
           category: category || "OPEN",
           percentile: parsedPercentile,
           password: hashedPassword,
+          authProvider: ["local"],
+          isVerified: false,
+          otpCode,
+          otpExpires,
           role: "student"
         });
       } catch (err) {
@@ -309,15 +316,24 @@ const handleSignup = async (req, res) => {
         category: category || "OPEN",
         percentile: parsedPercentile,
         password: hashedPassword,
+        authProvider: ["local"],
+        isVerified: false,
+        otpCode,
+        otpExpires,
         role: "student",
         createdAt: new Date()
       };
       inMemoryUserStore.set(normalizedEmail, newUser);
     }
 
+    console.log(`[VERIFICATION OTP GENERATED] Email: ${normalizedEmail} | Code: ${otpCode}`);
+
     res.status(201).json({
       success: true,
-      message: "Account created successfully! Please sign in.",
+      requireOtp: true,
+      email: normalizedEmail,
+      message: `Account created! Please enter the 6-digit verification code. (Demo Code: ${otpCode})`,
+      otpDemoCode: otpCode,
       user: {
         fullname: newUser.fullname,
         email: newUser.email,
@@ -325,6 +341,7 @@ const handleSignup = async (req, res) => {
         cetRollNumber: newUser.cetRollNumber,
         category: newUser.category,
         percentile: newUser.percentile,
+        isVerified: false,
         role: newUser.role,
         createdAt: newUser.createdAt
       }
@@ -341,6 +358,115 @@ const handleSignup = async (req, res) => {
 
 app.post("/api/signup", signupLimiter, handleSignup);
 app.post("/api/register", signupLimiter, handleSignup);
+
+// ---------- VERIFY OTP API ----------
+app.post("/api/verify-otp", loginLimiter, async (req, res) => {
+  try {
+    let { email, otp } = req.body;
+    email = cleanString(email);
+    otp = cleanString(otp);
+
+    if (!email || !otp) {
+      return res.status(400).json({ success: false, message: "Email and 6-digit OTP code are required." });
+    }
+
+    let user = null;
+    if (mongoose.connection.readyState === 1) {
+      try { user = await User.findOne({ email }); } catch (err) {}
+    }
+    if (!user) {
+      user = inMemoryUserStore.get(email);
+    }
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "Account not found. Please register first." });
+    }
+
+    if (user.isVerified) {
+      return res.json({ success: true, message: "Email is already verified. Please sign in.", user });
+    }
+
+    if (!user.otpCode || user.otpCode !== otp) {
+      return res.status(400).json({ success: false, message: "Invalid OTP code. Please check your code and try again." });
+    }
+
+    if (user.otpExpires && new Date(user.otpExpires) < new Date()) {
+      return res.status(400).json({ success: false, message: "OTP code has expired. Please request a new code." });
+    }
+
+    user.isVerified = true;
+    user.otpCode = null;
+    user.otpExpires = null;
+
+    if (mongoose.connection.readyState === 1 && typeof user.save === "function") {
+      try { await user.save(); } catch(e) {}
+    } else {
+      inMemoryUserStore.set(email, user);
+    }
+
+    req.session.userId = user._id;
+    req.session.userObj = {
+      fullname: user.fullname,
+      email: user.email,
+      phone: user.phone,
+      cetRollNumber: user.cetRollNumber,
+      category: user.category,
+      percentile: user.percentile,
+      isVerified: true,
+      role: user.role,
+      createdAt: user.createdAt
+    };
+
+    req.session.save((err) => {
+      res.json({
+        success: true,
+        message: "Email verified successfully! Welcome to your dashboard.",
+        user: req.session.userObj
+      });
+    });
+
+  } catch (err) {
+    console.error("VERIFY OTP ERROR:", err.message);
+    res.status(500).json({ success: false, message: "Server error during OTP verification." });
+  }
+});
+
+// ---------- RESEND OTP API ----------
+app.post("/api/resend-otp", signupLimiter, async (req, res) => {
+  try {
+    let { email } = req.body;
+    email = cleanString(email);
+    if (!email || !validator.isEmail(email)) {
+      return res.status(400).json({ success: false, message: "Valid email is required." });
+    }
+
+    let user = null;
+    if (mongoose.connection.readyState === 1) {
+      try { user = await User.findOne({ email }); } catch (err) {}
+    }
+    if (!user) user = inMemoryUserStore.get(email);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "Account not found." });
+    }
+
+    const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
+    user.otpCode = newOtp;
+    user.otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
+
+    if (mongoose.connection.readyState === 1 && typeof user.save === "function") {
+      try { await user.save(); } catch(e) {}
+    } else {
+      inMemoryUserStore.set(email, user);
+    }
+
+    console.log(`[OTP RESENT] Email: ${email} | Verification Code: ${newOtp}`);
+    res.json({ success: true, message: `New OTP code generated for ${email}. (Demo Code: ${newOtp})` });
+
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Server error while resending OTP." });
+  }
+});
 
 // ---------- LOGIN API ----------
 app.post("/api/login", loginLimiter, async (req, res) => {
@@ -390,6 +516,26 @@ app.post("/api/login", loginLimiter, async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Invalid email or password."
+      });
+    }
+
+    // Require email verification for manual password accounts
+    if (user.isVerified === false) {
+      const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      user.otpCode = newOtp;
+      user.otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+      if (mongoose.connection.readyState === 1 && typeof user.save === "function") {
+        try { await user.save(); } catch(e) {}
+      } else {
+        inMemoryUserStore.set(normalizedEmail, user);
+      }
+      console.log(`[UNVERIFIED LOGIN ATTEMPT] Email: ${normalizedEmail} | Verification Code: ${newOtp}`);
+      return res.status(403).json({
+        success: false,
+        requireOtp: true,
+        email: normalizedEmail,
+        message: `Please verify your email address before signing in. (Demo OTP Code: ${newOtp})`,
+        otpDemoCode: newOtp
       });
     }
 
@@ -466,6 +612,9 @@ app.post("/api/auth/google", loginLimiter, async (req, res) => {
       return res.status(401).json({ success: false, message: "Invalid Google credential payload." });
     }
 
+    const googleId = (credential && payload && payload.sub) ? payload.sub : ("goog_" + Date.now());
+    const profilePicture = (payload && payload.picture) ? payload.picture : "";
+
     let user = null;
     if (mongoose.connection.readyState === 1) {
       try {
@@ -476,20 +625,35 @@ app.post("/api/auth/google", loginLimiter, async (req, res) => {
       user = inMemoryUserStore.get(email);
     }
 
-    if (!user) {
-      const randomPassword = await bcrypt.hash("GoogleAuth_" + Date.now(), 10);
-      const randomRoll = "GOOG" + Math.floor(100000 + Math.random() * 900000);
+    if (user) {
+      // Smart Account Linking for existing accounts
+      user.isVerified = true;
+      if (!user.authProvider) user.authProvider = ["local"];
+      if (!user.authProvider.includes("google")) user.authProvider.push("google");
+      if (!user.googleId) user.googleId = googleId;
+      if (profilePicture && !user.profilePicture) user.profilePicture = profilePicture;
 
+      if (mongoose.connection.readyState === 1 && typeof user.save === "function") {
+        try { await user.save(); } catch (e) {}
+      } else {
+        inMemoryUserStore.set(email, user);
+      }
+    } else {
+      // Create new Google account
+      const randomRoll = "GOOG" + Math.floor(100000 + Math.random() * 900000);
       if (mongoose.connection.readyState === 1) {
         try {
           user = await User.create({
             fullname,
             email,
+            googleId,
+            authProvider: ["google"],
+            profilePicture,
+            isVerified: true,
             phone: "N/A",
             cetRollNumber: randomRoll,
             category: "OPEN",
             percentile: 0,
-            password: randomPassword,
             role: "student"
           });
         } catch (err) { }
@@ -500,11 +664,14 @@ app.post("/api/auth/google", loginLimiter, async (req, res) => {
           _id: "google_" + Date.now(),
           fullname,
           email,
+          googleId,
+          authProvider: ["google"],
+          profilePicture,
+          isVerified: true,
           phone: "N/A",
           cetRollNumber: randomRoll,
           category: "OPEN",
           percentile: 0,
-          password: randomPassword,
           role: "student",
           createdAt: new Date()
         };
@@ -520,6 +687,8 @@ app.post("/api/auth/google", loginLimiter, async (req, res) => {
       cetRollNumber: user.cetRollNumber || "N/A",
       category: user.category || "OPEN",
       percentile: user.percentile || 0,
+      profilePicture: user.profilePicture || "",
+      isVerified: true,
       role: user.role || "student",
       createdAt: user.createdAt
     };
