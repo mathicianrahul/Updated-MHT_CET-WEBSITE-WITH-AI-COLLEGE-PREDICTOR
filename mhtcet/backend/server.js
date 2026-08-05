@@ -71,12 +71,13 @@ const sendOtpEmail = async (toEmail, otpCode) => {
       return false;
     }
 
-    const senderEmail = transporter._etherealUser || process.env.EMAIL_USER || "noreply@aimlrahulcounselling.com";
+    const senderEmail = transporter._etherealUser || (process.env.EMAIL_USER ? process.env.EMAIL_USER.trim() : "noreply@aimlrahulcounselling.com");
 
     const mailOptions = {
       from: `"AIML Rahul Counselling" <${senderEmail}>`,
       to: toEmail,
       subject: `Your Verification Code: ${otpCode} - AIML Rahul Counselling`,
+      text: `Welcome to AIML Rahul Counselling!\n\nYour 6-Digit Email Verification Code is: ${otpCode}\n\nThis code is valid for 10 minutes. Please enter it on the website to complete your registration.`,
       html: `
         <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 550px; margin: 0 auto; padding: 24px; border: 1px solid #e2e8f0; border-radius: 16px; background-color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
           <div style="text-align: center; padding-bottom: 20px; border-bottom: 1px solid #f1f5f9;">
