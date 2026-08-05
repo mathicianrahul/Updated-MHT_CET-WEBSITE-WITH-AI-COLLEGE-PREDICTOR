@@ -19,6 +19,34 @@ const { OAuth2Client } = require("google-auth-library");
 
 const app = express();
 
+// ---------- CORS CONFIGURATION ----------
+const allowedOrigins = [
+  "http://localhost:5000",
+  "http://127.0.0.1:5000",
+  "http://localhost:5500",
+  "http://127.0.0.1:5500",
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  "http://localhost:8080",
+  "http://127.0.0.1:8080",
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "https://aimlrahul.netlify.app"
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin) || origin.startsWith("http://localhost:") || origin.startsWith("http://127.0.0.1:") || origin === "null") {
+      callback(null, true);
+    } else {
+      callback(null, true);
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "X-User-Email"]
+}));
+
 // ---------- HELMET SECURITY HEADERS ----------
 app.use(helmet({
   contentSecurityPolicy: false,
@@ -51,7 +79,7 @@ const loginLimiter = rateLimit({
 
 const signupLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 5,
+  max: 100,
   message: { success: false, message: "Too many accounts created from this IP. Please try again after an hour." },
   standardHeaders: true,
   legacyHeaders: false
@@ -118,32 +146,6 @@ const requireAdmin = async (req, res, next) => {
 };
 
 app.set("trust proxy", 1);
-
-// ---------- CORS CONFIGURATION ----------
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(",").map(o => o.trim())
-  : [
-    "http://localhost:5500",
-    "http://127.0.0.1:5500",
-    "http://localhost:3000",
-    "http://localhost:5173",
-    "http://localhost:8080",
-    "http://localhost:5000",
-    "https://aimlrahul.netlify.app",
-    "https://aimlrahulcounselling.netlify.app"
-  ];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (file:// protocol sends null, same-origin, server-to-server)
-    if (!origin || origin === "null") return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    return callback(new Error("Not allowed by CORS"));
-  },
-  credentials: true
-}));
 
 // ---------- SESSION SECURITY (MONGOSTORE) ----------
 // ---------- GLOBAL PROCESS CRASH PROTECTION ----------
