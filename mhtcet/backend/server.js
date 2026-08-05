@@ -15,12 +15,12 @@ const express = require("express");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const cors = require("cors");
-const SibApiV3Sdk = require("@getbrevo/brevo");
+// Brevo API uses native fetch (built into Node 18+)
 const { OAuth2Client } = require("google-auth-library");
 
 const app = express();
 
-// Brevo Transactional Email API (HTTP-based — works on Render, no domain verification needed)
+// Brevo Transactional Email API — direct HTTP fetch (no SDK issues)
 const brevoApiKey = process.env.BREVO_API_KEY;
 console.log("[BREVO CONFIG] API Key:", brevoApiKey ? `SET (${brevoApiKey.length} chars)` : "NOT SET");
 
@@ -30,39 +30,46 @@ const sendOtpEmail = async (toEmail, otpCode) => {
     return false;
   }
   try {
-    const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
-    const apiKey = apiInstance.authentications["apiKey"];
-    apiKey.apiKey = brevoApiKey;
-
-    const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
-    sendSmtpEmail.sender = { name: "AIML Rahul Counselling", email: "rgirase313@gmail.com" };
-    sendSmtpEmail.to = [{ email: toEmail }];
-    sendSmtpEmail.subject = `Your Verification Code: ${otpCode} - AIML Rahul Counselling`;
-    sendSmtpEmail.textContent = `Welcome to AIML Rahul Counselling!\n\nYour 6-Digit Email Verification Code is: ${otpCode}\n\nThis code is valid for 10 minutes.`;
-    sendSmtpEmail.htmlContent = `
-      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 550px; margin: 0 auto; padding: 24px; border: 1px solid #e2e8f0; border-radius: 16px; background-color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-        <div style="text-align: center; padding-bottom: 20px; border-bottom: 1px solid #f1f5f9;">
-          <h2 style="color: #2563eb; margin: 0; font-size: 22px; font-weight: 800;">AIML Rahul Counselling</h2>
-          <p style="color: #64748b; font-size: 13px; margin-top: 4px;">MHT-CET Admission Portal Verification</p>
-        </div>
-        <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 24px; text-align: center; margin: 24px 0;">
-          <h3 style="color: #1e293b; font-size: 16px; font-weight: 700; margin-bottom: 12px;">Your Email Verification Code</h3>
-          <div style="font-size: 34px; font-weight: 800; letter-spacing: 8px; color: #2563eb; background: #ffffff; padding: 12px; border-radius: 8px; border: 1px dashed #3b82f6; display: inline-block; margin: 10px 0;">
-            ${otpCode}
-          </div>
-          <p style="color: #475569; font-size: 13px; margin-top: 12px;">This code is valid for 10 minutes. Please enter it on the website to complete your registration.</p>
-        </div>
-        <p style="color: #94a3b8; font-size: 12px; text-align: center; margin-top: 20px;">
-          If you did not create an account on AIML Rahul Counselling, please ignore this email.
-        </p>
-      </div>
-    `;
-
-    const result = await apiInstance.sendTransacEmail(sendSmtpEmail);
-    console.log(`[BREVO SUCCESS] OTP email sent to ${toEmail}. MessageId: ${result.body ? result.body.messageId : result.messageId}`);
+    const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: {
+        "accept": "application/json",
+        "api-key": brevoApiKey,
+        "content-type": "application/json"
+      },
+      body: JSON.stringify({
+        sender: { name: "AIML Rahul Counselling", email: "rgirase313@gmail.com" },
+        to: [{ email: toEmail }],
+        subject: `Your Verification Code: ${otpCode} - AIML Rahul Counselling`,
+        textContent: `Welcome to AIML Rahul Counselling!\n\nYour 6-Digit Email Verification Code is: ${otpCode}\n\nThis code is valid for 10 minutes.`,
+        htmlContent: `
+          <div style="font-family:'Segoe UI',sans-serif;max-width:550px;margin:0 auto;padding:24px;border:1px solid #e2e8f0;border-radius:16px;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,0.05)">
+            <div style="text-align:center;padding-bottom:20px;border-bottom:1px solid #f1f5f9">
+              <h2 style="color:#2563eb;margin:0;font-size:22px;font-weight:800">AIML Rahul Counselling</h2>
+              <p style="color:#64748b;font-size:13px;margin-top:4px">MHT-CET Admission Portal Verification</p>
+            </div>
+            <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:24px;text-align:center;margin:24px 0">
+              <h3 style="color:#1e293b;font-size:16px;font-weight:700;margin-bottom:12px">Your Email Verification Code</h3>
+              <div style="font-size:34px;font-weight:800;letter-spacing:8px;color:#2563eb;background:#fff;padding:12px;border-radius:8px;border:1px dashed #3b82f6;display:inline-block;margin:10px 0">
+                ${otpCode}
+              </div>
+              <p style="color:#475569;font-size:13px;margin-top:12px">This code is valid for 10 minutes.</p>
+            </div>
+            <p style="color:#94a3b8;font-size:12px;text-align:center;margin-top:20px">
+              If you did not create an account on AIML Rahul Counselling, please ignore this email.
+            </p>
+          </div>`
+      })
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      console.error(`[BREVO ERROR] Status ${response.status}:`, JSON.stringify(data));
+      return false;
+    }
+    console.log(`[BREVO SUCCESS] OTP sent to ${toEmail}. MessageId: ${data.messageId}`);
     return true;
   } catch (err) {
-    console.error(`[BREVO ERROR] Failed to send to ${toEmail}:`, err.message || JSON.stringify(err));
+    console.error(`[BREVO EXCEPTION] ${toEmail}:`, err.message);
     return false;
   }
 };
