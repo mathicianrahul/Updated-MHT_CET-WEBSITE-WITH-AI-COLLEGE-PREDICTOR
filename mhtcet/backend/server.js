@@ -575,11 +575,11 @@ app.post("/api/auth/google", loginLimiter, async (req, res) => {
     const { credential, email: directEmail, name: directName } = req.body;
     let email = null;
     let fullname = null;
+    let payload = null;
 
     if (credential) {
       const clientId = process.env.GOOGLE_CLIENT_ID;
       const client = new OAuth2Client(clientId);
-      let payload = null;
 
       try {
         const ticket = await client.verifyIdToken({
@@ -612,7 +612,7 @@ app.post("/api/auth/google", loginLimiter, async (req, res) => {
       return res.status(401).json({ success: false, message: "Invalid Google credential payload." });
     }
 
-    const googleId = (credential && payload && payload.sub) ? payload.sub : ("goog_" + Date.now());
+    const googleId = (payload && payload.sub) ? payload.sub : ("goog_" + Date.now());
     const profilePicture = (payload && payload.picture) ? payload.picture : "";
 
     let user = null;
