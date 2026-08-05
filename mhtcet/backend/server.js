@@ -22,6 +22,12 @@ const app = express();
 
 let etherealTransporter = null;
 
+// Startup diagnostics — visible in Render logs
+console.log("[SMTP CONFIG CHECK] EMAIL_USER:", process.env.EMAIL_USER ? process.env.EMAIL_USER.trim() : "NOT SET");
+console.log("[SMTP CONFIG CHECK] EMAIL_PASS:", process.env.EMAIL_PASS ? `SET (${process.env.EMAIL_PASS.replace(/\s+/g,"").length} chars)` : "NOT SET");
+console.log("[SMTP CONFIG CHECK] SMTP_HOST:", process.env.SMTP_HOST || "smtp.gmail.com (default)");
+console.log("[SMTP CONFIG CHECK] SMTP_PORT:", process.env.SMTP_PORT || "587 (default)");
+
 const getTransporter = async () => {
   const emailUser = process.env.EMAIL_USER;
   const emailPass = process.env.EMAIL_PASS;
@@ -34,9 +40,13 @@ const getTransporter = async () => {
                         emailPass.includes("xxxx") ||
                         emailPass.includes("your-gmail-app");
 
+  if (isPlaceholder) {
+    console.warn("[SMTP WARNING] Credentials missing or placeholder — falling back to Ethereal test account.");
+  }
+
   if (!isPlaceholder) {
     const cleanPass = emailPass.replace(/\s+/g, "");
-    return nodemailer.createTransport({
+    const transport = nodemailer.createTransport({
       host: smtpHost,
       port: smtpPort,
       secure: smtpSecure,
@@ -45,6 +55,14 @@ const getTransporter = async () => {
         pass: cleanPass
       }
     });
+    // Verify connection on first use
+    try {
+      await transport.verify();
+      console.log("[SMTP VERIFY] Connection to Gmail SMTP successful ✓");
+    } catch (verifyErr) {
+      console.error("[SMTP VERIFY FAILED]", verifyErr.message);
+    }
+    return transport;
   }
 
   // Fallback to Ethereal SMTP test account
