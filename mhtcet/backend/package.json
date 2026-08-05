@@ -10,6 +10,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@getbrevo/brevo": "^6.0.2",
     "bcrypt": "^6.0.0",
     "connect-mongo": "^6.0.0",
     "cors": "^2.8.6",

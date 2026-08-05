@@ -15,54 +15,54 @@ const express = require("express");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const cors = require("cors");
-const { Resend } = require("resend");
+const SibApiV3Sdk = require("@getbrevo/brevo");
 const { OAuth2Client } = require("google-auth-library");
 
 const app = express();
 
-// Resend API client (HTTP-based — works on Render, no SMTP port blocking)
-const resendApiKey = process.env.RESEND_API_KEY;
-console.log("[RESEND CONFIG] API Key:", resendApiKey ? `SET (${resendApiKey.length} chars)` : "NOT SET");
+// Brevo Transactional Email API (HTTP-based — works on Render, no domain verification needed)
+const brevoApiKey = process.env.BREVO_API_KEY;
+console.log("[BREVO CONFIG] API Key:", brevoApiKey ? `SET (${brevoApiKey.length} chars)` : "NOT SET");
 
 const sendOtpEmail = async (toEmail, otpCode) => {
-  if (!resendApiKey) {
-    console.warn(`[EMAIL NOTICE] RESEND_API_KEY not set. OTP for ${toEmail}: ${otpCode}`);
+  if (!brevoApiKey) {
+    console.warn(`[EMAIL NOTICE] BREVO_API_KEY not set. OTP for ${toEmail}: ${otpCode}`);
     return false;
   }
   try {
-    const resend = new Resend(resendApiKey);
-    const { data, error } = await resend.emails.send({
-      from: "AIML Rahul Counselling <onboarding@resend.dev>",
-      to: toEmail,
-      subject: `Your Verification Code: ${otpCode} - AIML Rahul Counselling`,
-      text: `Welcome to AIML Rahul Counselling!\n\nYour 6-Digit Email Verification Code is: ${otpCode}\n\nThis code is valid for 10 minutes. Please enter it on the website to complete your registration.`,
-      html: `
-        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 550px; margin: 0 auto; padding: 24px; border: 1px solid #e2e8f0; border-radius: 16px; background-color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-          <div style="text-align: center; padding-bottom: 20px; border-bottom: 1px solid #f1f5f9;">
-            <h2 style="color: #2563eb; margin: 0; font-size: 22px; font-weight: 800;">AIML Rahul Counselling</h2>
-            <p style="color: #64748b; font-size: 13px; margin-top: 4px;">MHT-CET Admission Portal Verification</p>
-          </div>
-          <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 24px; text-align: center; margin: 24px 0;">
-            <h3 style="color: #1e293b; font-size: 16px; font-weight: 700; margin-bottom: 12px;">Your Email Verification Code</h3>
-            <div style="font-size: 34px; font-weight: 800; letter-spacing: 8px; color: #2563eb; background: #ffffff; padding: 12px; border-radius: 8px; border: 1px dashed #3b82f6; display: inline-block; margin: 10px 0;">
-              ${otpCode}
-            </div>
-            <p style="color: #475569; font-size: 13px; margin-top: 12px;">This code is valid for 10 minutes. Please enter it on the website to complete your registration.</p>
-          </div>
-          <p style="color: #94a3b8; font-size: 12px; text-align: center; margin-top: 20px;">
-            If you did not create an account on AIML Rahul Counselling, please ignore this email.
-          </p>
+    const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+    const apiKey = apiInstance.authentications["apiKey"];
+    apiKey.apiKey = brevoApiKey;
+
+    const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+    sendSmtpEmail.sender = { name: "AIML Rahul Counselling", email: "rgirase312@gmail.com" };
+    sendSmtpEmail.to = [{ email: toEmail }];
+    sendSmtpEmail.subject = `Your Verification Code: ${otpCode} - AIML Rahul Counselling`;
+    sendSmtpEmail.textContent = `Welcome to AIML Rahul Counselling!\n\nYour 6-Digit Email Verification Code is: ${otpCode}\n\nThis code is valid for 10 minutes.`;
+    sendSmtpEmail.htmlContent = `
+      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 550px; margin: 0 auto; padding: 24px; border: 1px solid #e2e8f0; border-radius: 16px; background-color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+        <div style="text-align: center; padding-bottom: 20px; border-bottom: 1px solid #f1f5f9;">
+          <h2 style="color: #2563eb; margin: 0; font-size: 22px; font-weight: 800;">AIML Rahul Counselling</h2>
+          <p style="color: #64748b; font-size: 13px; margin-top: 4px;">MHT-CET Admission Portal Verification</p>
         </div>
-      `
-    });
-    if (error) {
-      console.error(`[RESEND ERROR] Failed to send to ${toEmail}:`, error.message || JSON.stringify(error));
-      return false;
-    }
-    console.log(`[RESEND SUCCESS] OTP email sent to ${toEmail}. ID: ${data.id}`);
+        <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 24px; text-align: center; margin: 24px 0;">
+          <h3 style="color: #1e293b; font-size: 16px; font-weight: 700; margin-bottom: 12px;">Your Email Verification Code</h3>
+          <div style="font-size: 34px; font-weight: 800; letter-spacing: 8px; color: #2563eb; background: #ffffff; padding: 12px; border-radius: 8px; border: 1px dashed #3b82f6; display: inline-block; margin: 10px 0;">
+            ${otpCode}
+          </div>
+          <p style="color: #475569; font-size: 13px; margin-top: 12px;">This code is valid for 10 minutes. Please enter it on the website to complete your registration.</p>
+        </div>
+        <p style="color: #94a3b8; font-size: 12px; text-align: center; margin-top: 20px;">
+          If you did not create an account on AIML Rahul Counselling, please ignore this email.
+        </p>
+      </div>
+    `;
+
+    const result = await apiInstance.sendTransacEmail(sendSmtpEmail);
+    console.log(`[BREVO SUCCESS] OTP email sent to ${toEmail}. MessageId: ${result.body ? result.body.messageId : result.messageId}`);
     return true;
   } catch (err) {
-    console.error(`[RESEND EXCEPTION] ${toEmail}:`, err.message);
+    console.error(`[BREVO ERROR] Failed to send to ${toEmail}:`, err.message || JSON.stringify(err));
     return false;
   }
 };
